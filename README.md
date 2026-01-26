@@ -57,3 +57,39 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+---
+
+##  Créer le service Angular pour appeler lʼAPI
+
+Dans Angular, crée un service pour gérer les requêtes HTTP :
+
+```bash
+ng generate service services/article --type=service
+```
+
+---
+
+##  Créer un composant pour afficher les articles
+
+Dans Angular, crée un service pour gérer les requêtes HTTP :
+
+```bash
+ng generate component components/article-list --type=component
+```
+---
+
+##  Créer un modèle 
+
+Les models sont de simples fichiers TypeScript, pas des artefacts Angular à générer.
+
+```bash
+ng g i models/user --type=model
+```
+---
+
+##  Créer une page 
+```bash
+ng generate component pages/home
+```
