@@ -1,0 +1,91 @@
+<div class="produit-edit-form">
+  <h1>Modifier le produit</h1>
+
+  <form (ngSubmit)="updateProduit()">
+
+    <!-- BOUTIQUE -->
+    <div>
+            <label for="boutique">Boutique :</label>
+
+                <select
+                id="boutique"
+                name="store_id"
+                [(ngModel)]="produit.store_id"
+                required
+                >
+                <option value="">-- Choisir une boutique --</option>
+
+                <!-- TEMPORAIRE -->
+                <option value="temp-1">Boutique Demo 1</option>
+                <option value="temp-2">Boutique Demo 2</option>
+                <option value="temp-3">Boutique Demo 3</option>
+                </select>
+
+    </div>
+    <!-- NOM -->
+    <div>
+      <label for="nom_prod">Nom du produit:</label> 
+      <input type="text" id="nom_prod" name="nom_prod" value="{{produit.nom_prod}}" [(ngModel)]="produit.nom_prod" required />
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div>
+      <label for="descriptions">Description:</label>
+      <textarea id="descriptions" name="descriptions" [(ngModel)]="produit.descriptions"></textarea>
+    </div>
+
+    <!-- PRIX -->
+    <div>
+      <label for="prix_unitaire">Prix unitaire:</label>
+      <input type="number" id="prix_unitaire" name="prix_unitaire" [(ngModel)]="produit.prix_unitaire.$numberDecimal" required />
+    </div>
+
+    <!-- STOCK -->
+    <div>
+      <label for="stock_etat">Stock disponible ?</label>
+      <select [(ngModel)]="produit.stock_etat" name="stock_etat">
+                <option [ngValue]="true">Disponible</option>
+                <option [ngValue]="false">Rupture de stock</option>
+            </select>
+    </div>
+
+    <!-- TYPE -->
+    <div>
+      <label for="type_produit">Type de produit:</label>
+      <select id="type_produit" name="type_produit" [(ngModel)]="produit.type_produit" required>
+        <option value="PRODUIT">Produit</option>
+        <option value="SERVICE">Service</option>
+      </select>
+    </div>
+
+    <!-- LIVRAISON -->
+    <div>
+      <label for="livraison_dispo">Livraison disponible ?</label>
+      <select id="livraison_dispo" name="livraison_disponibilite" [(ngModel)]="produit.livraison.disponibilite" (change)="toggleFraisLivraison()">
+        <option [ngValue]="false">Non</option>
+        <option [ngValue]="true">Oui</option>
+      </select>
+    </div>
+
+    <div *ngIf="produit.livraison.disponibilite">
+      <label for="frais">Frais de livraison:</label>
+      <input type="number" id="frais" name="livraison_frais" [(ngModel)]="produit.livraison.frais" min="0" />
+    </div>
+
+    <!-- IMAGE -->
+    <div>
+      <label for="image_Url">Image du produit:</label>
+      <input type="file" id="image_Url" name="image_Url" (change)="onImageSelected($event)" />
+      <div *ngIf="produit.image_Url">
+        <img [src]="produit.image_Url" alt="Image du produit" width="100" />
+      </div>
+    </div>
+
+    <!-- BOUTONS -->
+    <div>
+      <button type="submit">Modifier le produit</button>
+      <button type="button" [routerLink]="['/produits']">Annuler</button>
+    </div>
+
+  </form>
+</div>

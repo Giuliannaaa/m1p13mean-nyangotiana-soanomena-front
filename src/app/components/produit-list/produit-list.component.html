@@ -1,0 +1,43 @@
+<button routerLink="/produits/ajouter">Ajouter</button>
+<div>
+        <table>
+            <thead>
+                <tr>
+                <th>Nom</th>
+                <th>Boutique</th>
+                <th>descriptions</th>
+                <th>Prix</th>
+                <th>Stock</th>
+                <th>Type</th>
+                <th>Livraison</th>
+                <th>Image</th>
+                <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (produit of produits; track produit._id) {
+                <tr>
+                    
+                    <td>{{ produit.nom_prod }}</td>
+                    <td>{{ produit.boutique }}</td>
+                    <td>{{ produit.descriptions }}</td>
+                    <td>{{ produit.prix_unitaire?.$numberDecimal | number:'1.0-0' }} Ar</td>
+                    <td>{{ produit.stock_etat ? 'Disponible' : 'Rupture de stock' }}</td>
+                    <td>{{ produit.type_produit }}</td>
+                    <td>{{ produit.livraison?.disponibilite ? 'Oui' : 'Non' }}</td>
+                    <td>
+                    <img [src]="produit.image_Url" width="40">
+                    </td>
+                    <td>
+                    <button [routerLink]="['/produits/modifier', produit._id]">Modifier</button>
+                    <button (click)="deleteProduit(produit._id)">Supprimer</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+            </table>
+    
+</div>
+
+<script src=""></script>
