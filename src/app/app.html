@@ -1,1 +1,14 @@
-<router-outlet />
+<div class="app-container">
+  <header class="app-header" *ngIf="showHeader">
+    <div class="logo">
+      <h1>MyApp</h1>
+    </div>
+    <nav>
+      <button (click)="logout()" class="btn-logout">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</div>
