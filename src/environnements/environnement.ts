@@ -2,5 +2,5 @@
 export const environment = {
   // Indique que c'est un environnement de développement
   production: false,
-  apiUrl: 'http://localhost:5000/api',
+  apiUrl: 'http://localhost:5000',
 };
