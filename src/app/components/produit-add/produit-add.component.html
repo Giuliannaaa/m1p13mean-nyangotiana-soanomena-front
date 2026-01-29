@@ -3,25 +3,6 @@
     <form #produitForm="ngForm" (ngSubmit)="addProduit()">
 
         <div>
-            <label for="boutique">Boutique :</label>
-
-                <select
-                id="boutique"
-                name="store_id"
-                [(ngModel)]="newProduit.store_id"
-                required
-                >
-                <option value="">-- Choisir une boutique --</option>
-
-                <!-- TEMPORAIRE -->
-                <option value="temp-1">Boutique Demo 1</option>
-                <option value="temp-2">Boutique Demo 2</option>
-                <option value="temp-3">Boutique Demo 3</option>
-                </select>
-
-        </div>
-        
-        <div>
             <label for="nom du produit">Nom du produit:</label>
             <input type="text" name="nom_prod" [(ngModel)]="newProduit.nom_prod" required>
         </div>
@@ -33,11 +14,7 @@
 
         <div>
             <label>Prix unitaire</label>
-            <input
-                type="number"
-                name="prix_unitaire"
-                [(ngModel)]="newProduit.prix_unitaire"
-                required/>
+            <input type="number" name="prix_unitaire" [(ngModel)]="newProduit.prix_unitaire" required />
         </div>
 
         <div>
@@ -65,19 +42,14 @@
             </select>
 
             <div *ngIf="newProduit.livraison.disponibilite">
-            <label>Frais de livraison</label>
-            <input
-                type="number"
-                [(ngModel)]="newProduit.livraison.frais"
-                name="livraison_frais"
-                min="0"
-            />
+                <label>Frais de livraison</label>
+                <input type="number" [(ngModel)]="newProduit.livraison.frais" name="livraison_frais" min="0" />
             </div>
         </div>
 
         <div>
-                <label for="image_Url">Image du produit:</label>
-                <input type="file" (change)="onImageSelected($event)" />
+            <label for="image_Url">Image du produit:</label>
+            <input type="file" (change)="onImageSelected($event)" />
         </div>
 
         <button type="submit" [disabled]="produitForm.invalid">Ajouter</button>
