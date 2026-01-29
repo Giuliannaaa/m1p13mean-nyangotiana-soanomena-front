@@ -2,11 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Import CommonModule for ngIf
 import { AuthService } from './services/auth.service';
+import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
+import { NavbarComponent } from './components/layout/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, SidebarComponent, NavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -24,6 +26,10 @@ export class App {
     const isAuthPage = authRoutes.some(route => currentUrl.startsWith(route));
 
     return this.authService.isAuthenticated() && !isAuthPage;
+  }
+
+  get showSidebar(): boolean {
+    return this.authService.getRole() === 'Admin' && this.showHeader;
   }
 
   logout() {

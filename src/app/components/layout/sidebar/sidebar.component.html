@@ -1,0 +1,23 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>Admin Panel</h2>
+  </div>
+  <nav class="sidebar-nav">
+    <ul>
+      <li>
+        <a routerLink="/admin/dashboard" routerLinkActive="active">
+          <i class="icon-dashboard"></i> Dashboard
+        </a>
+      </li>
+      <li>
+        <a routerLink="/produits" routerLinkActive="active">
+          <i class="icon-products"></i> Produits
+        </a>
+      </li>
+      <!-- Add more admin specific links here -->
+    </ul>
+  </nav>
+  <div class="sidebar-footer">
+    <button (click)="logout()" class="btn-logout-sidebar">Logout</button>
+  </div>
+</aside>

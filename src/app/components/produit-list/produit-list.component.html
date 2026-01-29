@@ -1,44 +1,73 @@
-<button routerLink="/produits/ajouter">Ajouter</button>
-<div>
-    <table>
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Boutique</th>
-                <th>descriptions</th>
-                <th>Prix</th>
-                <th>Stock</th>
-                <th>Type</th>
-                <th>Livraison</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
+<div class="produit-list-container">
+    <div class="list-header">
+        <h1>Nos Produits</h1>
+        <button *ngIf="isAdmin" routerLink="/produits/ajouter" class="btn-primary">Ajouter un produit</button>
+    </div>
 
-        <tbody>
-            @for (produit of produits; track produit._id) {
-            <tr>
+    <div class="glass-card overflow-hidden">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Description</th>
+                    <th>Prix</th>
+                    <th>Stock</th>
+                    <th>Type</th>
+                    <th>Livraison</th>
+                    <th *ngIf="isAdmin">Actions</th>
+                </tr>
+            </thead>
 
-                <td>{{ produit.nom_prod }}</td>
-                <td>{{ produit.boutique }}</td>
-                <td>{{ produit.descriptions }}</td>
-                <td>{{ produit.prix_unitaire?.$numberDecimal | number:'1.0-0' }} Ar</td>
-                <td>{{ produit.stock_etat ? 'Disponible' : 'Rupture de stock' }}</td>
-                <td>{{ produit.type_produit }}</td>
-                <td>{{ produit.livraison?.disponibilite ? 'Oui' : 'Non' }}</td>
-                <td>
-                    <img [src]="produit.image_preview || ('http://localhost:5000/' + produit.image_Url)"
-                        alt="Image du produit" width="100" />
-                </td>
-                <td>
-                    <button [routerLink]="['/produits/modifier', produit._id]">Modifier</button>
-                    <button (click)="deleteProduit(produit._id)">Supprimer</button>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-
+            <tbody>
+                @for (produit of produits; track produit._id) {
+                <tr>
+                    <td class="td-image">
+                        <img [src]="produit.image_preview || ('http://localhost:5000/' + produit.image_Url)"
+                            alt="Image du produit" class="product-thumb" />
+                    </td>
+                    <td class="font-bold">{{ produit.nom_prod }}</td>
+                    <td class="td-desc">{{ produit.descriptions }}</td>
+                    <td class="price-cell">{{ produit.prix_unitaire?.$numberDecimal | number:'1.0-0' }} Ar</td>
+                    <td>
+                        <span class="badge" [ngClass]="produit.stock_etat ? 'badge-success' : 'badge-danger'">
+                            {{ produit.stock_etat ? 'Disponible' : 'Rupture' }}
+                        </span>
+                    </td>
+                    <td>{{ produit.type_produit }}</td>
+                    <td>{{ produit.livraison?.disponibilite ? 'Oui' : 'Non' }}</td>
+                    <td *ngIf="isAdmin" class="actions-cell">
+                        <button [routerLink]="['/produits/modifier', produit._id]" class="btn-icon" title="Modifier">
+                            <svg width="24px" height="24px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"
+                                fill="#000000">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path
+                                        d="m199.04 672.64 193.984 112 224-387.968-193.92-112-224 388.032zm-23.872 60.16 32.896 148.288 144.896-45.696L175.168 732.8zM455.04 229.248l193.92 112 56.704-98.112-193.984-112-56.64 98.112zM104.32 708.8l384-665.024 304.768 175.936L409.152 884.8h.064l-248.448 78.336L104.32 708.8zm384 254.272v-64h448v64h-448z"
+                                        fill="#ffffff"></path>
+                                </g>
+                            </svg>
+                        </button>
+                        <button (click)="deleteProduit(produit._id)" class="btn-icon btn-delete" title="Supprimer">
+                            <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path
+                                        d="M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6"
+                                        stroke="#ffffff" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"></path>
+                                </g>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script src=""></script>
