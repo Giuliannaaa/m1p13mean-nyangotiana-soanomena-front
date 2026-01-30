@@ -1,0 +1,27 @@
+<div>
+  <h1>Modifier la catégorie</h1>
+
+  <form (ngSubmit)="updateCategorie()">
+    <div>
+      <label for="nom_cat">Nom :</label>
+      <input
+        type="text"
+        id="nom_cat"
+        name="nom_cat"
+        [(ngModel)]="categorie.nom_cat"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="descriptions">Descriptions :</label>
+      <textarea
+        id="descriptions"
+        name="descriptions"
+        [(ngModel)]="categorie.descriptions">
+      </textarea>
+    </div>
+
+    <button type="submit">Enregistrer</button>
+  </form>
+</div>
