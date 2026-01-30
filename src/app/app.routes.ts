@@ -8,6 +8,11 @@ import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard
 import { BoutiqueDashboardComponent } from './pages/boutique-dashboard/boutique-dashboard.component';
 import { BuyerDashboardComponent } from './pages/buyer-dashboard/buyer-dashboard.component';
 
+//CRUD
+import { CategorieAddComponent } from "./components/categorie-add/categorie-add.component";
+import { CategorieListComponent } from "./components/categorie-list/categorie-list.component";
+import { CategorieEditComponent } from './components/categorie-edit/categorie-edit.component';
+
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
@@ -17,4 +22,7 @@ export const routes: Routes = [
     { path: 'admin/dashboard', component: AdminDashboardComponent },
     { path: 'boutique/dashboard', component: BoutiqueDashboardComponent },
     { path: 'buyer/dashboard', component: BuyerDashboardComponent },
+    { path: 'categories', component: CategorieListComponent },
+    { path: 'categories/ajouter', component: CategorieAddComponent },
+    { path: 'categories/modifier/:id', component: CategorieEditComponent },
 ];

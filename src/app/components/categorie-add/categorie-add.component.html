@@ -1,0 +1,16 @@
+<div>
+    <h1>Ajouter une categorie</h1>
+    <form (ngSubmit)="addCategorie()" #f="ngForm">
+        <div>
+            <label for="Nom de la categorie">Nom :</label>
+            <input type="text" name="nom_cat" id="Nom_cat"
+            [(ngModel)]="newCategorie.nom_cat" required/>
+        </div>
+        <div>
+            <label for="Descriptions">Descriptions:</label>
+            <textarea name="descriptions" id="Descriptions"
+            [(ngModel)]="newCategorie.descriptions"></textarea>
+        </div>
+        <button type="submit">Ajouter</button>
+    </form>
+</div>
