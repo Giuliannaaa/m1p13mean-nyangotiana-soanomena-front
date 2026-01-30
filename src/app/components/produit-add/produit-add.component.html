@@ -1,0 +1,80 @@
+<div class="produit-form-container">
+    <div class="glass-card form-card">
+        <h1>Ajouter un produit</h1>
+        <form #produitForm="ngForm" (ngSubmit)="addProduit()" class="modern-form">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nom_prod">Nom du produit</label>
+                    <input type="text" id="nom_prod" name="nom_prod" [(ngModel)]="newProduit.nom_prod"
+                        class="form-control" placeholder="Ex: Bracelet en argent" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="prix_unitaire">Prix unitaire (Ar)</label>
+                    <input type="number" id="prix_unitaire" name="prix_unitaire" [(ngModel)]="newProduit.prix_unitaire"
+                        class="form-control" placeholder="0" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="descriptions">Description du produit</label>
+                <textarea id="descriptions" name="descriptions" [(ngModel)]="newProduit.descriptions"
+                    class="form-control" rows="4" placeholder="Décrivez votre produit..."></textarea>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="stock_etat">État du stock</label>
+                    <select [(ngModel)]="newProduit.stock_etat" name="stock_etat" class="form-control">
+                        <option [ngValue]="true">Disponible</option>
+                        <option [ngValue]="false">Rupture de stock</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="type_produit">Type de vente</label>
+                    <select id="type_produit" name="type_produit" [(ngModel)]="newProduit.type_produit"
+                        class="form-control">
+                        <option value="PRODUIT">Produits</option>
+                        <option value="SERVICE">Services</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Livraison</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="livraison">Livraison disponible ?</label>
+                        <select [(ngModel)]="newProduit.livraison.disponibilite" name="livraison" class="form-control">
+                            <option [ngValue]="false">Non</option>
+                            <option [ngValue]="true">Oui</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" *ngIf="newProduit.livraison.disponibilite">
+                        <label for="livraison_frais">Frais de livraison (Ar)</label>
+                        <input type="number" id="livraison_frais" [(ngModel)]="newProduit.livraison.frais"
+                            name="livraison_frais" class="form-control" min="0" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="image_Url">Image du produit</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="image_Url" (change)="onImageSelected($event)" class="file-input" />
+                    <div class="file-input-label">
+                        <span>📁 Choisir une image</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" routerLink="/produits" class="btn-secondary">Annuler</button>
+                <button type="submit" [disabled]="produitForm.invalid" class="btn-primary">Ajouter le produit</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,4 +1,7 @@
 import { Routes } from '@angular/router';
+import { ProduitListComponent } from './components/produit-list/produit-list.component';
+import { ProduitAddComponent } from './components/produit-add/produit-add.component';
+import { ProduitEditComponent } from './components/produit-edit/produit-edit.component';
 
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
@@ -25,4 +28,7 @@ export const routes: Routes = [
     { path: 'categories', component: CategorieListComponent },
     { path: 'categories/ajouter', component: CategorieAddComponent },
     { path: 'categories/modifier/:id', component: CategorieEditComponent },
+    { path: 'produits', component: ProduitListComponent }, //Route pour produit-list
+    { path: 'produits/ajouter', component: ProduitAddComponent },
+    { path: 'produits/modifier/:id', component: ProduitEditComponent },
 ];

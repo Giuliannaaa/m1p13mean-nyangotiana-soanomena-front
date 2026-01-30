@@ -1,14 +1,15 @@
 <div class="app-container">
-  <header class="app-header" *ngIf="showHeader">
-    <div class="logo">
-      <h1>MyApp</h1>
-    </div>
-    <nav>
-      <button (click)="logout()" class="btn-logout">Logout</button>
-    </nav>
-  </header>
+  <!-- Sidebar for Admin -->
+  <app-sidebar *ngIf="showSidebar"></app-sidebar>
 
-  <main>
-    <router-outlet></router-outlet>
-  </main>
+  <div class="main-wrapper" [class.has-sidebar]="showSidebar">
+    <!-- Navbar for non-Admin -->
+    <app-navbar *ngIf="showHeader && !showSidebar"></app-navbar>
+
+    <main [class.with-navbar]="showHeader && !showSidebar">
+      <div class="content-area">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
 </div>
