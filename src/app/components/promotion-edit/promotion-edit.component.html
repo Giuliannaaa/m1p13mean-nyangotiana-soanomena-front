@@ -1,0 +1,78 @@
+<div>
+  <h1>Modifier la promotion</h1>
+
+  <form (ngSubmit)="updatePromotion()">
+
+    <div>
+      <label>Produit</label>
+      <select [(ngModel)]="promotion.prod_id" name="prod_id" required>
+        <option value="">-- Choisir un produit --</option>
+        <option *ngFor="let prod of produits" [value]="prod._id">
+          {{ prod.nom_prod }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label>Type de promotion</label>
+      <select [(ngModel)]="promotion.type_prom" name="type_prom" required>
+        <option value="POURCENTAGE">Pourcentage</option>
+        <option value="MONTANT">Montant</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Montant</label>
+      <input
+        type="number"
+        [(ngModel)]="promotion.montant"
+        name="montant"
+        required
+      />
+    </div>
+
+    <div>
+      <label>Code promo</label>
+      <input
+        type="text"
+        [(ngModel)]="promotion.code_promo"
+        name="code_promo"
+      />
+    </div>
+
+    <div>
+      <label>Date début</label>
+      <input
+        type="date"
+        [(ngModel)]="promotion.debut"
+        name="debut"
+        required
+      />
+    </div>
+
+    <div>
+      <label>Date fin</label>
+      <input
+        type="date"
+        [(ngModel)]="promotion.fin"
+        name="fin"
+        required
+      />
+    </div>
+
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          [(ngModel)]="promotion.est_Active"
+          name="est_Active"
+        />
+        Promotion active
+      </label>
+    </div>
+
+    <button type="submit">Enregistrer</button>
+    <a routerLink="/promotions">Annuler</a>
+
+  </form>
+</div>

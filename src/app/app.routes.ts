@@ -10,6 +10,9 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { BoutiqueDashboardComponent } from './pages/boutique-dashboard/boutique-dashboard.component';
 import { BuyerDashboardComponent } from './pages/buyer-dashboard/buyer-dashboard.component';
+import { PromotionListComponent } from './components/promotion-list/promotion-list.component';
+import { PromotionAddComponent } from './components/promotion-add/promotion-add.component';
+import { PromotionEditComponent } from './components/promotion-edit/promotion-edit.component';
 
 //CRUD
 import { CategorieAddComponent } from "./components/categorie-add/categorie-add.component";
@@ -31,4 +34,11 @@ export const routes: Routes = [
     { path: 'produits', component: ProduitListComponent }, //Route pour produit-list
     { path: 'produits/ajouter', component: ProduitAddComponent },
     { path: 'produits/modifier/:id', component: ProduitEditComponent },
+
+    //CRUD promotion
+
+    { path: 'promotions', component: PromotionListComponent },
+    { path: 'promotions/ajouter', component: PromotionAddComponent },
+    { path: 'promotions/modifier/:id', component: PromotionEditComponent },
+
 ];
