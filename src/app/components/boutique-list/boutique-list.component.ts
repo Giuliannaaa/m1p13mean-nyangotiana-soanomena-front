@@ -5,7 +5,6 @@ import { BoutiqueService } from '../../services/boutique.service';
 import { CategorieService } from '../../services/categorie.service';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { Boutique } from '../../models/boutique.model';
 
 @Component({
     selector: 'app-boutique-list',
