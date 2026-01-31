@@ -1,16 +1,25 @@
-<div>
-    <h1>Ajouter une categorie</h1>
-    <form (ngSubmit)="addCategorie()" #f="ngForm">
-        <div>
-            <label for="Nom de la categorie">Nom :</label>
-            <input type="text" name="nom_cat" id="Nom_cat"
-            [(ngModel)]="newCategorie.nom_cat" required/>
-        </div>
-        <div>
-            <label for="Descriptions">Descriptions:</label>
-            <textarea name="descriptions" id="Descriptions"
-            [(ngModel)]="newCategorie.descriptions"></textarea>
-        </div>
-        <button type="submit">Ajouter</button>
-    </form>
+<div class="categorie-form-container">
+    <div class="glass-card form-card">
+        <h1>Ajouter une catégorie</h1>
+        <form #categorieForm="ngForm" (ngSubmit)="addCategorie()" class="modern-form">
+
+            <div class="form-group">
+                <label for="nom_cat">Nom de la catégorie</label>
+                <input type="text" id="nom_cat" name="nom_cat" [(ngModel)]="newCategorie.nom_cat" class="form-control"
+                    placeholder="Ex: Électronique" required>
+            </div>
+
+            <div class="form-group">
+                <label for="descriptions">Description</label>
+                <textarea id="descriptions" name="descriptions" [(ngModel)]="newCategorie.descriptions"
+                    class="form-control" rows="4" placeholder="Décrivez cette catégorie..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" routerLink="/categories" class="btn-secondary">Annuler</button>
+                <button type="submit" [disabled]="categorieForm.invalid" class="btn-primary">Ajouter la
+                    catégorie</button>
+            </div>
+        </form>
+    </div>
 </div>

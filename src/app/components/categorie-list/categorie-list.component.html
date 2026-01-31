@@ -1,29 +1,35 @@
-<div>
-  <h1>Liste des catégories</h1>
-  <p>Nombre de catégories : {{ categories.length }}</p>
+<div class="categorie-list-container">
+  <div class="list-header">
+    <h1>Nos Catégories</h1>
+    <button *ngIf="isAdmin" routerLink="/categories/ajouter" class="btn-primary">Ajouter une catégorie</button>
+  </div>
 
-  <a routerLink="/categories/ajouter">
-     Ajouter une catégorie
-  </a>
-
-  <table border="1" cellpadding="8">
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Descriptions</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-        <tr *ngFor="let categorie of categories">
-            <td>{{ categorie.nom_cat }}</td>
-            <td>{{ categorie.descriptions }}</td>
-            <td>
-                <a [routerLink]="['/categories/modifier', categorie._id]"> Modifier</a>
-                <button (click)="deleteCategorie(categorie._id)">Supprimer</button>
-            </td>
+  <div class="glass-card overflow-hidden">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Description</th>
+          <th *ngIf="isAdmin">Actions</th>
         </tr>
-    </tbody>
-  </table>
+      </thead>
+
+      <tbody>
+        @for (categorie of categories; track categorie._id) {
+        <tr>
+          <td class="font-bold">{{ categorie.nom_cat }}</td>
+          <td class="td-desc">{{ categorie.descriptions || 'Aucune description' }}</td>
+          <td *ngIf="isAdmin" class="actions-cell">
+            <button [routerLink]="['/categories/modifier', categorie._id]" class="btn-icon" title="Modifier">
+              <img src="/img/svg/icon-update.svg" alt="Modifier">
+            </button>
+            <button (click)="deleteCategorie(categorie._id)" class="btn-icon btn-delete" title="Supprimer">
+              <img src="/img/svg/icon-delete.svg" alt="Supprimer">
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>

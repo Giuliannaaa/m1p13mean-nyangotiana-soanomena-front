@@ -1,27 +1,24 @@
-<div>
-  <h1>Modifier la catégorie</h1>
+<div class="categorie-form-container">
+  <div class="glass-card form-card">
+    <h1>Modifier la catégorie</h1>
+    <form #categorieForm="ngForm" (ngSubmit)="updateCategorie()" class="modern-form">
 
-  <form (ngSubmit)="updateCategorie()">
-    <div>
-      <label for="nom_cat">Nom :</label>
-      <input
-        type="text"
-        id="nom_cat"
-        name="nom_cat"
-        [(ngModel)]="categorie.nom_cat"
-        required
-      />
-    </div>
+      <div class="form-group">
+        <label for="nom_cat">Nom de la catégorie</label>
+        <input type="text" id="nom_cat" name="nom_cat" [(ngModel)]="categorie.nom_cat" class="form-control" required>
+      </div>
 
-    <div>
-      <label for="descriptions">Descriptions :</label>
-      <textarea
-        id="descriptions"
-        name="descriptions"
-        [(ngModel)]="categorie.descriptions">
-      </textarea>
-    </div>
+      <div class="form-group">
+        <label for="descriptions">Description</label>
+        <textarea id="descriptions" name="descriptions" [(ngModel)]="categorie.descriptions" class="form-control"
+          rows="4"></textarea>
+      </div>
 
-    <button type="submit">Enregistrer</button>
-  </form>
+      <div class="form-actions">
+        <button type="button" routerLink="/categories" class="btn-secondary">Annuler</button>
+        <button type="submit" [disabled]="categorieForm.invalid" class="btn-primary">Enregistrer les
+          modifications</button>
+      </div>
+    </form>
+  </div>
 </div>
