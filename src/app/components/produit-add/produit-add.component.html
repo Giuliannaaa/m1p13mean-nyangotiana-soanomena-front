@@ -44,20 +44,18 @@
 
             <div class="form-section">
                 <h3>Livraison</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="livraison">Livraison disponible ?</label>
-                        <select [(ngModel)]="newProduit.livraison.disponibilite" name="livraison" class="form-control">
-                            <option [ngValue]="false">Non</option>
-                            <option [ngValue]="true">Oui</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="livraison">Livraison disponible ?</label>
+                    <select [(ngModel)]="newProduit.livraison.disponibilite" name="livraison" class="form-control">
+                        <option [ngValue]="false">Non</option>
+                        <option [ngValue]="true">Oui</option>
+                    </select>
+                </div>
 
-                    <div class="form-group" *ngIf="newProduit.livraison.disponibilite">
-                        <label for="livraison_frais">Frais de livraison (Ar)</label>
-                        <input type="number" id="livraison_frais" [(ngModel)]="newProduit.livraison.frais"
-                            name="livraison_frais" class="form-control" min="0" />
-                    </div>
+                <div class="form-group" *ngIf="newProduit.livraison.disponibilite">
+                    <label for="livraison_frais">Frais de livraison (Ar)</label>
+                    <input type="number" id="livraison_frais" [(ngModel)]="newProduit.livraison.frais"
+                        name="livraison_frais" class="form-control" min="0" />
                 </div>
             </div>
 

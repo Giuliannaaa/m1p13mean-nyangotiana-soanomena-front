@@ -3,6 +3,7 @@ import { CategorieService } from '../../services/categorie.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-categorie-list',
@@ -12,24 +13,25 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './categorie-list.component.css',
 })
 export class CategorieListComponent implements OnInit {
-  
   categories: any[] = [];
-  newCategorie = {nom_cat: '', descriptions: ''};
+  isAdmin = false;
 
   constructor(
-    private categorieService: CategorieService, 
+    private categorieService: CategorieService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.isAdmin = this.authService.getRole() === 'Admin';
     console.log('ngOnInit appelé');
     this.loadCategories();
   }
 
   loadCategories(): void {
     console.log('loadCategories appelé');
-    
+
     this.categorieService.getCategories().subscribe({
       next: (data) => {
         console.log('Données reçues:', data);

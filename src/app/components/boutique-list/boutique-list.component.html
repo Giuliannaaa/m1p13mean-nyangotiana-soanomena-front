@@ -1,0 +1,53 @@
+<div class="boutique-list-container">
+    <div class="list-header">
+        <h1>Nos Boutiques</h1>
+        <button *ngIf="isAdmin" routerLink="/boutiques/ajouter" class="btn-primary">Ajouter une boutique</button>
+    </div>
+
+    <div class="glass-card overflow-hidden">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Catégorie</th>
+                    <th>Propriétaire</th>
+                    <th>Description</th>
+                    <th>Statut</th>
+                    <th *ngIf="isAdmin">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (boutique of boutiques; track boutique._id) {
+                <tr>
+                    <td class="font-bold">{{ boutique.name }}</td>
+                    <td>{{ getCategoryName(boutique.categoryId) }}</td>
+                    <td>{{ getOwnerName(boutique.ownerId) }}</td>
+                    <td class="td-desc">{{ boutique.description || 'Pas de description' }}</td>
+                    <td>
+                        <span class="badge" [ngClass]="boutique.isValidated ? 'badge-success' : 'badge-danger'">
+                            {{ boutique.isValidated ? 'Validée' : 'En attente' }}
+                        </span>
+                    </td>
+                    <td *ngIf="isAdmin" class="actions-cell">
+                        <button [routerLink]="['/boutiques/modifier', boutique._id]" class="btn-icon" title="Modifier">
+                            <img src="/img/svg/icon-update.svg" alt="Modifier">
+                        </button>
+                        <button (click)="deleteBoutique(boutique._id)" class="btn-icon btn-delete" title="Supprimer">
+                            <img src="/img/svg/icon-delete.svg" alt="Supprimer">
+                        </button>
+                        <button (click)="validateBoutique(boutique._id, boutique.isValidated)" class="btn-icon"
+                            [title]="boutique.isValidated ? 'Désactiver' : 'Activer'">
+                            @if (boutique.isValidated) {
+                            <img src="/img/svg/icon-on.svg" alt="Désactiver">
+                            } @else {
+                            <img src="/img/svg/icon-off.svg" alt="Activer">
+                            }
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

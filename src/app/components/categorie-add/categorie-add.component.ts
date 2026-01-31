@@ -1,25 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { CategorieService } from '../../services/categorie.service';
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { CategorieService } from '../../services/categorie.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-categorie-add',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './categorie-add.component.html',
-  styleUrls: ['./categorie-add.component.css'],
+  styleUrl: './categorie-add.component.css',
 })
-export class CategorieAddComponent {
+export class CategorieAddComponent implements OnInit {
   categories: any[] = [];
-  newCategorie= {nom_cat: '', descriptions: ''}; //Nouveau modèle pour le formulaire
+  newCategorie = { nom_cat: '', descriptions: '' }; //Nouveau modèle pour le formulaire
 
-  constructor(private categorieService: CategorieService, private router: Router){ }
+  constructor(
+    private categorieService: CategorieService,
+    private router: Router,
+    private authService: AuthService
+  ) { }
+
+  ngOnInit(): void {
+    if (this.authService.getRole() !== 'Admin') {
+      this.router.navigate(['/categories']);
+      return;
+    }
+  }
 
   addCategorie(): void {
     console.log(this.newCategorie);
-    
+
     if (!this.newCategorie.nom_cat) {
       alert('Le nom de la catégorie est obligatoire');
       return;
