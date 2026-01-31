@@ -36,7 +36,7 @@ export class BoutiqueListComponent implements OnInit {
     }
 
     loadUsers(): void {
-        this.userService.getUsersByRole().subscribe(data => this.users = data);
+        this.userService.getUserShop().subscribe(data => this.users = data);
     }
 
     getCategoryName(id: string | undefined): string {
