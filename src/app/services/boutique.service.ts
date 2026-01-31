@@ -3,6 +3,7 @@ import { environment } from '../../environnements/environnement';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Boutique } from '../models/boutique.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,9 +11,14 @@ import { Boutique } from '../models/boutique.model';
 export class BoutiqueService {
   private apiUrl = `${environment.apiUrl}/boutiques`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   getAllBoutiques(): Observable<Boutique[]> {
+    const userRole = this.authService.getRole();
+    if (userRole == "Admin") {
+      return this.http.get<Boutique[]>(`${this.apiUrl}?showAll=true`);
+    }
+    // N'affiche que les boutiques validées pour les acheteurs
     return this.http.get<Boutique[]>(this.apiUrl);
   }
 
