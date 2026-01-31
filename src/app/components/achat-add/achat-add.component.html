@@ -1,0 +1,39 @@
+<div *ngIf="produit">
+  <h1>Achat du produit</h1>
+
+  <p><strong>Produit :</strong> {{ produit.nom_prod }}</p>
+  <p><strong>Prix unitaire :</strong> {{ produit.prix_unitaire }} Ar</p>
+
+  <!-- Afficher la promotion si active -->
+  <div *ngIf="promotionActive" style="background: #d4edda; padding: 10px; margin: 10px 0; border-radius: 5px;">
+    <p style="color: #155724; font-weight: bold;">
+      Promotion active : 
+      <span *ngIf="promotionActive.type_prom === 'POURCENTAGE'">
+        -{{ promotionActive.montant }}%
+      </span>
+      <span *ngIf="promotionActive.type_prom === 'MONTANT'">
+        -{{ promotionActive.montant }} Ar
+      </span>
+    </p>
+  </div>
+
+  <form (ngSubmit)="submitAchat()">
+    <label>Quantité :</label>
+    <input
+      type="number"
+      min="1"
+      [(ngModel)]="achat.quantity"
+      name="quantity"
+      (input)="calculateTotal()"
+      required
+    />
+
+    <p><strong>Total avant réduction :</strong> {{ achat.total_achat }} Ar</p>
+    <p *ngIf="achat.reduction > 0" style="color: green;">
+      <strong>Réduction :</strong> -{{ achat.reduction }} Ar
+    </p>
+    <p><strong>Total à payer :</strong> {{ achat.total_reel }} Ar</p>
+
+    <button type="submit">Valider l'achat</button>
+  </form>
+</div>
