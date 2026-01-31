@@ -1,0 +1,82 @@
+<div>
+  <h1>Ajouter une promotion</h1>
+
+  <form (ngSubmit)="addPromotion()">
+
+    <!-- PRODUIT -->
+    <div>
+      <label>Produit :</label>
+      <select [(ngModel)]="newPromotion.prod_id" name="prod_id" required>
+        <option value="">-- Sélectionner un produit --</option>
+        <option *ngFor="let prod of produits" [value]="prod._id">
+          {{ prod.nom_prod }}
+        </option>
+      </select>
+    </div>
+
+    <!-- TYPE PROMOTION -->
+    <div>
+      <label>Type de promotion :</label>
+      <select [(ngModel)]="newPromotion.type_prom" name="type_prom">
+        <option value="POURCENTAGE">Pourcentage (%)</option>
+        <option value="MONTANT">Montant fixe</option>
+      </select>
+    </div>
+
+    <!-- MONTANT -->
+    <div>
+      <label>Montant :</label>
+      <input
+        type="number"
+        [(ngModel)]="newPromotion.montant"
+        name="montant"
+        required
+      />
+    </div>
+
+    <!-- CODE PROMO -->
+    <div>
+      <label>Code promo :</label>
+      <input
+        type="text"
+        [(ngModel)]="newPromotion.code_promo"
+        name="code_promo"
+      />
+    </div>
+
+    <!-- DATES -->
+    <div>
+      <label>Date début :</label>
+      <input
+        type="date"
+        [(ngModel)]="newPromotion.debut"
+        name="debut"
+        required
+      />
+    </div>
+
+    <div>
+      <label>Date fin :</label>
+      <input
+        type="date"
+        [(ngModel)]="newPromotion.fin"
+        name="fin"
+        required
+      />
+    </div>
+
+    <!-- ACTIVE -->
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          [(ngModel)]="newPromotion.est_Active"
+          name="est_Active"
+        />
+        Promotion active
+      </label>
+    </div>
+
+    <button type="submit">Ajouter la promotion</button>
+  </form>
+</div>

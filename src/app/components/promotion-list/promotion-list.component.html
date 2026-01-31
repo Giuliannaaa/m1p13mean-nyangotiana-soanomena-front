@@ -1,0 +1,50 @@
+<p>promotion-list works!</p>
+<div>
+  <h1>Liste des promotions</h1>
+
+  <a routerLink="/promotions/ajouter">Ajouter une promotion</a>
+
+  <table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Produit</th>
+        <th>Type</th>
+        <th>Montant</th>
+        <th>Code</th>
+        <th>Début</th>
+        <th>Fin</th>
+        <th>Active</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let promo of promotions">
+        <td>{{ promo.prod_id?.nom_prod }}</td>
+
+        <td>{{ promo.type_prom }}</td>
+
+        <td>
+          {{ promo.montant }}
+          <span *ngIf="promo.type_prom === 'POURCENTAGE'">%</span>
+        </td>
+
+        <td>{{ promo.code_promo || '-' }}</td>
+
+        <td>{{ promo.debut | date:'dd/MM/yyyy' }}</td>
+        <td>{{ promo.fin | date:'dd/MM/yyyy' }}</td>
+
+        <td>
+          <span *ngIf="promo.est_Active">Oui</span>
+          <span *ngIf="!promo.est_Active">Non, c'est termine</span>
+        </td>
+
+        <td>
+          <a [routerLink]="['/promotions/modifier', promo._id]">Modifier</a>
+          &nbsp;
+          <button (click)="deletePromotion(promo._id)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
