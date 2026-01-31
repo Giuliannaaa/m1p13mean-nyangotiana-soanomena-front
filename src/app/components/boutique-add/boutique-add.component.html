@@ -1,0 +1,74 @@
+<div class="boutique-form-container">
+    <div class="glass-card form-card">
+        <h1>Ajouter une boutique</h1>
+        <form #boutiqueForm="ngForm" (ngSubmit)="addBoutique()" class="modern-form">
+
+            <div class="form-group">
+                <label for="name">Nom de la boutique</label>
+                <input type="text" id="name" name="name" [(ngModel)]="boutique.name" class="form-control"
+                    placeholder="Ex: Ma Boutique Artisanale" required>
+            </div>
+
+            <div class="form-group">
+                <label for="categoryId">Catégorie</label>
+                <select id="categoryId" name="categoryId" [(ngModel)]="boutique.categoryId" class="form-control"
+                    required>
+                    <option value="" disabled selected>Sélectionnez une catégorie</option>
+                    @for (cat of categories; track cat._id) {
+                    <option [value]="cat._id">{{ cat.nom_cat }}</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ownerId">Propriétaire (Boutique)</label>
+                <select id="ownerId" name="ownerId" [(ngModel)]="boutique.ownerId" class="form-control" required>
+                    <option value="" disabled selected>Sélectionnez un propriétaire</option>
+                    @for (user of users; track user._id) {
+                    <option [value]="user._id">{{ user.firstname }} {{ user.lastname }} ({{ user.email }})</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" [(ngModel)]="boutique.description" class="form-control"
+                    rows="4" placeholder="Décrivez votre boutique..."></textarea>
+            </div>
+
+            <div class="form-section">
+                <h3>Informations Légales</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nif">NIF</label>
+                        <input type="text" id="nif" name="nif" [(ngModel)]="boutique.legal.nif" class="form-control"
+                            placeholder="Numéro d'Identification Fiscale">
+                    </div>
+                    <div class="form-group">
+                        <label for="stat">STAT</label>
+                        <input type="text" id="stat" name="stat" [(ngModel)]="boutique.legal.stat" class="form-control"
+                            placeholder="Numéro Statistique">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="rent">RENT (Patente/Loyer)</label>
+                    <input type="text" id="rent" name="rent" [(ngModel)]="boutique.legal.rent" class="form-control"
+                        placeholder="Numéro de Patente ou autre">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="isValidated">Statut de validation</label>
+                <select id="isValidated" name="isValidated" [(ngModel)]="boutique.isValidated" class="form-control">
+                    <option [ngValue]="true">Validée</option>
+                    <option [ngValue]="false">En attente</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" routerLink="/boutiques" class="btn-secondary">Annuler</button>
+                <button type="submit" [disabled]="boutiqueForm.invalid" class="btn-primary">Ajouter la boutique</button>
+            </div>
+        </form>
+    </div>
+</div>
