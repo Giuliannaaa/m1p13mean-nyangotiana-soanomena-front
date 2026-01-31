@@ -21,6 +21,7 @@ import { CategorieEditComponent } from './components/categorie-edit/categorie-ed
 import { BoutiqueListComponent } from './components/boutique-list/boutique-list.component';
 import { BoutiqueAddComponent } from './components/boutique-add/boutique-add.component';
 import { BoutiqueEditComponent } from './components/boutique-edit/boutique-edit.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 import { AchatAddComponent } from './components/achat-add/achat-add.component';
 import { AchatListComponent } from './components/achat-list/achat-list.component';
 
@@ -63,5 +64,6 @@ export const routes: Routes = [
     { path: 'promotions', component: PromotionListComponent },
     { path: 'promotions/ajouter', component: PromotionAddComponent },
     { path: 'promotions/modifier/:id', component: PromotionEditComponent },
+    { path: 'admin/utilisateurs', component: UserListComponent },
 
 ];

@@ -52,7 +52,7 @@ export class BoutiqueEditComponent implements OnInit {
     }
 
     loadUsers(): void {
-        this.userService.getUsersByRole().subscribe({
+        this.userService.getUserShop().subscribe({
             next: (data) => this.users = data,
             error: (err) => console.error('Erreur utilisateurs', err)
         });

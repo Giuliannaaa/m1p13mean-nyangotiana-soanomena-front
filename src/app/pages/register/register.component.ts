@@ -20,7 +20,8 @@ export class RegisterComponent {
         lastname: ['', [Validators.required]],
         firstname: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6)]]
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        role: [false]
     });
 
     errorMessage: string = '';
@@ -30,7 +31,14 @@ export class RegisterComponent {
         if (this.registerForm.valid) {
             this.isLoading = true;
             this.errorMessage = '';
-            this.authService.register(this.registerForm.value).subscribe({
+
+            const registrationData = { ...this.registerForm.value };
+            // If the checkbox is checked, set role to 'Boutique'
+            if (registrationData.role) {
+                registrationData.role = 'Boutique';
+            }
+
+            this.authService.register(registrationData).subscribe({
                 next: () => {
                     this.isLoading = false;
                     this.router.navigate(['/login']);
