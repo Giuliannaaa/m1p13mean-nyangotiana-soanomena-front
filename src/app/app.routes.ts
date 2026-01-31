@@ -15,6 +15,9 @@ import { BuyerDashboardComponent } from './pages/buyer-dashboard/buyer-dashboard
 import { CategorieAddComponent } from "./components/categorie-add/categorie-add.component";
 import { CategorieListComponent } from "./components/categorie-list/categorie-list.component";
 import { CategorieEditComponent } from './components/categorie-edit/categorie-edit.component';
+import { BoutiqueListComponent } from './components/boutique-list/boutique-list.component';
+import { BoutiqueAddComponent } from './components/boutique-add/boutique-add.component';
+import { BoutiqueEditComponent } from './components/boutique-edit/boutique-edit.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -28,6 +31,9 @@ export const routes: Routes = [
     { path: 'categories', component: CategorieListComponent },
     { path: 'categories/ajouter', component: CategorieAddComponent },
     { path: 'categories/modifier/:id', component: CategorieEditComponent },
+    { path: 'boutiques', component: BoutiqueListComponent },
+    { path: 'boutiques/ajouter', component: BoutiqueAddComponent },
+    { path: 'boutiques/modifier/:id', component: BoutiqueEditComponent },
     { path: 'produits', component: ProduitListComponent }, //Route pour produit-list
     { path: 'produits/ajouter', component: ProduitAddComponent },
     { path: 'produits/modifier/:id', component: ProduitEditComponent },
