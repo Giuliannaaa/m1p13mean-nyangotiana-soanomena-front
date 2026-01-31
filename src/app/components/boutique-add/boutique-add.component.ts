@@ -48,7 +48,7 @@ export class BoutiqueAddComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.userService.getUsersByRole().subscribe({
+    this.userService.getUserShop().subscribe({
       next: (data) => {
         this.users = data;
       },
