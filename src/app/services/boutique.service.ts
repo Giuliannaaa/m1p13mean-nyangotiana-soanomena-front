@@ -20,15 +20,19 @@ export class BoutiqueService {
     return this.http.get<Boutique>(`${this.apiUrl}/${id}`);
   }
 
-  createBoutique(boutique: Boutique): Observable<Boutique> {
+  createBoutique(boutique: any): Observable<Boutique> {
     return this.http.post<Boutique>(this.apiUrl, boutique);
   }
 
-  updateBoutique(id: string, boutique: Boutique): Observable<Boutique> {
+  updateBoutique(id: string, boutique: any): Observable<Boutique> {
     return this.http.put<Boutique>(`${this.apiUrl}/${id}`, boutique);
   }
 
   deleteBoutique(id: string): Observable<Boutique> {
     return this.http.delete<Boutique>(`${this.apiUrl}/${id}`);
+  }
+
+  validateBoutique(id: string, isValidated: boolean): Observable<Boutique> {
+    return this.http.patch<Boutique>(`${this.apiUrl}/${id}/toggle-status`, { isValidated });
   }
 }

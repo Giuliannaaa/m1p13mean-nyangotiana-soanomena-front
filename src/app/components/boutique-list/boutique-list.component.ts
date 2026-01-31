@@ -75,4 +75,16 @@ export class BoutiqueListComponent implements OnInit {
             });
         }
     }
+    validateBoutique(id: string, isValidated: boolean): void {
+        if (confirm('Voulez-vous vraiment ' + (isValidated ? 'désactiver' : 'activer') + ' cette boutique ?')) {
+            this.boutiqueService.validateBoutique(id, isValidated).subscribe({
+                next: () => {
+                    this.loadBoutiques();
+                },
+                error: (err) => {
+                    console.error('Erreur lors de la validation', err);
+                }
+            });
+        }
+    }
 }
