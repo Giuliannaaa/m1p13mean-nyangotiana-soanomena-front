@@ -25,7 +25,7 @@
         <td>{{ promo.type_prom }}</td>
 
         <td>
-          {{ promo.montant }}
+          {{ promo.montant?.$numberDecimal | number:'1.0-0' }}
           <span *ngIf="promo.type_prom === 'POURCENTAGE'">%</span>
         </td>
 
