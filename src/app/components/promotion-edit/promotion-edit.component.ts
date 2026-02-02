@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router'; // ← Ajoute RouterModule
+import { Component, OnInit, inject } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { PromotionService } from '../../services/promotion.service';
 import { ProduitService } from '../../services/produits.service';
+import { AuthService } from '../../services/auth.service';
+import { BoutiqueService } from '../../services/boutique.service';
 
 @Component({
   selector: 'app-promotion-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule], // ← Ajoute RouterModule pour le routerLink dans le HTML
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './promotion-edit.component.html',
 })
 export class PromotionEditComponent implements OnInit {
@@ -27,41 +29,70 @@ export class PromotionEditComponent implements OnInit {
     est_Active: true
   };
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private promotionService: PromotionService,
-    private produitService: ProduitService
-  ) {}
+  private authService = inject(AuthService);
+  private boutiqueService = inject(BoutiqueService);
+  private promotionService = inject(PromotionService);
+  private produitService = inject(ProduitService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
+  isBoutique = false;
+  boutiqueId: string | null = null;
 
   ngOnInit(): void {
     this.promotionId = this.route.snapshot.paramMap.get('id')!;
-    this.loadProduits();
+    const role = this.authService.getRole();
+    this.isBoutique = role === 'Boutique';
+
+    if (this.isBoutique) {
+      const userId = this.authService.getUserId();
+      if (userId) {
+        this.boutiqueService.getBoutiqueByOwner(userId).subscribe({
+          next: (boutiques) => {
+            if (boutiques && boutiques.length > 0) {
+              this.boutiqueId = boutiques[0]._id;
+            }
+            this.loadProduits();
+          },
+          error: (err) => {
+            console.error('Erreur boutique:', err);
+            this.loadProduits();
+          }
+        });
+      } else {
+        this.loadProduits();
+      }
+    } else {
+      this.loadProduits();
+    }
     this.loadPromotion();
   }
 
   loadProduits(): void {
     this.produitService.getProduits().subscribe(data => {
-      this.produits = data;
+      if (this.isBoutique && this.boutiqueId) {
+        this.produits = data.data.filter((p: any) => p.store_id === this.boutiqueId || (p.store_id && p.store_id._id === this.boutiqueId));
+      } else {
+        this.produits = data.data;
+      }
     });
   }
 
   loadPromotion(): void {
     this.promotionService.getPromotionById(this.promotionId).subscribe(data => {
-      console.log('Données reçues:', data); // ← Pour déboguer
-      
+      console.log('Données reçues:', data);
+
       this.promotion = {
         ...data,
         prod_id: data.prod_id?._id || data.prod_id,
-        // ← CORRECTION ICI : Convertir le Decimal128 en nombre
-        montant: data.montant?.$numberDecimal 
-          ? parseFloat(data.montant.$numberDecimal) 
+        montant: data.montant?.$numberDecimal
+          ? parseFloat(data.montant.$numberDecimal)
           : (typeof data.montant === 'number' ? data.montant : 0),
         debut: data.debut?.substring(0, 10),
         fin: data.fin?.substring(0, 10),
       };
-      
-      console.log('Promotion après conversion:', this.promotion); // ← Pour vérifier
+
+      console.log('Promotion après conversion:', this.promotion);
     });
   }
 

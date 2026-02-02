@@ -41,4 +41,9 @@ export class BoutiqueService {
   validateBoutique(id: string, isValidated: boolean): Observable<Boutique> {
     return this.http.patch<Boutique>(`${this.apiUrl}/${id}/toggle-status`, { isValidated });
   }
+
+  getBoutiqueByOwner(ownerId: string): Observable<Boutique[]> {
+    // Assuming there's a backend endpoint, otherwise we'd use getAllBoutiques and filter
+    return this.http.get<Boutique[]>(`${this.apiUrl}/owner/${ownerId}`);
+  }
 }

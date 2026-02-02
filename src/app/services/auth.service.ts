@@ -67,6 +67,17 @@ export class AuthService {
         }
     }
 
+    getUserId(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.id || null;
+        } catch (e) {
+            return null;
+        }
+    }
+
     redirectBasedOnRole(role: string): void {
         switch (role) {
             case 'Admin':
