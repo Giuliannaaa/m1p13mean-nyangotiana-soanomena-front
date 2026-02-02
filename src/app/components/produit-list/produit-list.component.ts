@@ -3,21 +3,19 @@ import { ProduitService } from '../../services/produits.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
+import { Produit } from '../../models/produit.model';
 
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule], // OBLIGATOIRE
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './produit-list.component.html',
   styleUrls: ['./produit-list.component.css'],
 })
 
-
-
 export class ProduitListComponent implements OnInit {
-  produits: any[] = [];
+  produits: Produit[] = [];
   newProduit = {
     store_id: '',
     nom_prod: '',
@@ -31,15 +29,19 @@ export class ProduitListComponent implements OnInit {
     },
     image_Url: ''
   };
-  //Nouveau modèle pour le formulaire
 
   authService = inject(AuthService);
   isAdmin = false;
+  isBoutique = false;
 
   constructor(private produitService: ProduitService) { }
 
   ngOnInit(): void {
-    this.isAdmin = this.authService.getRole() === 'Admin';
+    const role = this.authService.getRole();
+    this.isAdmin = role === 'Admin';
+    this.isBoutique = role === 'Boutique';
+
+    // Le backend gère déjà le filtrage selon le rôle
     this.loadProduits();
   }
 
@@ -70,15 +72,15 @@ export class ProduitListComponent implements OnInit {
 
   loadProduits(): void {
     this.produitService.getProduits().subscribe({
-      next: (data) => {
-        this.produits = data; // on stocke les produits récupérés
+      next: (response) => {
+        // Plus besoin de filtrer ici, le backend le fait déjà
+        this.produits = response.data;
       },
       error: (err) => {
         console.error("Erreur lors du chargement des produits", err);
       }
     });
   }
-
 
   deleteProduit(id: string): void {
     this.produitService.deleteProduit(id).subscribe(() => this.loadProduits());
