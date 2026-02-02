@@ -28,7 +28,7 @@
                     </td>
                     <td class="font-bold">{{ produit.nom_prod }}</td>
                     <td class="td-desc">{{ produit.descriptions }}</td>
-                    <td class="price-cell">{{ produit.prix_unitaire?.$numberDecimal | number:'1.0-0' }} Ar</td>
+                    <td class="price-cell">{{ produit.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar</td>
                     <td>
                         <span class="badge" [ngClass]="produit.stock_etat ? 'badge-success' : 'badge-danger'">
                             {{ produit.stock_etat ? 'Disponible' : 'Rupture' }}
@@ -45,9 +45,8 @@
                         </button>
                     </td>
                     <td>
-                        <button
-                        [routerLink]="['/achats/ajouter', produit._id]">
-                        🛒 Acheter
+                        <button [routerLink]="['/achats/ajouter', produit._id]">
+                            🛒 Acheter
                         </button>
 
                     </td>
