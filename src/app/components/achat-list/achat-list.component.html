@@ -1,30 +1,86 @@
-<div>
+<div style="padding: 20px;">
   <h1>Liste des achats</h1>
 
-  <table border="1" cellpadding="8">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Statut</th>
-        <th>Total</th>
-        <th>Remise</th>
-        <th>Montant final</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
+  <div *ngIf="achats.length === 0" style="text-align: center; padding: 40px;">
+    <p>Aucun achat pour le moment</p>
+  </div>
 
-    <tbody>
-      <tr *ngFor="let achat of achats">
-        <td>{{ achat.createdAt | date:'short' }}</td>
-        <td>{{ achat.status }}</td>
-        <td>{{ achat.total_achat?.$numberDecimal | number:'1.0-0' }} Ar</td>
-        <td>{{ achat.reduction?.$numberDecimal | number:'1.0-0' }} Ar</td>
-        <td><strong>{{ achat.total_reel?.$numberDecimal | number:'1.0-0' }} Ar</strong></td>
-        <td>
-          <button [routerLink]="['/achats', achat._id]">Voir achat</button>
-          <button (click)="deleteAchat(achat._id)">Supprimer</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Liste des achats -->
+  <div *ngFor="let achat of achats" style="border: 1px solid #ddd; margin-bottom: 20px; padding: 15px; border-radius: 5px;">
+    
+    <!-- En-tête de l'achat -->
+    <div style=" padding: 10px; margin-bottom: 10px; border-radius: 3px;">
+      <p><strong>Date :</strong> {{ achat.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Statut :</strong> 
+        <span [style.color]="
+          achat.status === 'DELIVREE' ? 'green' :
+          achat.status === 'CONFIRMEE' ? 'blue' :
+          achat.status === 'ANNULEE' ? 'red' : 'orange'
+        ">
+          {{ achat.status }}
+        </span>
+      </p>
+    </div>
+
+    <!-- Produits de l'achat -->
+    <table border="1" cellpadding="8" style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Produit</th>
+          <th>Quantité</th>
+          <th>Prix unitaire</th>
+          <th>Sous-total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of achat.items">
+          <td style="text-align: center;">
+            <img 
+              [src]="getProductImage(item)" 
+              alt="Image produit"
+              style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"
+            />
+          </td>
+          <td><strong>{{ item.nom_prod || 'Produit inconnu' }}</strong></td>
+          <td style="text-align: center;">{{ item.quantity }}</td>
+          <td style="text-align: right;">
+            {{ item.prix_unitaire?.$numberDecimal 
+              ? (item.prix_unitaire.$numberDecimal | number:'1.0-0') 
+              : (item.prix_unitaire | number:'1.0-0') }} Ar
+          </td>
+          <td style="text-align: right;">
+            {{ (item.quantity * (item.prix_unitaire?.$numberDecimal 
+              ? parseFloat(item.prix_unitaire.$numberDecimal) 
+              : item.prix_unitaire)) | number:'1.0-0' }} Ar
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Totaux -->
+    <div style="margin-top: 10px; text-align: right; padding: 10px;">
+      <p><strong>Total articles :</strong> {{ achat.total_achat | number:'1.0-0' }} Ar</p>
+      <p *ngIf="achat.reduction > 0" style="color: green;">
+        <strong>Réduction :</strong> -{{ achat.reduction | number:'1.0-0' }} Ar
+      </p>
+      <p *ngIf="achat.avec_livraison" style="color: #007bff;">
+        <strong>Frais de livraison :</strong> +{{ achat.frais_livraison | number:'1.0-0' }} Ar
+      </p>
+      <hr>
+      <p style="font-size: 1.2em;">
+        <strong>Total final :</strong> {{ achat.total_reel | number:'1.0-0' }} Ar
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div style="margin-top: 10px;">
+      <button 
+        (click)="deleteAchat(achat._id)"
+        style="padding: 8px 15px; cursor: pointer; background-color: #dc3545; color: white; border: none; border-radius: 3px;"
+      >
+        Supprimer
+      </button>
+    </div>
+  </div>
 </div>

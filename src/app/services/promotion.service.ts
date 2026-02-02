@@ -38,7 +38,10 @@ export class PromotionService {
   }
 
    /** Récupérer la promotion active pour un produit */
-  getPromotionActiveByProduit(prod_id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/active/${prod_id}`);
+  getPromotionActiveByProduit(prod_id: string) {
+    return this.http.get(
+      `${environment.apiUrl}/promotions/active/${prod_id}`
+    );
   }
+
 }

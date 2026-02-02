@@ -18,16 +18,18 @@ export class AchatAddComponent implements OnInit {
   produit: any;
   promotionActive: any = null;
 
-  achat = {
-    prod_id: '',
-    quantity: 1,
-    prix_unitaire: 0,
-    total_achat: 0,
-    reduction: 0,
-    frais_livraison: 0, // ← Ajouter les frais de livraison
-    avec_livraison: false, // ← Option pour activer/désactiver la livraison
-    total_reel: 0
-  };
+  // Données pour l'affichage
+  quantity: number = 1;
+  prix_unitaire: number = 0;
+  total_achat: number = 0;
+  reduction: number = 0;
+  frais_livraison: number = 0;
+  avec_livraison: boolean = false;
+  total_reel: number = 0;
+
+  // Infos du produit
+  nom_prod: string = '';
+  image_Url: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -45,11 +47,12 @@ export class AchatAddComponent implements OnInit {
 
   loadProduit(): void {
     this.produitService.getProduitById(this.prod_id).subscribe(data => {
+      console.log('Produit chargé:', data);
+      
       const prixUnitaire = data.prix_unitaire?.$numberDecimal 
         ? parseFloat(data.prix_unitaire.$numberDecimal) 
         : (typeof data.prix_unitaire === 'number' ? data.prix_unitaire : 0);
       
-      // Convertir les frais de livraison si c'est un Decimal128
       const fraisLivraison = data.livraison?.frais?.$numberDecimal
         ? parseFloat(data.livraison.frais.$numberDecimal)
         : (typeof data.livraison?.frais === 'number' ? data.livraison.frais : 0);
@@ -63,12 +66,18 @@ export class AchatAddComponent implements OnInit {
         }
       };
       
-      this.achat.prod_id = data._id;
-      this.achat.prix_unitaire = prixUnitaire;
+      // Stocker les infos
+      this.nom_prod = data.nom_prod;
+      this.prix_unitaire = prixUnitaire;
       
-      // Initialiser les frais de livraison si la livraison est disponible par défaut
+      // Récupérer l'image principale
+      if (data.images && data.images.length > 0) {
+        const imageIndex = data.image_principale || 0;
+        this.image_Url = data.images[imageIndex];
+      }
+      
       if (this.produit.livraison.disponibilite) {
-        this.achat.frais_livraison = this.produit.livraison.frais;
+        this.frais_livraison = this.produit.livraison.frais;
       }
       
       this.calculateTotal();
@@ -92,37 +101,43 @@ export class AchatAddComponent implements OnInit {
     });
   }
 
-  // Nouvelle fonction pour gérer l'activation/désactivation de la livraison
   toggleLivraison(): void {
-    if (this.achat.avec_livraison) {
-      this.achat.frais_livraison = this.produit.livraison.frais;
+    if (this.avec_livraison) {
+      this.frais_livraison = this.produit.livraison.frais;
     } else {
-      this.achat.frais_livraison = 0;
+      this.frais_livraison = 0;
     }
     this.calculateTotal();
   }
 
   calculateTotal(): void {
-    // Total avant réduction
-    this.achat.total_achat = this.achat.quantity * this.achat.prix_unitaire;
+    this.total_achat = this.quantity * this.prix_unitaire;
     
-    // Calculer la réduction selon la promotion
     if (this.promotionActive) {
       if (this.promotionActive.type_prom === 'POURCENTAGE') {
-        this.achat.reduction = this.achat.total_achat * (this.promotionActive.montant / 100);
+        this.reduction = this.total_achat * (this.promotionActive.montant / 100);
       } else {
-        this.achat.reduction = this.promotionActive.montant * this.achat.quantity;
+        this.reduction = this.promotionActive.montant * this.quantity;
       }
     } else {
-      this.achat.reduction = 0;
+      this.reduction = 0;
     }
     
-    // Total final = (Total achat - Réduction) + Frais de livraison
-    this.achat.total_reel = this.achat.total_achat - this.achat.reduction + this.achat.frais_livraison;
+    this.total_reel = this.total_achat - this.reduction + this.frais_livraison;
   }
 
   submitAchat(): void {
-    this.achatService.addAchat(this.achat).subscribe({
+
+  const achat = {
+    prod_id: this.prod_id,
+    quantity: this.quantity,
+    frais_livraison: this.frais_livraison,
+    avec_livraison: this.avec_livraison
+  };
+
+  console.log('Envoi achat:', achat);
+
+    this.achatService.addAchat(achat).subscribe({
       next: () => {
         alert('Achat effectué avec succès');
         this.router.navigate(['/achats']);
@@ -133,4 +148,5 @@ export class AchatAddComponent implements OnInit {
       }
     });
   }
+
 }
