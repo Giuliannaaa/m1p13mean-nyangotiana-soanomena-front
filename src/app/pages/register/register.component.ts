@@ -36,6 +36,8 @@ export class RegisterComponent {
             // If the checkbox is checked, set role to 'Boutique'
             if (registrationData.role) {
                 registrationData.role = 'Boutique';
+            } else {
+                registrationData.role = 'Acheteur';
             }
 
             this.authService.register(registrationData).subscribe({
