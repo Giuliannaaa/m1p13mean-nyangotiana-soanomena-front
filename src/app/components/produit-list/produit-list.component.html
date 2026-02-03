@@ -2,6 +2,7 @@
     <div class="list-header">
         <h1>Nos Produits</h1>
         <button *ngIf="isAdmin" routerLink="/produits/ajouter" class="btn-primary">Ajouter un produit</button>
+
     </div>
 
     <div class="glass-card overflow-hidden">
@@ -23,9 +24,13 @@
                 @for (produit of produits; track produit._id) {
                 <tr>
                     <td class="td-image">
-                        <img [src]="produit.image_preview || ('http://localhost:5000/' + produit.image_Url)"
-                            alt="Image du produit" class="product-thumb" />
+                        <img 
+                            [src]="produit.image_preview || 'http://localhost:5000/' + produit.image_Url"
+                            class="product-thumb"
+                            />
+
                     </td>
+
                     <td class="font-bold">{{ produit.nom_prod }}</td>
                     <td class="td-desc">{{ produit.descriptions }}</td>
                     <td class="price-cell">{{ produit.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar</td>

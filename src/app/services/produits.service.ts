@@ -31,8 +31,14 @@ export class ProduitService {
   }
 
   addProduit(produit: any) {
-    return this.http.post(this.baseUrl, produit);
-  }
+  const token = localStorage.getItem('auth_token'); // le token JWT
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+
+  return this.http.post(this.baseUrl, produit, { headers }); // <-- ajoute headers ici
+}
+
 
 
   updateProduit(id: string, produit: any): Observable<any> {

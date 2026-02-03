@@ -6,16 +6,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-produit-add',
-  imports: [CommonModule, FormsModule], // OBLIGATOIRE
+  imports: [CommonModule, FormsModule],
   standalone: true,
   templateUrl: './produit-add.component.html',
   styleUrl: './produit-add.component.css',
 })
-
 export class ProduitAddComponent {
 
-
-  produits: any[] = [];
   newProduit = {
     nom_prod: '',
     descriptions: '',
@@ -26,100 +23,77 @@ export class ProduitAddComponent {
       disponibilite: false,
       frais: 0
     },
-    image_Url: ''
+    image_Url: '',
+    store_id: '',
+    name: ''
   };
-  //Nouveau modèle pour le formulaire
 
-  constructor(private produitService: ProduitService,
-    private router: Router, // si tu veux récupérer id pour édition
+  selectedFile!: File;
+  boutiques: any[] = [];
+  isAdmin: boolean = false;
+
+  constructor(
+    private produitService: ProduitService,
+    private router: Router,
     private route: ActivatedRoute
   ) { }
 
+  
 
-  /**
-   * REHEFA VITA LE BOUTIQUE 
-   * boutiques = [];
+  ngOnInit() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.isAdmin = user.role === 'Admin';
 
-      ngOnInit() {
-        this.boutiqueService.getMesBoutiques().subscribe(data => {
-          this.boutiques = data;
-        });
-      }
-     
-      ITO ANATY HTML PRODUIT-ADD
-
-      <select [(ngModel)]="produit.store_id" required>
-      <option value="">-- Choisir une boutique --</option>
-
-      for (b of boutiques; track b._id) {
-        <option [value]="b._id">{{ b.nom }}</option>
-      }
-    </select>
-
-   */
-  /*addProduit(): void {
-    this.produitService.addProduit(this.newProduit).subscribe(() => {
-      this.resetForm();
-    });
-  }*/
-
-  /*addProduit(): void {
-    this.produitService.addProduit(this.newProduit)
-      .subscribe(() => {
-        this.router.navigate(['/produits']);
+    // Si admin, récupérer toutes les boutiques
+    if (this.isAdmin) {
+      this.produitService.getBoutiques().subscribe({
+        next: (res: any) => {
+          console.log('Réponse boutiques:', res); // DEBUG
+          // selon la structure renvoyée par le backend
+          this.boutiques = res.data ? res.data : res;
+        },
+        error: err => console.error('Erreur loadBoutiques:', err)
       });
-  }*/
+    }if (user.role === 'Boutique') {
+      // si propriétaire, on fixe sa boutique
+      this.newProduit.store_id = user.boutiqueId;
+      this.newProduit.name = user.boutiqueName; // si tu as le nom
+      console.log(this.newProduit.name);
+      
+    }
+  }
 
-  selectedFile!: File;
-
+  onBoutiqueSelected(storeId: string) {
+    const boutique = this.boutiques.find(b => b._id === storeId);
+    if (boutique) {
+      this.newProduit.name = boutique.nom;
+    }
+  }
 
   onImageSelected(event: any) {
     this.selectedFile = event.target.files[0];
   }
 
-
   addProduit() {
     const formData = new FormData();
-
     formData.append('nom_prod', this.newProduit.nom_prod);
     formData.append('descriptions', this.newProduit.descriptions);
     formData.append('prix_unitaire', String(this.newProduit.prix_unitaire));
     formData.append('stock_etat', String(this.newProduit.stock_etat));
     formData.append('type_produit', this.newProduit.type_produit);
-
-    // 👇 objet → JSON
-    formData.append(
-      'livraison',
-      JSON.stringify(this.newProduit.livraison)
-    );
-
+    formData.append('store_id', this.newProduit.store_id);
+    formData.append('name', this.newProduit.name);
+    formData.append('livraison', JSON.stringify(this.newProduit.livraison));
     if (this.selectedFile) {
       formData.append('image_Url', this.selectedFile);
     }
 
     this.produitService.addProduit(formData).subscribe({
       next: () => {
-        alert('Produit ajouté');
+        alert('Produit ajouté avec succès !');
         this.router.navigate(['/produits']);
       },
-      error: err => console.error(err)
+      error: err => console.error('Erreur ajout produit:', err)
     });
   }
-
-
-
-  /*onFileSelected(event: any) {
-this.selectedFile = event.target.files[0];
-}
-
-submit() {
-const formData = new FormData();
-formData.append('image_Url', this.selectedFile);
-formData.append('nom', this.newProduit.nom);
-formData.append('prix', this.newProduit.prix);
-
-this.http.post('http://localhost:3000/produits', formData).subscribe();
-}*/
-
-
 }
