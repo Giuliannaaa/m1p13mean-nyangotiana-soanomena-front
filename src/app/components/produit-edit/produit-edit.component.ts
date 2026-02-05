@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ProduitService } from '../../services/produits.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
+import { BoutiqueService } from '../../services/boutique.service';
 
 @Component({
   selector: 'app-produit-edit',
@@ -15,9 +16,10 @@ import { RouterModule } from '@angular/router';
 
 export class ProduitEditComponent {
 
-  //boutiques: any[] = [];
+  boutiques: any[] = [];
   produit: any = {
     nom_prod: '',
+    store_id: '',
     descriptions: '',
     prix_unitaire: 0,
     stock_etat: true,
@@ -33,12 +35,27 @@ export class ProduitEditComponent {
   constructor(private produitService: ProduitService,
     private router: Router, // si tu veux récupérer id pour édition
     private route: ActivatedRoute) { }
+  private boutiqueService = inject(BoutiqueService);
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
     this.produitId = id; // FIX: Stocker l'ID
-    this.produitService.getProduitById(id).subscribe((data: any) => {
-      this.produit = data; // contient toutes les anciennes valeurs
+    this.produitService.getProduitById(id).subscribe((response: any) => {
+      console.log('Produit à modifier (raw):', response); // DEBUG
+
+      // Adaptation selon la structure de la réponse (response.data ou response direct)
+      const data = response.data || response;
+      this.produit = data;
+
+      // Gestion de store_id peuplé (objet) ou non (string)
+      if (this.produit.store_id && typeof this.produit.store_id === 'object') {
+        this.produit.store_id = this.produit.store_id._id;
+      }
+
+      // Initialisation par défaut de livraison si manquant
+      if (!this.produit.livraison) {
+        this.produit.livraison = { disponibilite: false, frais: 0 };
+      }
 
       // Si prix_unitaire est un objet Decimal128 avec $numberDecimal
       if (this.produit.prix_unitaire && this.produit.prix_unitaire.$numberDecimal) {
@@ -46,7 +63,9 @@ export class ProduitEditComponent {
       } else {
         this.produit.prix_unitaire_val = this.produit.prix_unitaire;
       }
+      console.log('Produit après mapping:', this.produit); // DEBUG
     });
+    this.loadBoutiques();
   }
 
   /** VERSION COMPLETE
@@ -67,6 +86,12 @@ export class ProduitEditComponent {
   }
   
    */
+
+  loadBoutiques() {
+    this.boutiqueService.getAllBoutiques().subscribe(data => {
+      this.boutiques = data;
+    });
+  }
 
 
   loadProduit(): void {
@@ -101,6 +126,7 @@ export class ProduitEditComponent {
     formData.append('stock_etat', String(this.produit.stock_etat));
     formData.append('type_produit', this.produit.type_produit);
     formData.append('livraison', JSON.stringify(this.produit.livraison));
+    formData.append('store_id', this.produit.store_id);
 
     if (this.selectedFile) {
       formData.append('image_Url', this.selectedFile);
