@@ -1,71 +1,86 @@
-<div *ngIf="produit">
-  <h1>Achat du produit</h1>
-
-  <p><strong>Produit :</strong> {{ nom_prod }}</p>
-  <p><strong>Prix unitaire :</strong> {{ prix_unitaire }} Ar</p>
-
-  <!-- Afficher la promotion si active -->
-  <div *ngIf="promotionActive" style="padding: 10px; margin: 10px 0; border-radius: 5px;">
-    <p style="color: #155724; font-weight: bold;">
-      Promotion active : 
-      <span *ngIf="promotionActive.type_prom === 'POURCENTAGE'">
-        -{{ promotionActive.montant }}%
-      </span>
-      <span *ngIf="promotionActive.type_prom === 'MONTANT'">
-        -{{ promotionActive.montant }} Ar
-      </span>
-    </p>
+<div class="achat-container">
+  <!-- Message de chargement -->
+  <div *ngIf="isLoading" style="text-align: center; padding: 40px;">
+    <p>Chargement du produit...</p>
   </div>
 
-  <form (ngSubmit)="submitAchat()">
-    <div>
-      <label>Quantité :</label>
-      <input
-        type="number"
-        min="1"
-        [(ngModel)]="quantity"
-        name="quantity"
-        (input)="calculateTotal()"
-        required
-      />
-    </div>
+  <!-- Contenu principal (s'affiche quand le produit est chargé) -->
+  <div *ngIf="!isLoading && produit">
+    <h1>Achat du produit</h1>
 
-    <!-- Option de livraison -->
-    <div *ngIf="produit.livraison.disponibilite" style="margin: 15px 0; padding: 10px; border-radius: 5px;">
-      <label style="display: flex; align-items: center; cursor: pointer;">
-        <input
-          type="checkbox"
-          [(ngModel)]="avec_livraison"
-          name="avec_livraison"
-          (change)="toggleLivraison()"
-          style="margin-right: 10px;"
-          checked
-        />
-        <span>
-          Livraison disponible ({{ produit.livraison.frais }} Ar)
+    <p><strong>Produit :</strong> {{ nom_prod }}</p>
+    <p><strong>Prix unitaire :</strong> {{ prix_unitaire }} Ar</p>
+
+    <!-- Afficher la promotion si active -->
+    <div *ngIf="promotionActive" style="padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #c3e6cb;">
+      <p style="color: #155724; font-weight: bold; margin: 0;">
+        Promotion active : 
+        <span *ngIf="promotionActive.type_prom === 'POURCENTAGE'">
+          -{{ promotionActive.montant }}%
         </span>
-      </label>
-    </div>
-
-    <!-- Récapitulatif des prix -->
-    <div style="margin: 20px 0; padding: 15px; border-radius: 5px;">
-      <p><strong>Sous-total :</strong> {{ total_achat }} Ar</p>
-      
-      <p *ngIf="reduction > 0" style="color: green;">
-        <strong>Réduction :</strong> -{{ reduction }} Ar
-      </p>
-      
-      <p *ngIf="avec_livraison" style="color: #007bff;">
-        <strong>Frais de livraison :</strong> +{{ frais_livraison }} Ar
-      </p>
-      
-      <hr style="margin: 10px 0;">
-      
-      <p style="font-size: 1.2em; font-weight: bold;">
-        <strong>Total à payer :</strong> {{ total_reel }} Ar
+        <span *ngIf="promotionActive.type_prom === 'MONTANT'">
+          -{{ promotionActive.montant }} Ar
+        </span>
       </p>
     </div>
 
-    <button type="submit">Valider l'achat</button>
-  </form>
+    <form (ngSubmit)="submitAchat()">
+      <div style="margin: 15px 0;">
+        <label><strong>Quantité :</strong></label>
+        <input
+          type="number"
+          min="1"
+          [(ngModel)]="quantity"
+          name="quantity"
+          (input)="calculateTotal()"
+          required
+          style="padding: 8px; margin-left: 10px; border: 1px solid #ddd; border-radius: 4px;"
+        />
+      </div>
+
+      <!-- Option de livraison -->
+      <div *ngIf="produit.livraison.disponibilite" style="margin: 15px 0; padding: 10px; border-radius: 5px; border: 1px solid #b3d9ff;">
+        <label style="display: flex; align-items: center; cursor: pointer;">
+          <input
+            type="checkbox"
+            [(ngModel)]="avec_livraison"
+            name="avec_livraison"
+            (change)="toggleLivraison()"
+            style="margin-right: 10px; cursor: pointer;"
+          />
+          <span>
+            Livraison disponible (+{{ produit.livraison.frais }} Ar)
+          </span>
+        </label>
+      </div>
+
+      <!-- Récapitulatif des prix -->
+      <div style="margin: 20px 0; padding: 15px; border-radius: 5px; border: 1px solid #dee2e6;">
+        <p style="margin: 5px 0;"><strong>Sous-total :</strong> {{ total_achat }} Ar</p>
+        
+        <p *ngIf="reduction > 0" style="color: green; margin: 5px 0;">
+          <strong>Réduction :</strong> -{{ reduction }} Ar
+        </p>
+        
+        <p *ngIf="avec_livraison" style="color: #007bff; margin: 5px 0;">
+          <strong>Frais de livraison :</strong> +{{ frais_livraison }} Ar
+        </p>
+        
+        <hr style="margin: 10px 0;">
+        
+        <p style="font-size: 1.2em; font-weight: bold; margin: 5px 0;">
+          <strong>Total à payer :</strong> {{ total_reel }} Ar
+        </p>
+      </div>
+
+      <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1em; font-weight: bold;">
+        Valider l'achat
+      </button>
+    </form>
+  </div>
+
+  <!-- Message d'erreur si le produit ne se charge pas -->
+  <div *ngIf="!isLoading && !produit" style="padding: 20px; color: #d32f2f;  border-radius: 4px;">
+    <p>Erreur : Impossible de charger le produit.</p>
+  </div>
 </div>
