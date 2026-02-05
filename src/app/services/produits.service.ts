@@ -27,8 +27,18 @@ export class ProduitService {
   }
 
   getProduitById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${id}`);
+    // Si tu as un token stocké
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get(`${this.baseUrl}/${id}`, { headers });
   }
+
+  /*getProduitById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/${id}`);
+  }*/
 
   addProduit(produit: any) {
     return this.http.post(this.baseUrl, produit);

@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 export class AchatAddComponent implements OnInit {
 
   prod_id!: string;
-  produit: any;
+  produit: any = null;
   promotionActive: any = null;
 
   // Données pour l'affichage
@@ -30,6 +30,7 @@ export class AchatAddComponent implements OnInit {
   // Infos du produit
   nom_prod: string = '';
   image_Url: string = '';
+  isLoading: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,52 +42,77 @@ export class AchatAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.prod_id = this.route.snapshot.paramMap.get('prod_id')!;
+    console.log('ID Produit:', this.prod_id);
     this.loadProduit();
     this.loadPromotionActive();
   }
 
   loadProduit(): void {
-    this.produitService.getProduitById(this.prod_id).subscribe(data => {
-      console.log('Produit chargé:', data);
-      
-      const prixUnitaire = data.prix_unitaire?.$numberDecimal 
-        ? parseFloat(data.prix_unitaire.$numberDecimal) 
-        : (typeof data.prix_unitaire === 'number' ? data.prix_unitaire : 0);
-      
-      const fraisLivraison = data.livraison?.frais?.$numberDecimal
-        ? parseFloat(data.livraison.frais.$numberDecimal)
-        : (typeof data.livraison?.frais === 'number' ? data.livraison.frais : 0);
-      
-      this.produit = {
-        ...data,
-        prix_unitaire: prixUnitaire,
-        livraison: {
-          disponibilite: data.livraison?.disponibilite || false,
-          frais: fraisLivraison
+    this.produitService.getProduitById(this.prod_id).subscribe({
+      next: (response: any) => {
+        console.log('Réponse API:', response);
+        
+        // ✅ Les vraies données sont dans response.data !
+        const data = response.data || response;
+        
+        console.log('Données du produit:', data);
+        
+        const prixUnitaire = data.prix_unitaire?.$numberDecimal 
+          ? parseFloat(data.prix_unitaire.$numberDecimal) 
+          : (typeof data.prix_unitaire === 'number' ? data.prix_unitaire : 0);
+        
+        const fraisLivraison = data.livraison?.frais?.$numberDecimal
+          ? parseFloat(data.livraison.frais.$numberDecimal)
+          : (typeof data.livraison?.frais === 'number' ? data.livraison.frais : 0);
+        
+        this.produit = {
+          ...data,
+          prix_unitaire: prixUnitaire,
+          livraison: {
+            disponibilite: data.livraison?.disponibilite || false,
+            frais: fraisLivraison
+          }
+        };
+        
+        // Stocker les infos
+        this.nom_prod = data.nom_prod || '';
+        this.prix_unitaire = prixUnitaire;
+        
+        // Récupérer l'image principale
+        if (data.image_Url) {
+          this.image_Url = data.image_Url;
+        } else if (data.images && data.images.length > 0) {
+          const imageIndex = data.image_principale || 0;
+          this.image_Url = data.images[imageIndex];
         }
-      };
-      
-      // Stocker les infos
-      this.nom_prod = data.nom_prod;
-      this.prix_unitaire = prixUnitaire;
-      
-      // Récupérer l'image principale
-      if (data.images && data.images.length > 0) {
-        const imageIndex = data.image_principale || 0;
-        this.image_Url = data.images[imageIndex];
+        
+        if (this.produit.livraison.disponibilite) {
+          this.frais_livraison = this.produit.livraison.frais;
+        }
+        
+        this.calculateTotal();
+        this.isLoading = false;
+        
+        console.log('Produit chargé avec succès:', this.produit);
+        console.log('Nom:', this.nom_prod);
+        console.log('Prix:', this.prix_unitaire);
+      },
+      error: (err: any) => {
+        console.error('Erreur au chargement du produit:', err);
+        this.isLoading = false;
       }
-      
-      if (this.produit.livraison.disponibilite) {
-        this.frais_livraison = this.produit.livraison.frais;
-      }
-      
-      this.calculateTotal();
     });
   }
 
   loadPromotionActive(): void {
     this.promotionService.getPromotionActiveByProduit(this.prod_id).subscribe({
       next: (promo: any) => {
+        console.log('Promotion reçue:', promo);
+        
+        if (promo && promo.data) {
+          promo = promo.data;
+        }
+        
         if (promo) {
           this.promotionActive = {
             ...promo,
@@ -95,9 +121,12 @@ export class AchatAddComponent implements OnInit {
               : parseFloat(promo.montant)
           };
           this.calculateTotal();
+          console.log('Promotion active appliquée:', this.promotionActive);
         }
       },
-      error: (err: any) => console.log('Aucune promotion active')
+      error: (err: any) => {
+        console.log('Aucune promotion active pour ce produit');
+      }
     });
   }
 
@@ -127,17 +156,15 @@ export class AchatAddComponent implements OnInit {
   }
 
   submitAchat(): void {
+    const achat = {
+      quantity: this.quantity,
+      frais_livraison: this.frais_livraison,
+      avec_livraison: this.avec_livraison
+    };
 
-  const achat = {
-    prod_id: this.prod_id,
-    quantity: this.quantity,
-    frais_livraison: this.frais_livraison,
-    avec_livraison: this.avec_livraison
-  };
+    console.log('Envoi achat:', achat);
 
-  console.log('Envoi achat:', achat);
-
-    this.achatService.addAchat(achat).subscribe({
+    this.achatService.addAchat(achat, this.prod_id).subscribe({
       next: () => {
         alert('Achat effectué avec succès');
         this.router.navigate(['/achats']);
@@ -148,5 +175,4 @@ export class AchatAddComponent implements OnInit {
       }
     });
   }
-
 }

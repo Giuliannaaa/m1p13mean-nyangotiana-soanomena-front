@@ -86,7 +86,7 @@ export class PromotionAddComponent implements OnInit {
     this.promotionService.addPromotion(this.newPromotion).subscribe({
       next: () => {
         alert('Promotion ajoutée avec succès 🎉');
-        this.router.navigate(['/promotions']);
+        this.router.navigate(['/api/promotions']);
       },
       error: (err) => {
         console.error(err);
