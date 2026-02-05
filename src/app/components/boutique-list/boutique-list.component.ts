@@ -53,9 +53,19 @@ export class BoutiqueListComponent implements OnInit {
 
     loadBoutiques(): void {
         this.boutiqueService.getAllBoutiques().subscribe({
-            next: (data) => {
-                this.boutiques = data;
-                console.log('boutiques:', this.boutiques);
+            next: (data: any) => {
+                // console.log('Données reçues (Boutiques):', data);
+                if (Array.isArray(data)) {
+                    this.boutiques = data;
+                } else if (data && data.boutiques && Array.isArray(data.boutiques)) {
+                    this.boutiques = data.boutiques;
+                } else if (data && data._id) {
+                    // Si l'API retourne une seule boutique (objet unique), on le met dans un tableau
+                    this.boutiques = [data];
+                } else {
+                    console.error('Format de données inattendu:', data);
+                    this.boutiques = [];
+                }
             },
             error: (err) => {
                 console.error('Erreur lors du chargement des boutiques', err);
