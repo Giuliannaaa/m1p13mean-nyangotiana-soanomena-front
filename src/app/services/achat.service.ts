@@ -10,8 +10,12 @@ export class AchatService {
 
   constructor(private http: HttpClient) {}
 
-  addAchat(data: any): Observable<any> {
+  /*addAchat(data: any): Observable<any> {
     return this.http.post(this.apiUrl, data);
+  }*/
+
+  addAchat(data: any, prod_id: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/ajouter/${prod_id}`, data);
   }
 
   getAchats(): Observable<any[]> {

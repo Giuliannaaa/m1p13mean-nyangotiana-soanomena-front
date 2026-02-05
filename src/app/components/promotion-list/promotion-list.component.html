@@ -2,7 +2,7 @@
 <div>
   <h1>Liste des promotions</h1>
 
-  <a routerLink="/promotions/ajouter">Ajouter une promotion</a>
+  <a routerLink="/api/promotions/ajouter">Ajouter une promotion</a>
 
   <table border="1" cellpadding="8" cellspacing="0">
     <thead>
@@ -40,7 +40,7 @@
         </td>
 
         <td>
-          <a [routerLink]="['/promotions/modifier', promo._id]">Modifier</a>
+          <a [routerLink]="['/api/promotions/modifier', promo._id]">Modifier</a>
           &nbsp;
           <button (click)="deletePromotion(promo._id)">Supprimer</button>
         </td>

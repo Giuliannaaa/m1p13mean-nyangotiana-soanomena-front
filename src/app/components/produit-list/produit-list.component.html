@@ -45,8 +45,8 @@
                         </button>
                     </td>
                     <td>
-                        <button [routerLink]="['/achats/ajouter', produit._id]">
-                            🛒 Acheter
+                        <button (click)="goToBuyProduct(produit._id)" class="btn">
+                        Acheter
                         </button>
 
                     </td>
