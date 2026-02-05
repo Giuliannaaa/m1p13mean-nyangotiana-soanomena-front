@@ -34,15 +34,17 @@ export class ProduitListComponent implements OnInit {
   authService = inject(AuthService);
   isAdmin = false;
   isBoutique = false;
+  isAcheteur = false;
 
   constructor(private produitService: ProduitService,
-              private router: Router
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     const role = this.authService.getRole();
     this.isAdmin = role === 'Admin';
     this.isBoutique = role === 'Boutique';
+    this.isAcheteur = role === 'Acheteur';
 
     // Le backend gère déjà le filtrage selon le rôle
     this.loadProduits();
