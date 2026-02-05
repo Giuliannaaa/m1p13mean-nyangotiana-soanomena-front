@@ -17,7 +17,7 @@ export class ProduitService {
   }
 
   getProduits(): Observable<ApiResponse<Produit[]>> {
-    const token = localStorage.getItem('auth_token'); // ou sessionStorage
+    const token = localStorage.getItem('auth_token');
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
@@ -53,7 +53,12 @@ export class ProduitService {
     return this.http.put(`${this.baseUrl}/${id}`, produit);
   }
   deleteProduit(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    const token = localStorage.getItem('auth_token');
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.delete(`${this.baseUrl}/${id}`, { headers });
   }
 
 
