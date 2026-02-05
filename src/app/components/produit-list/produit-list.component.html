@@ -15,7 +15,7 @@
                     <th>Stock</th>
                     <th>Type</th>
                     <th>Livraison</th>
-                    <th *ngIf="isAdmin">Actions</th>
+                    <th *ngIf="isAdmin || isAcheteur">Actions</th>
                 </tr>
             </thead>
 
@@ -44,9 +44,9 @@
                             <img src="/img/svg/icon-delete.svg" alt="Supprimer">
                         </button>
                     </td>
-                    <td>
-                        <button (click)="goToBuyProduct(produit._id)" class="btn">
-                        Acheter
+                    <td *ngIf="isAcheteur">
+                        <button (click)="goToBuyProduct(produit._id)" class="btn-icon-buy" title="Acheter">
+                            <img src="/img/svg/icon-cart.svg" alt="Acheter">
                         </button>
 
                     </td>

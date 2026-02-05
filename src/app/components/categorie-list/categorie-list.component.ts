@@ -34,10 +34,10 @@ export class CategorieListComponent implements OnInit {
 
     this.categorieService.getCategories().subscribe({
       next: (data) => {
-        console.log('Données reçues:', data);
+        // console.log('Données reçues:', data);
         this.categories = data;
-        console.log('Categories assignées:', this.categories);
-        console.log('Longueur:', this.categories.length);
+        // console.log('Categories assignées:', this.categories);
+        // console.log('Longueur:', this.categories.length);
         this.cdr.markForCheck(); // Force Angular à vérifier les changements apres la requette HTTP
       },
       error: (err) => {

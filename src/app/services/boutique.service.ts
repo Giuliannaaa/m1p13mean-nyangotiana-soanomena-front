@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environnements/environnement';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Boutique } from '../models/boutique.model';
 import { AuthService } from './auth.service';
@@ -14,12 +14,12 @@ export class BoutiqueService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   getAllBoutiques(): Observable<Boutique[]> {
-    const userRole = this.authService.getRole();
-    if (userRole == "Admin") {
-      return this.http.get<Boutique[]>(`${this.apiUrl}?showAll=true`);
-    }
-    // N'affiche que les boutiques validées pour les acheteurs
-    return this.http.get<Boutique[]>(this.apiUrl);
+    const token = localStorage.getItem('auth_token'); // ou sessionStorage
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<Boutique[]>(`${this.apiUrl}`, { headers });
   }
 
   getBoutiqueById(id: string): Observable<Boutique> {

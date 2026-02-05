@@ -3,6 +3,16 @@
     <h1>Modifier le produit</h1>
     <form (ngSubmit)="updateProduit()" class="modern-form">
 
+      <div class="form-group">
+        <label for="store_id">Boutique</label>
+        <select [(ngModel)]="produit.store_id" name="store_id" class="form-control">
+          <option value="">-- Choisir une boutique --</option>
+          <option *ngFor="let boutique of boutiques" [value]="boutique._id">
+            {{ boutique.name }}
+          </option>
+        </select>
+      </div>
+
       <div class="form-grid">
         <div class="form-group">
           <label for="nom_prod">Nom du produit</label>

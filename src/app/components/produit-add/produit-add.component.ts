@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProduitService } from '../../services/produits.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from '@angular/router';
+import { BoutiqueService } from '../../services/boutique.service';
 
 @Component({
   selector: 'app-produit-add',
-  imports: [CommonModule, FormsModule], // OBLIGATOIRE
+  imports: [CommonModule, FormsModule],
   standalone: true,
   templateUrl: './produit-add.component.html',
   styleUrl: './produit-add.component.css',
@@ -14,10 +15,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 export class ProduitAddComponent {
 
-
   produits: any[] = [];
+  boutiques: any[] = [];
+
   newProduit = {
     nom_prod: '',
+    store_id: '',
     descriptions: '',
     prix_unitaire: null,
     stock_etat: true,
@@ -30,21 +33,26 @@ export class ProduitAddComponent {
   };
   //Nouveau modèle pour le formulaire
 
+  private boutiqueService = inject(BoutiqueService);
+
   constructor(private produitService: ProduitService,
     private router: Router, // si tu veux récupérer id pour édition
     private route: ActivatedRoute
   ) { }
 
+  loadBoutiques() {
+    this.boutiqueService.getAllBoutiques().subscribe(data => {
+      this.boutiques = data;
+    });
+  }
+
+  ngOnInit() {
+    this.loadBoutiques();
+  }
 
   /**
    * REHEFA VITA LE BOUTIQUE 
    * boutiques = [];
-
-      ngOnInit() {
-        this.boutiqueService.getMesBoutiques().subscribe(data => {
-          this.boutiques = data;
-        });
-      }
      
       ITO ANATY HTML PRODUIT-ADD
 
@@ -86,6 +94,7 @@ export class ProduitAddComponent {
     formData.append('prix_unitaire', String(this.newProduit.prix_unitaire));
     formData.append('stock_etat', String(this.newProduit.stock_etat));
     formData.append('type_produit', this.newProduit.type_produit);
+    formData.append('store_id', this.newProduit.store_id);
 
     // 👇 objet → JSON
     formData.append(
