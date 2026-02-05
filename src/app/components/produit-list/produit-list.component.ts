@@ -5,6 +5,7 @@ import { CommonModule } from "@angular/common";
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Produit } from '../../models/produit.model';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-produit-list',
@@ -34,7 +35,9 @@ export class ProduitListComponent implements OnInit {
   isAdmin = false;
   isBoutique = false;
 
-  constructor(private produitService: ProduitService) { }
+  constructor(private produitService: ProduitService,
+              private router: Router
+  ) { }
 
   ngOnInit(): void {
     const role = this.authService.getRole();
@@ -84,5 +87,10 @@ export class ProduitListComponent implements OnInit {
 
   deleteProduit(id: string): void {
     this.produitService.deleteProduit(id).subscribe(() => this.loadProduits());
+  }
+
+  // Dans ton composant de liste produits
+  goToBuyProduct(prodId: string): void {
+    this.router.navigate(['/achats/ajouter', prodId]);
   }
 }
