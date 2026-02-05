@@ -80,7 +80,7 @@ export class PromotionEditComponent implements OnInit {
 
   loadPromotion(): void {
     this.promotionService.getPromotionById(this.promotionId).subscribe(data => {
-      console.log('Données reçues:', data);
+      // console.log('Données reçues:', data);
 
       this.promotion = {
         ...data,

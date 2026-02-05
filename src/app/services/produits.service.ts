@@ -19,7 +19,6 @@ export class ProduitService {
   getProduits(): Observable<ApiResponse<Produit[]>> {
     const token = localStorage.getItem('auth_token'); // ou sessionStorage
 
-    console.log('Token envoyé:', token);
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });

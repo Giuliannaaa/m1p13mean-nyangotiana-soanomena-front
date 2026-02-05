@@ -55,7 +55,7 @@ export class BoutiqueListComponent implements OnInit {
         this.boutiqueService.getAllBoutiques().subscribe({
             next: (data) => {
                 this.boutiques = data;
-                console.log('boutiques:', this.boutiques);
+                // console.log('boutiques:', this.boutiques);
             },
             error: (err) => {
                 console.error('Erreur lors du chargement des boutiques', err);
