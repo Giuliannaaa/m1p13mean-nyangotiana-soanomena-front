@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Produit } from '../../models/produit.model';
 import { Router } from "@angular/router";
+import { PanierService } from '../../services/panier.service';
+
 
 @Component({
   selector: 'app-produit-list',
@@ -37,7 +39,8 @@ export class ProduitListComponent implements OnInit {
   isAcheteur = false;
 
   constructor(private produitService: ProduitService,
-    private router: Router
+    private router: Router,
+    private panierService: PanierService
   ) { }
 
   ngOnInit(): void {
@@ -93,6 +96,26 @@ export class ProduitListComponent implements OnInit {
 
   // Dans ton composant de liste produits
   goToBuyProduct(prodId: string): void {
+    // Legacy: Direct purchase
     this.router.navigate(['/achats/ajouter', prodId]);
+  }
+
+  addToPanier(produit: Produit): void {
+    if (!this.isAcheteur) {
+      alert("Vous devez être connecté en tant qu'acheteur pour ajouter au panier.");
+      return;
+    }
+
+    // Default quantity 1
+    this.panierService.addToPanier(produit._id, 1).subscribe({
+      next: (res) => {
+        alert('Produit ajouté au panier !');
+        // Optional: navigate to cart or stay
+      },
+      error: (err: string) => {
+        console.error(err);
+        alert("Erreur lors de l'ajout au panier");
+      }
+    });
   }
 }

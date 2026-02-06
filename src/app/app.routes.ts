@@ -24,6 +24,8 @@ import { BoutiqueEditComponent } from './components/boutique-edit/boutique-edit.
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AchatAddComponent } from './components/achat-add/achat-add.component';
 import { AchatListComponent } from './components/achat-list/achat-list.component';
+import { PanierComponent } from './components/panier/panier.component';
+
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -34,21 +36,21 @@ export const routes: Routes = [
     { path: 'admin/dashboard', component: AdminDashboardComponent },
     { path: 'boutique/dashboard', component: BoutiqueDashboardComponent },
     { path: 'buyer/dashboard', component: BuyerDashboardComponent },
-    
+
     //CRUD categorie
-    
+
     { path: 'categories', component: CategorieListComponent },
     { path: 'categories/ajouter', component: CategorieAddComponent },
     { path: 'categories/modifier/:id', component: CategorieEditComponent },
-    
+
     //CRUD boutique
-    
+
     { path: 'boutiques', component: BoutiqueListComponent },
     { path: 'boutiques/ajouter', component: BoutiqueAddComponent },
     { path: 'boutiques/modifier/:id', component: BoutiqueEditComponent },
-    
+
     //CRUD produit
-    
+
     { path: 'produits', component: ProduitListComponent }, //Route pour produit-list
     { path: 'produits/ajouter', component: ProduitAddComponent },
     { path: 'produits/modifier/:id', component: ProduitEditComponent },
@@ -57,7 +59,8 @@ export const routes: Routes = [
     { path: 'achats/ajouter/:prod_id', component: AchatAddComponent },
     { path: 'api/achats', component: AchatListComponent },
 
-
+    // Panier
+    { path: 'panier', component: PanierComponent },
 
     //CRUD promotion
 
