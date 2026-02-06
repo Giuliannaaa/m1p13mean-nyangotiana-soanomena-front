@@ -4,7 +4,44 @@
         <button *ngIf="isAdmin" routerLink="/boutiques/ajouter" class="btn-primary">Ajouter une boutique</button>
     </div>
 
-    <div class="glass-card overflow-hidden">
+    <!-- ✅ Section de filtrage par catégorie -->
+    <div style="margin-bottom: 20px; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+        <h3 style="margin-top: 0;">Filtrer par catégorie</h3>
+        
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <select 
+                [(ngModel)]="categorie_selectionnee" 
+                (change)="filterByCategory()"
+                style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+            >
+                <option value="">-- Toutes les catégories --</option>
+                <option *ngFor="let categorie of categories" [value]="categorie._id">
+                    {{ categorie.nom_cat }}
+                </option>
+            </select>
+            
+            <button 
+                (click)="resetFilter()" 
+                style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;"
+            >
+                Réinitialiser
+            </button>
+        </div>
+        
+        <p *ngIf="isFiltering" style="margin-top: 10px; color: #007bff; font-size: 14px;">
+            <strong>Boutiques filtrées :</strong> {{ filteredBoutiques.length }} résultat(s) / {{ boutiques.length }} total
+        </p>
+    </div>
+
+    <!-- Message si aucune boutique -->
+    <div *ngIf="filteredBoutiques.length === 0" style="text-align: center; padding: 40px;">
+        <p style="font-size: 16px; color: #666;">
+            {{ isFiltering ? 'Aucune boutique pour cette catégorie' : 'Aucune boutique disponible' }}
+        </p>
+    </div>
+
+    <!-- Tableau des boutiques -->
+    <div class="glass-card overflow-hidden" *ngIf="filteredBoutiques.length > 0">
         <table class="modern-table">
             <thead>
                 <tr>
@@ -18,7 +55,7 @@
             </thead>
 
             <tbody>
-                @for (boutique of boutiques; track boutique._id) {
+                @for (boutique of filteredBoutiques; track boutique._id) {
                 <tr>
                     <td class="font-bold">{{ boutique.name }}</td>
                     <td>{{ getCategoryName(boutique.categoryId) }}</td>
