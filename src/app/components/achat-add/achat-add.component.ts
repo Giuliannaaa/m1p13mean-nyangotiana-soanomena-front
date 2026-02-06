@@ -38,11 +38,11 @@ export class AchatAddComponent implements OnInit {
     private achatService: AchatService,
     private promotionService: PromotionService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.prod_id = this.route.snapshot.paramMap.get('prod_id')!;
-    console.log('ID Produit:', this.prod_id);
+    // console.log('ID Produit:', this.prod_id);
     this.loadProduit();
     this.loadPromotionActive();
   }
@@ -50,21 +50,21 @@ export class AchatAddComponent implements OnInit {
   loadProduit(): void {
     this.produitService.getProduitById(this.prod_id).subscribe({
       next: (response: any) => {
-        console.log('Réponse API:', response);
-        
+        // console.log('Réponse API:', response);
+
         // ✅ Les vraies données sont dans response.data !
         const data = response.data || response;
-        
-        console.log('Données du produit:', data);
-        
-        const prixUnitaire = data.prix_unitaire?.$numberDecimal 
-          ? parseFloat(data.prix_unitaire.$numberDecimal) 
+
+        // console.log('Données du produit:', data);
+
+        const prixUnitaire = data.prix_unitaire?.$numberDecimal
+          ? parseFloat(data.prix_unitaire.$numberDecimal)
           : (typeof data.prix_unitaire === 'number' ? data.prix_unitaire : 0);
-        
+
         const fraisLivraison = data.livraison?.frais?.$numberDecimal
           ? parseFloat(data.livraison.frais.$numberDecimal)
           : (typeof data.livraison?.frais === 'number' ? data.livraison.frais : 0);
-        
+
         this.produit = {
           ...data,
           prix_unitaire: prixUnitaire,
@@ -73,11 +73,11 @@ export class AchatAddComponent implements OnInit {
             frais: fraisLivraison
           }
         };
-        
+
         // Stocker les infos
         this.nom_prod = data.nom_prod || '';
         this.prix_unitaire = prixUnitaire;
-        
+
         // Récupérer l'image principale
         if (data.image_Url) {
           this.image_Url = data.image_Url;
@@ -85,17 +85,17 @@ export class AchatAddComponent implements OnInit {
           const imageIndex = data.image_principale || 0;
           this.image_Url = data.images[imageIndex];
         }
-        
+
         if (this.produit.livraison.disponibilite) {
           this.frais_livraison = this.produit.livraison.frais;
         }
-        
+
         this.calculateTotal();
         this.isLoading = false;
-        
-        console.log('Produit chargé avec succès:', this.produit);
-        console.log('Nom:', this.nom_prod);
-        console.log('Prix:', this.prix_unitaire);
+
+        // console.log('Produit chargé avec succès:', this.produit);
+        // console.log('Nom:', this.nom_prod);
+        // console.log('Prix:', this.prix_unitaire);
       },
       error: (err: any) => {
         console.error('Erreur au chargement du produit:', err);
@@ -108,16 +108,16 @@ export class AchatAddComponent implements OnInit {
     this.promotionService.getPromotionActiveByProduit(this.prod_id).subscribe({
       next: (promo: any) => {
         console.log('Promotion reçue:', promo);
-        
+
         if (promo && promo.data) {
           promo = promo.data;
         }
-        
+
         if (promo) {
           this.promotionActive = {
             ...promo,
-            montant: promo.montant?.$numberDecimal 
-              ? parseFloat(promo.montant.$numberDecimal) 
+            montant: promo.montant?.$numberDecimal
+              ? parseFloat(promo.montant.$numberDecimal)
               : parseFloat(promo.montant)
           };
           this.calculateTotal();
@@ -141,7 +141,7 @@ export class AchatAddComponent implements OnInit {
 
   calculateTotal(): void {
     this.total_achat = this.quantity * this.prix_unitaire;
-    
+
     if (this.promotionActive) {
       if (this.promotionActive.type_prom === 'POURCENTAGE') {
         this.reduction = this.total_achat * (this.promotionActive.montant / 100);
@@ -151,7 +151,7 @@ export class AchatAddComponent implements OnInit {
     } else {
       this.reduction = 0;
     }
-    
+
     this.total_reel = this.total_achat - this.reduction + this.frais_livraison;
   }
 
@@ -162,7 +162,7 @@ export class AchatAddComponent implements OnInit {
       avec_livraison: this.avec_livraison
     };
 
-    console.log('Envoi achat:', achat);
+    // console.log('Envoi achat:', achat);
 
     this.achatService.addAchat(achat, this.prod_id).subscribe({
       next: () => {

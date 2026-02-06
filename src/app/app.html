@@ -11,5 +11,55 @@
         <router-outlet></router-outlet>
       </div>
     </main>
+
+    <!-- Sticky Cart Button -->
+    <button *ngIf="isAcheteur" (click)="openCartModal()" class="sticky-cart-btn" title="Voir mon panier">
+      <img src="./img/svg/icon-cart-2.svg" alt="Panier" width="32px" height="32px">
+      <span *ngIf="cartData?.items?.length" class="cart-badge">{{ cartData.items.length }}</span>
+    </button>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal-backdrop" *ngIf="isCartModalOpen" (click)="closeCartModal()">
+      <div class="cart-modal-content glass-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Mon Panier</h2>
+          <button class="close-btn" (click)="closeCartModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div *ngIf="!cartData || !cartData.items || cartData.items.length === 0" class="empty-cart">
+            <p>Votre panier est vide.</p>
+          </div>
+
+          <div *ngFor="let item of cartData?.items" class="cart-item">
+            <div class="item-info">
+              <h4>{{ item.nomProduit || item.produit?.nom_prod }}</h4>
+              <p class="price">{{ item.prixUnitaire | number:'1.0-0' }} Ar</p>
+            </div>
+            <div class="item-actions">
+              <button class="qty-btn" (click)="updateQuantity(item.produit._id, item.quantite - 1)">-</button>
+              <span class="qty-display">{{ item.quantite }}</span>
+              <button class="qty-btn" (click)="updateQuantity(item.produit._id, item.quantite + 1)">+</button>
+            </div>
+            <button class="delete-cart-btn " (click)="removeFromPanier(item.produit._id)">
+              <img src="./img/svg/icon-delete.svg" alt="Supprimer" width="24px" height="24px">
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-footer" *ngIf="cartData && cartData.items && cartData.items.length > 0">
+          <div class="delivery-option" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <input type="checkbox" id="livraisonCheck" [(ngModel)]="avec_livraison" style="width: 20px; height: 20px;">
+            <label for="livraisonCheck" style="font-size: 1rem; color: #333;">Livraison à domicile (+ {{ fraisLivraison
+              | number:'1.0-0' }} Ar)</label>
+          </div>
+          <div class="total-price">
+            <span>Total:</span>
+            <strong>{{ totalAvecLivraison | number:'1.0-0' }} Ar</strong>
+          </div>
+          <button class="btn-validate" (click)="validateCart()">Valider la commande</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
