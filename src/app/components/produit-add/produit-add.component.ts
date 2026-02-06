@@ -15,7 +15,7 @@ import { BoutiqueService } from '../../services/boutique.service';
 export class ProduitAddComponent implements OnInit {
 
   produits: any[] = [];
-  boutiques: any[] = []; // ✅ Initialiser comme tableau vide
+  boutiques: any[] = [];
 
   newProduit = {
     nom_prod: '',
@@ -36,7 +36,6 @@ export class ProduitAddComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -44,33 +43,17 @@ export class ProduitAddComponent implements OnInit {
   }
 
   loadBoutiques(): void {
-  this.boutiqueService.getAllBoutiques().subscribe({
-    next: (response: any) => {
-      console.log('Réponse boutiques:', response);
-      
-      // ✅ Si la réponse est un objet unique, le mettre dans un tableau
-      if (response && !Array.isArray(response)) {
-        // C'est un objet unique
-        this.boutiques = [response];
-      } else if (Array.isArray(response)) {
-        this.boutiques = response;
-      } else if (response && Array.isArray(response.data)) {
+    this.boutiqueService.getAllBoutiques().subscribe({
+      next: (response: any) => {
+        // console.log('Réponse boutiques:', response);
         this.boutiques = response.data;
-      } else if (response && Array.isArray(response.boutiques)) {
-        this.boutiques = response.boutiques;
-      } else {
-        console.error('Format de réponse inattendu:', response);
+      },
+      error: (err: any) => {
+        console.error('Erreur chargement boutiques:', err);
         this.boutiques = [];
       }
-      
-      console.log('Boutiques chargées:', this.boutiques);
-    },
-    error: (err: any) => {
-      console.error('Erreur chargement boutiques:', err);
-      this.boutiques = [];
-    }
-  });
-}
+    });
+  }
 
   selectedFile!: File;
 
