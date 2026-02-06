@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { BoutiqueService } from '../../services/boutique.service';
 import { CategorieService } from '../../services/categorie.service';
 import { UserService } from '../../services/user.service';
@@ -9,20 +10,28 @@ import { AuthService } from '../../services/auth.service';
 @Component({
     selector: 'app-boutique-list',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, FormsModule], // ✅ Ajouter FormsModule
     templateUrl: './boutique-list.component.html',
     styleUrl: './boutique-list.component.css'
 })
 export class BoutiqueListComponent implements OnInit {
     boutiques: any[] = [];
+    filteredBoutiques: any[] = []; // ✅ Ajouter les boutiques filtrées
+    
     categories: any[] = [];
     users: any[] = [];
+    
+    // ✅ Variables pour le filtre
+    categorie_selectionnee: string = '';
+    isFiltering: boolean = false;
+    
     isAdmin = false;
 
     private boutiqueService = inject(BoutiqueService);
     private categorieService = inject(CategorieService);
     private userService = inject(UserService);
     private authService = inject(AuthService);
+    private cdr = inject(ChangeDetectorRef);
 
     ngOnInit(): void {
         this.isAdmin = this.authService.getRole() === 'Admin';
@@ -32,7 +41,28 @@ export class BoutiqueListComponent implements OnInit {
     }
 
     loadCategories(): void {
-        this.categorieService.getCategories().subscribe(data => this.categories = data);
+        this.categorieService.getCategories().subscribe({
+            next: (response: any) => {
+                console.log('Catégories reçues:', response);
+                
+                // Extraire le tableau correctement
+                if (Array.isArray(response)) {
+                    this.categories = response;
+                } else if (response && Array.isArray(response.data)) {
+                    this.categories = response.data;
+                } else if (response && Array.isArray(response.categories)) {
+                    this.categories = response.categories;
+                } else {
+                    this.categories = [];
+                }
+                
+                console.log('Catégories chargées:', this.categories);
+            },
+            error: (err) => {
+                console.error('Erreur chargement catégories:', err);
+                this.categories = [];
+            }
+        });
     }
 
     loadUsers(): void {
@@ -54,23 +84,53 @@ export class BoutiqueListComponent implements OnInit {
     loadBoutiques(): void {
         this.boutiqueService.getAllBoutiques().subscribe({
             next: (data: any) => {
-                // console.log('Données reçues (Boutiques):', data);
+                console.log('Données reçues (Boutiques):', data);
+                
                 if (Array.isArray(data)) {
                     this.boutiques = data;
-                } else if (data && data.boutiques && Array.isArray(data.boutiques)) {
-                    this.boutiques = data.boutiques;
+                } else if (data && data.data && Array.isArray(data.data)) {
+                    this.boutiques = data.data;
                 } else if (data && data._id) {
-                    // Si l'API retourne une seule boutique (objet unique), on le met dans un tableau
                     this.boutiques = [data];
                 } else {
                     console.error('Format de données inattendu:', data);
                     this.boutiques = [];
                 }
+                
+                // ✅ Initialiser les boutiques filtrées avec toutes les boutiques
+                this.filteredBoutiques = this.boutiques;
+                this.cdr.markForCheck();
             },
             error: (err) => {
                 console.error('Erreur lors du chargement des boutiques', err);
             }
         });
+    }
+
+    // ✅ Filtrer les boutiques par catégorie
+    filterByCategory(): void {
+        if (!this.categorie_selectionnee) {
+            // Si aucune catégorie n'est sélectionnée, afficher toutes les boutiques
+            this.filteredBoutiques = this.boutiques;
+            this.isFiltering = false;
+        } else {
+            // Filtrer les boutiques localement
+            this.filteredBoutiques = this.boutiques.filter(boutique => 
+                boutique.categoryId === this.categorie_selectionnee
+            );
+            this.isFiltering = true;
+        }
+        
+        console.log('Boutiques filtrées:', this.filteredBoutiques.length);
+        this.cdr.markForCheck();
+    }
+
+    // ✅ Réinitialiser le filtre
+    resetFilter(): void {
+        this.categorie_selectionnee = '';
+        this.filteredBoutiques = this.boutiques;
+        this.isFiltering = false;
+        this.cdr.markForCheck();
     }
 
     deleteBoutique(id: string): void {
@@ -85,6 +145,7 @@ export class BoutiqueListComponent implements OnInit {
             });
         }
     }
+
     validateBoutique(id: string, isValidated: boolean): void {
         if (confirm('Voulez-vous vraiment ' + (isValidated ? 'désactiver' : 'activer') + ' cette boutique ?')) {
             this.boutiqueService.validateBoutique(id, isValidated).subscribe({

@@ -13,13 +13,20 @@ export class BoutiqueService {
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
-  getAllBoutiques(): Observable<Boutique[]> {
-    const token = localStorage.getItem('auth_token'); // ou sessionStorage
-
-    const headers = new HttpHeaders({
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('auth_token');
+    return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.get<Boutique[]>(`${this.apiUrl}`, { headers });
+  }
+
+  getAllBoutiques(): Observable<Boutique[]> {
+    return this.http.get<Boutique[]>(`${this.apiUrl}`, { headers: this.getHeaders() });
+  }
+
+  // Filtrer par catégorie
+  getBoutiquesByCategory(categoryId: string): Observable<Boutique[]> {
+    return this.http.get<Boutique[]>(`${this.apiUrl}?categoryId=${categoryId}`, { headers: this.getHeaders() });
   }
 
   getBoutiqueById(id: string): Observable<Boutique> {
@@ -43,7 +50,6 @@ export class BoutiqueService {
   }
 
   getBoutiqueByOwner(ownerId: string): Observable<Boutique[]> {
-    // Assuming there's a backend endpoint, otherwise we'd use getAllBoutiques and filter
     return this.http.get<Boutique[]>(`${this.apiUrl}/owner/${ownerId}`);
   }
 }
