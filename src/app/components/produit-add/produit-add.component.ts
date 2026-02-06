@@ -1,22 +1,21 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ProduitService } from '../../services/produits.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BoutiqueService } from '../../services/boutique.service';
 
 @Component({
   selector: 'app-produit-add',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   standalone: true,
   templateUrl: './produit-add.component.html',
   styleUrl: './produit-add.component.css',
 })
-
-export class ProduitAddComponent {
+export class ProduitAddComponent implements OnInit {
 
   produits: any[] = [];
-  boutiques: any[] = [];
+  boutiques: any[] = []; // ✅ Initialiser comme tableau vide
 
   newProduit = {
     nom_prod: '',
@@ -31,62 +30,71 @@ export class ProduitAddComponent {
     },
     image_Url: ''
   };
-  //Nouveau modèle pour le formulaire
 
   private boutiqueService = inject(BoutiqueService);
+  private produitService = inject(ProduitService);
 
-  constructor(private produitService: ProduitService,
-    private router: Router, // si tu veux récupérer id pour édition
+  constructor(
+    private router: Router,
     private route: ActivatedRoute
   ) { }
 
-  loadBoutiques() {
-    this.boutiqueService.getAllBoutiques().subscribe(data => {
-      this.boutiques = data;
-    });
-  }
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadBoutiques();
   }
 
-  /**
-   * REHEFA VITA LE BOUTIQUE 
-   * boutiques = [];
-     
-      ITO ANATY HTML PRODUIT-ADD
-
-      <select [(ngModel)]="produit.store_id" required>
-      <option value="">-- Choisir une boutique --</option>
-
-      for (b of boutiques; track b._id) {
-        <option [value]="b._id">{{ b.nom }}</option>
+  loadBoutiques(): void {
+  this.boutiqueService.getAllBoutiques().subscribe({
+    next: (response: any) => {
+      console.log('Réponse boutiques:', response);
+      
+      // ✅ Si la réponse est un objet unique, le mettre dans un tableau
+      if (response && !Array.isArray(response)) {
+        // C'est un objet unique
+        this.boutiques = [response];
+      } else if (Array.isArray(response)) {
+        this.boutiques = response;
+      } else if (response && Array.isArray(response.data)) {
+        this.boutiques = response.data;
+      } else if (response && Array.isArray(response.boutiques)) {
+        this.boutiques = response.boutiques;
+      } else {
+        console.error('Format de réponse inattendu:', response);
+        this.boutiques = [];
       }
-    </select>
-
-   */
-  /*addProduit(): void {
-    this.produitService.addProduit(this.newProduit).subscribe(() => {
-      this.resetForm();
-    });
-  }*/
-
-  /*addProduit(): void {
-    this.produitService.addProduit(this.newProduit)
-      .subscribe(() => {
-        this.router.navigate(['/produits']);
-      });
-  }*/
+      
+      console.log('Boutiques chargées:', this.boutiques);
+    },
+    error: (err: any) => {
+      console.error('Erreur chargement boutiques:', err);
+      this.boutiques = [];
+    }
+  });
+}
 
   selectedFile!: File;
 
-
-  onImageSelected(event: any) {
+  onImageSelected(event: any): void {
     this.selectedFile = event.target.files[0];
   }
 
+  addProduit(): void {
+    // Vérifier que les données requises sont présentes
+    if (!this.newProduit.store_id) {
+      alert('Veuillez sélectionner une boutique');
+      return;
+    }
 
-  addProduit() {
+    if (!this.newProduit.nom_prod) {
+      alert('Veuillez entrer le nom du produit');
+      return;
+    }
+
+    if (!this.newProduit.prix_unitaire) {
+      alert('Veuillez entrer le prix unitaire');
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append('nom_prod', this.newProduit.nom_prod);
@@ -96,7 +104,7 @@ export class ProduitAddComponent {
     formData.append('type_produit', this.newProduit.type_produit);
     formData.append('store_id', this.newProduit.store_id);
 
-    // 👇 objet → JSON
+    // Objet → JSON
     formData.append(
       'livraison',
       JSON.stringify(this.newProduit.livraison)
@@ -106,29 +114,18 @@ export class ProduitAddComponent {
       formData.append('image_Url', this.selectedFile);
     }
 
+    console.log('Envoi du produit...');
+
     this.produitService.addProduit(formData).subscribe({
-      next: () => {
-        alert('Produit ajouté');
+      next: (response: any) => {
+        console.log('Produit ajouté avec succès:', response);
+        alert('Produit ajouté avec succès');
         this.router.navigate(['/produits']);
       },
-      error: err => console.error(err)
+      error: (err: any) => {
+        console.error('Erreur lors de l\'ajout du produit:', err);
+        alert('Erreur : ' + (err.error?.message || err.message || 'Une erreur est survenue'));
+      }
     });
   }
-
-
-
-  /*onFileSelected(event: any) {
-this.selectedFile = event.target.files[0];
-}
-
-submit() {
-const formData = new FormData();
-formData.append('image_Url', this.selectedFile);
-formData.append('nom', this.newProduit.nom);
-formData.append('prix', this.newProduit.prix);
-
-this.http.post('http://localhost:3000/produits', formData).subscribe();
-}*/
-
-
 }
