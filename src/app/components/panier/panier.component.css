@@ -1,0 +1,22 @@
+/* Inheriting global glassmorphism from app.css via classes, adding specific tweaks if needed */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+}
+
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #fff;
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.05);
+    --bs-table-hover-color: #fff;
+}
+
+input.form-control {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline-light:hover {
+    color: #000;
+}
