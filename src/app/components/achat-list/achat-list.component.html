@@ -1,23 +1,56 @@
 <div style="padding: 20px;">
   <h1>Liste des achats</h1>
 
-  <div *ngIf="achats.length === 0" style="text-align: center; padding: 40px;">
-    <p>Aucun achat pour le moment</p>
+  <!-- ✅ Section de filtrage par boutique -->
+  <div style="margin-bottom: 20px; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+    <h3 style="margin-top: 0;">Filtrer par boutique</h3>
+    
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <select 
+        [(ngModel)]="boutique_selectionnee" 
+        (change)="filterByBoutique()"
+        style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+      >
+        <option value="">-- Toutes les boutiques --</option>
+        <option *ngFor="let boutique of boutiques" [value]="boutique._id">
+          {{ boutique.name }}
+        </option>
+      </select>
+      
+      <button 
+        (click)="resetFilter()" 
+        style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;"
+      >
+        Réinitialiser
+      </button>
+    </div>
+    
+    <p *ngIf="isFiltering" style="margin-top: 10px; color: #007bff; font-size: 14px;">
+      <strong>Achats filtrés :</strong> {{ filteredAchats.length }} résultat(s) / {{ achats.length }} total
+    </p>
   </div>
 
-  <!-- Liste des achats -->
-  <div *ngFor="let achat of achats" style="border: 1px solid #ddd; margin-bottom: 20px; padding: 15px; border-radius: 5px;">
+  <!-- Message si aucun achat -->
+  <div *ngIf="filteredAchats.length === 0" style="text-align: center; padding: 40px;">
+    <p style="font-size: 16px; color: #666;">
+      {{ isFiltering ? 'Aucun achat pour cette boutique' : 'Aucun achat pour le moment' }}
+    </p>
+  </div>
+
+  <!-- Liste des achats filtrés -->
+  <div *ngFor="let achat of filteredAchats" style="border: 1px solid #ddd; margin-bottom: 20px; padding: 15px; border-radius: 5px;">
     
     <!-- En-tête de l'achat -->
-    <div style=" padding: 10px; margin-bottom: 10px; border-radius: 3px;">
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 3px;">
       <p><strong>Date :</strong> {{ achat.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
-      <p><strong>Statut :</strong> 
+      <p><strong>Boutique :</strong> {{ getNomBoutique(achat) }}</p>
+      <p><strong>Statut :</strong>
         <span [style.color]="
           achat.status === 'DELIVREE' ? 'green' :
           achat.status === 'CONFIRMEE' ? 'blue' :
           achat.status === 'ANNULEE' ? 'red' : 'orange'
         ">
-          {{ achat.status }}
+          {{ achat.status || 'EN ATTENTE' }}
         </span>
       </p>
     </div>
@@ -59,7 +92,7 @@
     </table>
 
     <!-- Totaux -->
-    <div style="margin-top: 10px; text-align: right; padding: 10px;">
+    <div style="margin-top: 10px; text-align: right; padding: 10px; border-radius: 3px;">
       <p><strong>Total articles :</strong> {{ achat.total_achat | number:'1.0-0' }} Ar</p>
       <p *ngIf="achat.reduction > 0" style="color: green;">
         <strong>Réduction :</strong> -{{ achat.reduction | number:'1.0-0' }} Ar
@@ -67,8 +100,8 @@
       <p *ngIf="achat.avec_livraison" style="color: #007bff;">
         <strong>Frais de livraison :</strong> +{{ achat.frais_livraison | number:'1.0-0' }} Ar
       </p>
-      <hr>
-      <p style="font-size: 1.2em;">
+      <hr style="margin: 10px 0;">
+      <p style="font-size: 1.2em; color: #28a745;">
         <strong>Total final :</strong> {{ achat.total_reel | number:'1.0-0' }} Ar
       </p>
     </div>

@@ -10,6 +10,7 @@
                 <tr>
                     <th>Image</th>
                     <th>Nom</th>
+                    <th>Boutique</th>
                     <th>Description</th>
                     <th>Prix</th>
                     <th>Stock</th>
@@ -27,6 +28,7 @@
                             alt="Image du produit" class="product-thumb" />
                     </td>
                     <td class="font-bold">{{ produit.nom_prod }}</td>
+                    <td>{{ produit.store_id?.name || 'Boutique inconnue' }}</td>
                     <td class="td-desc">{{ produit.descriptions }}</td>
                     <td class="price-cell">{{ produit.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar</td>
                     <td>
