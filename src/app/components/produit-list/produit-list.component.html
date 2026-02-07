@@ -4,13 +4,39 @@
         <button *ngIf="isAdmin" routerLink="/produits/ajouter" class="btn-primary">Ajouter un produit</button>
     </div>
 
+    <!-- BARRE DE RECHERCHE -->
+    <div style="margin-bottom: 20px; padding: 15px; border-radius: 8px; border: 2px solid #e0e0e0;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <input 
+                    type="text" 
+                    [(ngModel)]="searchText" 
+                    (keyup)="filterProduits()"
+                    placeholder="Rechercher un produit (nom, description, boutique)..."
+                    style="
+                        width: 100%; 
+                        padding: 10px 15px; 
+                        border: 1px solid #ddd; 
+                        border-radius: 6px; 
+                        font-size: 14px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    "
+                />
+            </div>
+        </div>
+        
+        <p *ngIf="searchText" style="margin-top: 10px; color: #666; font-size: 13px;">
+            Résultats de recherche pour: <strong>"{{ searchText }}"</strong>
+        </p>
+    </div>
+
     <!-- Section de filtrage (Spécial + Boutique + Prix) -->
     <div style="margin-bottom: 20px; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
-        <h3 style="margin-top: 0;">Filtres</h3>
+        <h3 style="margin-top: 0;">Filtres avancés</h3>
         
         <!-- Filtre Spécial (Nouveau, Populaire, etc.) -->
         <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Catégorie</label>
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Catégorie spéciale</label>
             <select 
                 [(ngModel)]="filtre_special" 
                 (change)="filterProduits()"
@@ -33,7 +59,7 @@
                 style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 100%; max-width: 300px;"
             >
                 <option value="">-- Toutes les boutiques --</option>
-                <option *ngFor="let boutique of boutiques" [value]="boutique._id">
+                <option *ngFor="let boutique of boutiques" [value]="boutique._id || ''">
                     {{ boutique.name }}
                 </option>
             </select>
@@ -80,7 +106,7 @@
                 (click)="resetFilter()" 
                 style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;"
             >
-                Réinitialiser les filtres
+                Réinitialiser tous les filtres
             </button>
         </div>
         
@@ -94,7 +120,7 @@
     <!-- Message si aucun produit -->
     <div *ngIf="filteredProduits.length === 0" style="text-align: center; padding: 40px;">
         <p style="font-size: 16px; color: #666;">
-            {{ isFiltering ? 'Aucun produit ne correspond à vos critères' : 'Aucun produit disponible' }}
+            {{ isFiltering || searchText ? 'Aucun produit ne correspond à vos critères' : 'Aucun produit disponible' }}
         </p>
     </div>
 
@@ -122,23 +148,23 @@
                         <img [src]="produit.image_preview || ('http://localhost:5000/' + produit.image_Url)"
                             alt="Image du produit" class="product-thumb" />
                         
-                        <!-- Badge du produit -->
-                        @if (getProductBadge(produit)) {
-                            <span style="
-                                position: absolute; 
-                                top: 5px; 
-                                right: 5px; 
-                                background-color: {{ getBadgeColor(produit) }}; 
-                                color: {{ getBadgeColor(produit) === '#ffc107' ? 'black' : 'white' }}; 
-                                padding: 2px 8px; 
-                                border-radius: 3px; 
-                                font-size: 11px; 
-                                font-weight: bold;
-                                text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-                            ">
-                                {{ getProductBadge(produit) }}
-                            </span>
-                        }
+                        <!-- AFFICHER PLUSIEURS BADGES -->
+                        <div style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
+                            @for (badge of getProductBadges(produit); track badge.text) {
+                                <span style="
+                                    background-color: {{ badge.color }}; 
+                                    color: {{ badge.color === '#ffc107' ? 'black' : 'white' }}; 
+                                    padding: 2px 6px; 
+                                    border-radius: 3px; 
+                                    font-size: 10px; 
+                                    font-weight: bold;
+                                    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+                                    white-space: nowrap;
+                                ">
+                                    {{ badge.text }}
+                                </span>
+                            }
+                        </div>
                     </td>
                     <td class="font-bold">{{ produit.nom_prod }}</td>
                     <td>{{ produit.store_id?.name || 'Boutique inconnue' }}</td>
@@ -163,7 +189,7 @@
                     </td>
                     <td *ngIf="isAcheteur">
                         <button (click)="addToPanier(produit)" class="btn-icon-buy" title="Ajouter au Panier">
-                            <i class="fas fa-cart-plus"></i> <img src="/img/svg/icon-cart.svg" alt="Ajouter au Panier">
+                            <img src="/img/svg/icon-cart.svg" alt="Ajouter au Panier">
                         </button>
                     </td>
                 </tr>

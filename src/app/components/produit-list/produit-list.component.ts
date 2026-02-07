@@ -31,8 +31,11 @@ export class ProduitListComponent implements OnInit {
   prix_min_range: number = 0;
   prix_max_range: number = 1000000;
   
-  // ✅ Variables pour les filtres spéciaux
-  filtre_special: string = 'tous'; // 'tous', 'nouveau', 'populaire', 'promo', 'bestseller'
+  // Variables pour les filtres spéciaux
+  filtre_special: string = 'tous';
+  
+  // AJOUTER RECHERCHE
+  searchText: string = '';
   
   isFiltering: boolean = false;
   isLoadingSpecial: boolean = false;
@@ -150,45 +153,51 @@ export class ProduitListComponent implements OnInit {
   }
 
   // Charger les produits spéciaux
-  loadSpecialProduits(): void {
-    this.isLoadingSpecial = true;
-    console.log('Filtre spécial:', this.filtre_special);
-    let request$;
-    
-    switch(this.filtre_special) {
-      case 'nouveau':
-        request$ = this.produitService.getNewProduits();
-        break;
-      case 'populaire':
-        request$ = this.produitService.getPopularProduits();
-        break;
-      case 'bestseller':
-        request$ = this.produitService.getBestSellerProduits();
-        break;
-      case 'promo':
-        request$ = this.produitService.getPromotedProduits();
-        break;
-      default:
-        this.loadProduits();
-        return;
-    }
-    
-    request$.subscribe({
-      next: (response) => {
-        console.log('Produits spéciaux reçus:', response);
-        this.produits = response.data || response;
-        this.filteredProduits = this.produits;
-        this.isLoadingSpecial = false;
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        console.error('Erreur chargement produits spéciaux:', err);
-        this.isLoadingSpecial = false;
-      }
-    });
+loadSpecialProduits(): void {
+  this.isLoadingSpecial = true;
+  console.log('Filtre spécial:', this.filtre_special);
+
+  let request$;
+
+  switch(this.filtre_special) {
+    case 'nouveau':
+      request$ = this.produitService.getNewProduits();
+      break;
+    case 'populaire':
+      request$ = this.produitService.getPopularProduits();
+      break;
+    case 'bestseller':
+      request$ = this.produitService.getBestSellerProduits();
+      break;
+    case 'promo':
+      request$ = this.produitService.getPromotedProduits();
+      break;
+    default:
+      this.loadProduits();
+      return;
   }
 
-  // Filtrer les produits (boutique ET prix)
+  request$.subscribe({
+    next: (response) => {
+      console.log('Produits spéciaux reçus:', response);
+
+      this.produits = response.data || response;
+
+      // PAS DE RECALL
+      this.filteredProduits = this.produits;
+
+      this.isLoadingSpecial = false;
+      this.cdr.markForCheck();
+    },
+    error: (err) => {
+      console.error('Erreur chargement produits spéciaux:', err);
+      this.isLoadingSpecial = false;
+    }
+  });
+}
+
+
+  // FILTRER LES PRODUITS (avec recherche, boutique, prix et filtre spécial)
   filterProduits(): void {
     // Si un filtre spécial est sélectionné, charger les produits correspondants
     if (this.filtre_special !== 'tous') {
@@ -209,15 +218,35 @@ export class ProduitListComponent implements OnInit {
       
       const matchPrice = price >= this.prix_min && price <= this.prix_max;
       
-      return matchBoutique && matchPrice;
+      // FILTRER PAR RECHERCHE (nom, description, boutique)
+      const searchLower = this.searchText.toLowerCase();
+      const boutiqueName = produit.store_id?.name?.toLowerCase() || '';
+      
+      const matchSearch = !this.searchText || 
+        produit.nom_prod.toLowerCase().includes(searchLower) ||
+        (produit.descriptions && produit.descriptions.toLowerCase().includes(searchLower)) ||
+        boutiqueName.includes(searchLower);
+      
+      return matchBoutique && matchPrice && matchSearch;
     });
     
     this.isFiltering = this.boutique_selectionnee !== '' || 
                        this.prix_min > 0 || 
-                       this.prix_max < this.prix_max_range;
+                       this.prix_max < this.prix_max_range ||
+                       this.searchText !== '';
     
     console.log('Produits filtrés:', this.filteredProduits.length);
     this.cdr.markForCheck();
+
+
+    //Anti spam
+    if (this.filtre_special !== 'tous') {
+      if (!this.isLoadingSpecial) {
+        this.loadSpecialProduits();
+      }
+      return;
+}
+
   }
 
   // Réinitialiser les filtres
@@ -226,6 +255,7 @@ export class ProduitListComponent implements OnInit {
     this.prix_min = 0;
     this.prix_max = this.prix_max_range;
     this.filtre_special = 'tous';
+    this.searchText = ''; // RÉINITIALISER LA RECHERCHE
     this.loadProduits();
     this.isFiltering = false;
     this.cdr.markForCheck();
@@ -264,11 +294,9 @@ export class ProduitListComponent implements OnInit {
       return;
     }
 
-    // Default quantity 1
     this.panierService.addToPanier(produit._id!, 1).subscribe({
       next: (res) => {
         alert('Produit ajouté au panier !');
-        // Optional: navigate to cart or stay
       },
       error: (err: string) => {
         console.error(err);
@@ -277,19 +305,26 @@ export class ProduitListComponent implements OnInit {
     });
   }
 
-  // Afficher le badge du produit
-  getProductBadge(produit: Produit): string {
-    if (produit.isNew) return 'NOUVEAU';
-    if (produit.isBestSeller) return 'BEST-SELLER';
-    if (produit.isPromoted) return 'PROMO';
-    return '';
-  }
-
-  // Couleur du badge
-  getBadgeColor(produit: Produit): string {
-    if (produit.isNew) return '#28a745'; // vert
-    if (produit.isBestSeller) return '#ff6b6b'; // rouge
-    if (produit.isPromoted) return '#ffc107'; // jaune
-    return '';
+  // AFFICHER TOUS LES BADGES DU PRODUIT
+  getProductBadges(produit: Produit): { text: string, color: string }[] {
+    const badges: { text: string, color: string }[] = [];
+    
+    if (produit.isNew) {
+      badges.push({ text: 'NOUVEAU', color: '#28a745' });
+    }
+    
+    if (produit.isBestSeller) {
+      badges.push({ text: 'BEST-SELLER', color: '#ff6b6b' });
+    }
+    
+    if (produit.isPromoted) {
+      badges.push({ text: 'PROMO', color: '#ffc107' });
+    }
+    
+    if ((produit.purchaseCount || 0) > 50) {
+      badges.push({ text: 'POPULAIRE', color: '#007bff' });
+    }
+    
+    return badges;
   }
 }
