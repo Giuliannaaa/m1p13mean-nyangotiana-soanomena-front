@@ -29,6 +29,23 @@ export class BoutiqueService {
     return this.http.get<Boutique[]>(`${this.apiUrl}?categoryId=${categoryId}`, { headers: this.getHeaders() });
   }
 
+  // LES FILTRES AVANCÉS
+  getNewBoutiques(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/filter/new`, { headers: this.getHeaders() });
+  }
+
+  getPopularBoutiques(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/filter/popular`, { headers: this.getHeaders() });
+  }
+
+  getFeaturedBoutiques(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/filter/featured`, { headers: this.getHeaders() });
+  }
+
+  getTopRatedBoutiques(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/filter/top-rated`, { headers: this.getHeaders() });
+  }
+
   getBoutiqueById(id: string): Observable<Boutique> {
     return this.http.get<Boutique>(`${this.apiUrl}/${id}`);
   }
@@ -51,5 +68,15 @@ export class BoutiqueService {
 
   getBoutiqueByOwner(ownerId: string): Observable<Boutique[]> {
     return this.http.get<Boutique[]>(`${this.apiUrl}/owner/${ownerId}`);
+  }
+
+  // AJOUTER UN FOLLOWER
+  addFollower(id: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/follow`, {}, { headers: this.getHeaders() });
+  }
+
+  // NOTER UNE BOUTIQUE
+  rateBoutique(id: string, rating: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/rate`, { rating }, { headers: this.getHeaders() });
   }
 }
