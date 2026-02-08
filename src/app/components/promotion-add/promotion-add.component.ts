@@ -39,39 +39,17 @@ export class PromotionAddComponent implements OnInit {
 
   ngOnInit(): void {
     const role = this.authService.getRole();
-    this.isBoutique = role === 'Boutique';
-
-    if (this.isBoutique) {
-      const userId = this.authService.getUserId();
-      if (userId) {
-        this.boutiqueService.getBoutiqueByOwner(userId).subscribe({
-          next: (boutiques) => {
-            if (boutiques && boutiques.length > 0) {
-              this.boutiqueId = boutiques[0]._id;
-            }
-            this.loadProduits();
-          },
-          error: (err) => {
-            console.error('Erreur boutique:', err);
-            this.loadProduits();
-          }
-        });
-      } else {
-        this.loadProduits();
-      }
-    } else {
-      this.loadProduits();
+    if (role !== 'Admin') {
+      this.router.navigate(['/login']);
+      return;
     }
+    this.loadProduits();
   }
 
   loadProduits(): void {
     this.produitService.getProduits().subscribe({
       next: (data) => {
-        if (this.isBoutique && this.boutiqueId) {
-          this.produits = data.data.filter((p: any) => p.store_id === this.boutiqueId || (p.store_id && p.store_id._id === this.boutiqueId));
-        } else {
-          this.produits = data.data;
-        }
+        this.produits = data.data;
       },
       error: (err) => console.error(err)
     });
@@ -86,7 +64,7 @@ export class PromotionAddComponent implements OnInit {
     this.promotionService.addPromotion(this.newPromotion).subscribe({
       next: () => {
         alert('Promotion ajoutée avec succès 🎉');
-        this.router.navigate(['/api/promotions']);
+        this.router.navigate(['/promotions']);
       },
       error: (err) => {
         console.error(err);

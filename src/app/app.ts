@@ -94,7 +94,7 @@ export class App {
         this.closeCartModal();
         this.cartData = { items: [], total: 0 };
         // Redirect to purchases page
-        this.router.navigate(['/api/achats']);
+        this.router.navigate(['/achats']);
       },
       error: (err) => {
         alert('Erreur lors de la validation: ' + (err.error?.error || 'Erreur serveur'));

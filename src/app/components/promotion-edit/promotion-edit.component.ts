@@ -13,6 +13,7 @@ import { BoutiqueService } from '../../services/boutique/boutique.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './promotion-edit.component.html',
+  styleUrls: ['./promotion-edit.component.css'],
 })
 export class PromotionEditComponent implements OnInit {
 
@@ -42,39 +43,17 @@ export class PromotionEditComponent implements OnInit {
   ngOnInit(): void {
     this.promotionId = this.route.snapshot.paramMap.get('id')!;
     const role = this.authService.getRole();
-    this.isBoutique = role === 'Boutique';
-
-    if (this.isBoutique) {
-      const userId = this.authService.getUserId();
-      if (userId) {
-        this.boutiqueService.getBoutiqueByOwner(userId).subscribe({
-          next: (boutiques) => {
-            if (boutiques && boutiques.length > 0) {
-              this.boutiqueId = boutiques[0]._id;
-            }
-            this.loadProduits();
-          },
-          error: (err) => {
-            console.error('Erreur boutique:', err);
-            this.loadProduits();
-          }
-        });
-      } else {
-        this.loadProduits();
-      }
-    } else {
-      this.loadProduits();
+    if (role !== 'Admin') {
+      this.router.navigate(['/login']);
+      return;
     }
+    this.loadProduits();
     this.loadPromotion();
   }
 
   loadProduits(): void {
     this.produitService.getProduits().subscribe(data => {
-      if (this.isBoutique && this.boutiqueId) {
-        this.produits = data.data.filter((p: any) => p.store_id === this.boutiqueId || (p.store_id && p.store_id._id === this.boutiqueId));
-      } else {
-        this.produits = data.data;
-      }
+      this.produits = data.data;
     });
   }
 

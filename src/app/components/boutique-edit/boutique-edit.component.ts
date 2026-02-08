@@ -64,7 +64,6 @@ export class BoutiqueEditComponent implements OnInit {
         this.categorieService.getCategories().subscribe({
             next: (data) => {
                 this.categories = data;
-                console.log(this.categories);
             },
             error: (err) => console.error('Erreur catégories', err)
         });
@@ -74,7 +73,6 @@ export class BoutiqueEditComponent implements OnInit {
         this.boutiqueService.getBoutiqueById(this.boutiqueId).subscribe({
             next: (data) => {
                 this.boutique = data;
-                console.log("boutique: ", this.boutique);
 
                 if (data.owner && data.owner._id) {
                     this.boutique.ownerId = data.owner._id;
