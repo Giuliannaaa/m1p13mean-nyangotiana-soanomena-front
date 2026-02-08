@@ -2,10 +2,10 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { BoutiqueService } from '../../services/boutique.service';
-import { CategorieService } from '../../services/categorie.service';
-import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
+import { CategorieService } from '../../services/categorie/categorie.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
     selector: 'app-boutique-edit',

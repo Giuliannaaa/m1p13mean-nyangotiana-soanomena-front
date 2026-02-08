@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { PromotionService } from '../../services/promotion.service';
+import { PromotionService } from '../../services/promotion/promotion.service';
 
 @Component({
   selector: 'app-promotion-list',

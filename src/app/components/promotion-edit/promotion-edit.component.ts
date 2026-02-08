@@ -3,10 +3,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { PromotionService } from '../../services/promotion.service';
-import { ProduitService } from '../../services/produits.service';
-import { AuthService } from '../../services/auth.service';
-import { BoutiqueService } from '../../services/boutique.service';
+import { PromotionService } from '../../services/promotion/promotion.service';
+import { ProduitService } from '../../services/produits/produits.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
 
 @Component({
   selector: 'app-promotion-edit',

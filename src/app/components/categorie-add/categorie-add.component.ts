@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { CategorieService } from '../../services/categorie.service';
-import { AuthService } from '../../services/auth.service';
+import { CategorieService } from '../../services/categorie/categorie.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-categorie-add',

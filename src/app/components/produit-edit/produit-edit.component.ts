@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ProduitService } from '../../services/produits.service';
+import { ProduitService } from '../../services/produits/produits.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { BoutiqueService } from '../../services/boutique.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
 
 @Component({
   selector: 'app-produit-edit',

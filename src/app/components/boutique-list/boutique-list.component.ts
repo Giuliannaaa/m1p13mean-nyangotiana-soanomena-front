@@ -2,11 +2,11 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { BoutiqueService } from '../../services/boutique.service';
-import { CategorieService } from '../../services/categorie.service';
-import { UserService } from '../../services/user.service';
-import { AuthService } from '../../services/auth.service';
-import { SuiviService } from '../../services/suivi.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
+import { CategorieService } from '../../services/categorie/categorie.service';
+import { UserService } from '../../services/user/user.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { SuiviService } from '../../services/suivi/suivi.service';
 
 @Component({
     selector: 'app-boutique-list',

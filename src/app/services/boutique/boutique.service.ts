@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environnements/environnement';
+import { environment } from '../../../environnements/environnement';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Boutique } from '../models/boutique.model';
-import { AuthService } from './auth.service';
+import { Boutique } from '../../models/boutique.model';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
