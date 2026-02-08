@@ -25,11 +25,14 @@ export class BoutiqueAddComponent implements OnInit {
       nif: '',
       stat: '',
       rent: ''
-    }
+    },
+    images: []
   };
 
   categories: any[] = [];
   users: any[] = [];
+  selectedFiles: File[] = [];
+  previews: string[] = [];
 
   private boutiqueService = inject(BoutiqueService);
   private categorieService = inject(CategorieService);
@@ -70,16 +73,49 @@ export class BoutiqueAddComponent implements OnInit {
   }
 
   addBoutique(): void {
-    const newBoutique: any = { ...this.boutique };
+    const formData = new FormData();
 
-    this.boutiqueService.createBoutique(newBoutique).subscribe({
+    // Appender les champs simples
+    formData.append('name', this.boutique.name);
+    formData.append('description', this.boutique.description);
+    formData.append('categoryId', this.boutique.categoryId);
+    formData.append('ownerId', this.boutique.ownerId);
+    formData.append('isValidated', String(this.boutique.isValidated));
+
+    // Appender les objets (JSON stringify nécessaire pour express-fileupload avec parseNested: true)
+    formData.append('legal', JSON.stringify(this.boutique.legal));
+
+    // Appender les images
+    if (this.selectedFiles && this.selectedFiles.length > 0) {
+      for (let i = 0; i < this.selectedFiles.length; i++) {
+        formData.append('images', this.selectedFiles[i]);
+      }
+    }
+
+    this.boutiqueService.createBoutique(formData).subscribe({
       next: () => {
         this.router.navigate(['/boutiques']);
       },
       error: (err) => {
         console.error('Erreur lors de l\'ajout', err);
-        alert('Une erreur est survenue lors de l\'ajout de la boutique');
+        alert('Une erreur est survenue lors de l\'ajout de la boutique : ' + (err.error?.message || err.message));
       }
     });
+  }
+
+
+  onImageSelected(event: any): void {
+    if (event.target.files && event.target.files.length > 0) {
+      this.selectedFiles = Array.from(event.target.files);
+      this.previews = [];
+
+      this.selectedFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.previews.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
   }
 }
