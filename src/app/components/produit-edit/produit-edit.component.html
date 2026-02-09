@@ -81,9 +81,8 @@
               <span>🔄 Remplacer l'image</span>
             </div>
           </div>
-          <div class="current-image-preview" *ngIf="produit.image_preview || produit.image_Url">
-            <img [src]="produit.image_preview || ('http://localhost:5000/' + produit.image_Url)"
-              alt="Image du produit" />
+          <div class="current-image-preview" *ngIf="produit.image_Url">
+            <img [src]="('http://localhost:5000/' + produit.image_Url)" alt="Image du produit" />
             <span class="preview-label">Aperçu actuel</span>
           </div>
         </div>

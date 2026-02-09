@@ -57,6 +57,27 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label for="images">Image(s) du boutique</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="images" (change)="onImageSelected($event)" class="file-input" multiple />
+                    <div class="file-input-label">
+                        <span>📁 Choisir des images</span>
+                    </div>
+                </div>
+
+                <!-- Aperçu des nouvelles images -->
+                @if (previews.length > 0) {
+                <div class="image-previews-grid mt-3">
+                    @for (preview of previews; track preview) {
+                    <div class="preview-item">
+                        <img [src]="preview" alt="Prévisualisation" class="img-preview">
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
             <div class="form-actions">
                 <button type="button" routerLink="/boutiques" class="btn-secondary">Annuler</button>
                 <button type="submit" [disabled]="boutiqueForm.invalid" class="btn-primary">Ajouter la boutique</button>

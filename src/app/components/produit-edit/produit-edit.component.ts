@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ProduitService } from '../../services/produits.service';
+import { ProduitService } from '../../services/produits/produits.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { BoutiqueService } from '../../services/boutique.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
 
 @Component({
   selector: 'app-produit-edit',
@@ -39,9 +39,10 @@ export class ProduitEditComponent {
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
-    this.produitId = id; // FIX: Stocker l'ID
+    this.produitId = id;
+
     this.produitService.getProduitById(id).subscribe((response: any) => {
-      console.log('Produit à modifier (raw):', response); // DEBUG
+      console.log('Produit à modifier (raw):', response);
 
       // Adaptation selon la structure de la réponse (response.data ou response direct)
       const data = response.data || response;
@@ -57,14 +58,16 @@ export class ProduitEditComponent {
         this.produit.livraison = { disponibilite: false, frais: 0 };
       }
 
-      // Si prix_unitaire est un objet Decimal128 avec $numberDecimal
+      // Mapping propre du prix (Decimal128 ou number)
       if (this.produit.prix_unitaire && this.produit.prix_unitaire.$numberDecimal) {
         this.produit.prix_unitaire_val = parseFloat(this.produit.prix_unitaire.$numberDecimal);
       } else {
         this.produit.prix_unitaire_val = this.produit.prix_unitaire;
       }
-      console.log('Produit après mapping:', this.produit); // DEBUG
+
+      // console.log('Produit après mapping:', this.produit);
     });
+
     this.loadBoutiques();
   }
 
@@ -88,8 +91,19 @@ export class ProduitEditComponent {
    */
 
   loadBoutiques() {
-    this.boutiqueService.getAllBoutiques().subscribe(data => {
-      this.boutiques = data;
+    this.boutiqueService.getAllBoutiques().subscribe({
+      next: (response: any) => {
+        // Gérer le format { data: [...] } ou [...]
+        if (response && response.data) {
+          this.boutiques = response.data;
+        } else {
+          this.boutiques = response;
+        }
+        // console.log('Boutiques chargées:', this.boutiques);
+      },
+      error: (err) => {
+        console.error('Erreur chargement boutiques:', err);
+      }
     });
   }
 

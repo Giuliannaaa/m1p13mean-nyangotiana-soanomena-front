@@ -1,82 +1,67 @@
-<div>
-  <h1>Ajouter une promotion</h1>
+<div class="boutique-form-container">
+  <div class="glass-card form-card">
+    <h1>Nouvelle Promotion</h1>
 
-  <form (ngSubmit)="addPromotion()">
+    <form (ngSubmit)="addPromotion()" #promoForm="ngForm" class="modern-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="prod_id">Produit *</label>
+          <select id="prod_id" name="prod_id" [(ngModel)]="newPromotion.prod_id" required class="form-control">
+            <option value="" disabled>Sélectionner un produit</option>
+            <option style="color: black;" *ngFor="let prod of produits" [value]="prod._id">
+              {{ prod.nom_prod }}
+            </option>
+          </select>
+        </div>
 
-    <!-- PRODUIT -->
-    <div>
-      <label>Produit :</label>
-      <select [(ngModel)]="newPromotion.prod_id" name="prod_id" required>
-        <option value="">-- Sélectionner un produit --</option>
-        <option *ngFor="let prod of produits" [value]="prod._id">
-          {{ prod.nom_prod }}
-        </option>
-      </select>
-    </div>
+        <div class="form-group">
+          <label for="type_prom">Type de promotion *</label>
+          <select id="type_prom" name="type_prom" [(ngModel)]="newPromotion.type_prom" required class="form-control">
+            <option style="color: black;" value="POURCENTAGE">Pourcentage (%)</option>
+            <option style="color: black;" value="MONTANT">Montant fixe (Ar)</option>
+          </select>
+        </div>
+      </div>
 
-    <!-- TYPE PROMOTION -->
-    <div>
-      <label>Type de promotion :</label>
-      <select [(ngModel)]="newPromotion.type_prom" name="type_prom">
-        <option value="POURCENTAGE">Pourcentage (%)</option>
-        <option value="MONTANT">Montant fixe</option>
-      </select>
-    </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="montant">Montant / Valeur *</label>
+          <input type="number" id="montant" name="montant" [(ngModel)]="newPromotion.montant" required
+            placeholder="Ex: 20 ou 5000" class="form-control" />
+        </div>
 
-    <!-- MONTANT -->
-    <div>
-      <label>Montant :</label>
-      <input
-        type="number"
-        [(ngModel)]="newPromotion.montant"
-        name="montant"
-        required
-      />
-    </div>
+        <div class="form-group">
+          <label for="code_promo">Code Promo (Optionnel)</label>
+          <input type="text" id="code_promo" name="code_promo" [(ngModel)]="newPromotion.code_promo"
+            placeholder="Ex: SOLDES2024" class="form-control" />
+        </div>
+      </div>
 
-    <!-- CODE PROMO -->
-    <div>
-      <label>Code promo :</label>
-      <input
-        type="text"
-        [(ngModel)]="newPromotion.code_promo"
-        name="code_promo"
-      />
-    </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="debut">Date de début *</label>
+          <input type="date" id="debut" name="debut" [(ngModel)]="newPromotion.debut" required class="form-control" />
+        </div>
 
-    <!-- DATES -->
-    <div>
-      <label>Date début :</label>
-      <input
-        type="date"
-        [(ngModel)]="newPromotion.debut"
-        name="debut"
-        required
-      />
-    </div>
+        <div class="form-group">
+          <label for="fin">Date de fin *</label>
+          <input type="date" id="fin" name="fin" [(ngModel)]="newPromotion.fin" required class="form-control" />
+        </div>
+      </div>
 
-    <div>
-      <label>Date fin :</label>
-      <input
-        type="date"
-        [(ngModel)]="newPromotion.fin"
-        name="fin"
-        required
-      />
-    </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" name="est_Active" [(ngModel)]="newPromotion.est_Active">
+          Promotion active dès maintenant
+        </label>
+      </div>
 
-    <!-- ACTIVE -->
-    <div>
-      <label>
-        <input
-          type="checkbox"
-          [(ngModel)]="newPromotion.est_Active"
-          name="est_Active"
-        />
-        Promotion active
-      </label>
-    </div>
-
-    <button type="submit">Ajouter la promotion</button>
-  </form>
+      <div class="form-actions">
+        <button type="button" routerLink="/promotions" class="btn-secondary">Annuler</button>
+        <button type="submit" [disabled]="!promoForm.form.valid" class="btn-primary">
+          Créer la promotion
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

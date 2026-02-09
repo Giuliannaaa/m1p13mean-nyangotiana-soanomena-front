@@ -3,16 +3,17 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { PromotionService } from '../../services/promotion.service';
-import { ProduitService } from '../../services/produits.service';
-import { AuthService } from '../../services/auth.service';
-import { BoutiqueService } from '../../services/boutique.service';
+import { PromotionService } from '../../services/promotion/promotion.service';
+import { ProduitService } from '../../services/produits/produits.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
 
 @Component({
   selector: 'app-promotion-edit',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './promotion-edit.component.html',
+  styleUrls: ['./promotion-edit.component.css'],
 })
 export class PromotionEditComponent implements OnInit {
 
@@ -42,39 +43,17 @@ export class PromotionEditComponent implements OnInit {
   ngOnInit(): void {
     this.promotionId = this.route.snapshot.paramMap.get('id')!;
     const role = this.authService.getRole();
-    this.isBoutique = role === 'Boutique';
-
-    if (this.isBoutique) {
-      const userId = this.authService.getUserId();
-      if (userId) {
-        this.boutiqueService.getBoutiqueByOwner(userId).subscribe({
-          next: (boutiques) => {
-            if (boutiques && boutiques.length > 0) {
-              this.boutiqueId = boutiques[0]._id;
-            }
-            this.loadProduits();
-          },
-          error: (err) => {
-            console.error('Erreur boutique:', err);
-            this.loadProduits();
-          }
-        });
-      } else {
-        this.loadProduits();
-      }
-    } else {
-      this.loadProduits();
+    if (role !== 'Admin') {
+      this.router.navigate(['/login']);
+      return;
     }
+    this.loadProduits();
     this.loadPromotion();
   }
 
   loadProduits(): void {
     this.produitService.getProduits().subscribe(data => {
-      if (this.isBoutique && this.boutiqueId) {
-        this.produits = data.data.filter((p: any) => p.store_id === this.boutiqueId || (p.store_id && p.store_id._id === this.boutiqueId));
-      } else {
-        this.produits = data.data;
-      }
+      this.produits = data.data;
     });
   }
 
