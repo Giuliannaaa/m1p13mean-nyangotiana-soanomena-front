@@ -57,16 +57,16 @@ export const routes: Routes = [
 
     //Achat
     { path: 'achats/ajouter/:prod_id', component: AchatAddComponent },
-    { path: 'api/achats', component: AchatListComponent },
+    { path: 'achats', component: AchatListComponent },
 
     // Panier
     { path: 'panier', component: PanierComponent },
 
     //CRUD promotion
 
-    { path: 'api/promotions', component: PromotionListComponent },
-    { path: 'api/promotions/ajouter', component: PromotionAddComponent },
-    { path: 'api/promotions/modifier/:id', component: PromotionEditComponent },
+    { path: 'promotions', component: PromotionListComponent },
+    { path: 'promotions/ajouter', component: PromotionAddComponent },
+    { path: 'promotions/modifier/:id', component: PromotionEditComponent },
     { path: 'admin/utilisateurs', component: UserListComponent },
 
 ];

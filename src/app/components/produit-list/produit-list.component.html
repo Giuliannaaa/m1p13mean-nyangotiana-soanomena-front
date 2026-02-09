@@ -8,23 +8,18 @@
     <div style="margin-bottom: 20px; padding: 15px; border-radius: 8px; border: 2px solid #e0e0e0;">
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <div style="flex: 1; min-width: 250px;">
-                <input 
-                    type="text" 
-                    [(ngModel)]="searchText" 
-                    (keyup)="filterProduits()"
-                    placeholder="Rechercher un produit (nom, description, boutique)..."
-                    style="
+                <input type="text" [(ngModel)]="searchText" (keyup)="filterProduits()"
+                    placeholder="Rechercher un produit (nom, description, boutique)..." style="
                         width: 100%; 
                         padding: 10px 15px; 
                         border: 1px solid #ddd; 
                         border-radius: 6px; 
                         font-size: 14px;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    "
-                />
+                    " />
             </div>
         </div>
-        
+
         <p *ngIf="searchText" style="margin-top: 10px; color: #666; font-size: 13px;">
             Résultats de recherche pour: <strong>"{{ searchText }}"</strong>
         </p>
@@ -33,15 +28,12 @@
     <!-- Section de filtrage (Spécial + Boutique + Prix) -->
     <div style="margin-bottom: 20px; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
         <h3 style="margin-top: 0;">Filtres avancés</h3>
-        
+
         <!-- Filtre Spécial (Nouveau, Populaire, etc.) -->
         <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 8px; font-weight: bold;">Catégorie spéciale</label>
-            <select 
-                [(ngModel)]="filtre_special" 
-                (change)="filterProduits()"
-                style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 100%; max-width: 300px;"
-            >
+            <select [(ngModel)]="filtre_special" (change)="filterProduits()"
+                style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 100%; max-width: 300px;">
                 <option value="tous">Tous les produits</option>
                 <option value="nouveau">Nouveaux produits</option>
                 <option value="populaire">Produits populaires</option>
@@ -53,11 +45,8 @@
         <!-- Filtre Boutique -->
         <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 8px; font-weight: bold;">Boutique</label>
-            <select 
-                [(ngModel)]="boutique_selectionnee" 
-                (change)="filterProduits()"
-                style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 100%; max-width: 300px;"
-            >
+            <select [(ngModel)]="boutique_selectionnee" (change)="filterProduits()"
+                style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 100%; max-width: 300px;">
                 <option value="">-- Toutes les boutiques --</option>
                 <option *ngFor="let boutique of boutiques" [value]="boutique._id || ''">
                     {{ boutique.name }}
@@ -70,48 +59,34 @@
             <label style="display: block; margin-bottom: 8px; font-weight: bold;">
                 Prix : {{ prix_min | number:'1.0-0' }} Ar - {{ prix_max | number:'1.0-0' }} Ar
             </label>
-            
+
             <!-- Slider Prix Min -->
             <div style="margin-bottom: 10px;">
                 <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Prix minimum</label>
-                <input 
-                    type="range" 
-                    [(ngModel)]="prix_min" 
-                    (change)="filterProduits()"
-                    [min]="0" 
-                    [max]="prix_max_range"
-                    style="width: 100%; max-width: 300px;"
-                />
+                <input type="range" [(ngModel)]="prix_min" (change)="filterProduits()" [min]="0" [max]="prix_max_range"
+                    style="width: 100%; max-width: 300px;" />
                 <span style="font-size: 12px; color: #666;">{{ prix_min | number:'1.0-0' }} Ar</span>
             </div>
-            
+
             <!-- Slider Prix Max -->
             <div style="margin-bottom: 10px;">
                 <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Prix maximum</label>
-                <input 
-                    type="range" 
-                    [(ngModel)]="prix_max" 
-                    (change)="filterProduits()"
-                    [min]="0" 
-                    [max]="prix_max_range"
-                    style="width: 100%; max-width: 300px;"
-                />
+                <input type="range" [(ngModel)]="prix_max" (change)="filterProduits()" [min]="0" [max]="prix_max_range"
+                    style="width: 100%; max-width: 300px;" />
                 <span style="font-size: 12px; color: #666;">{{ prix_max | number:'1.0-0' }} Ar</span>
             </div>
         </div>
 
         <!-- Bouton Réinitialiser -->
         <div>
-            <button 
-                (click)="resetFilter()" 
-                style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;"
-            >
+            <button (click)="resetFilter()"
+                style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
                 Réinitialiser tous les filtres
             </button>
         </div>
-        
+
         <p *ngIf="isFiltering || isLoadingSpecial" style="margin-top: 10px; color: #007bff; font-size: 14px;">
-            <strong *ngIf="!isLoadingSpecial">Résultats :</strong> 
+            <strong *ngIf="!isLoadingSpecial">Résultats :</strong>
             <strong *ngIf="isLoadingSpecial">Chargement...</strong>
             {{ filteredProduits.length }} produit(s) / {{ produits.length }} total
         </p>
@@ -145,24 +120,24 @@
                 @for (produit of filteredProduits; track produit._id) {
                 <tr>
                     <td class="td-image" style="position: relative;">
-                        <img [src]="produit.image_preview || ('http://localhost:5000/' + produit.image_Url)"
-                            alt="Image du produit" class="product-thumb" />
-                        
+                        <img [src]="produit.image_Url ? ('http://localhost:5000/' + produit.image_Url) : 'img/png/elementor-placeholder-image.png'"
+                            alt="{{ produit.nom_prod }}" class="product-thumb" />
+
                         <!-- AFFICHER PLUSIEURS BADGES -->
-                        <div style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
+                        <div
+                            style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
                             @for (badge of getProductBadges(produit); track badge.text) {
-                                <span style="
-                                    background-color: {{ badge.color }}; 
-                                    color: {{ badge.color === '#ffc107' ? 'black' : 'white' }}; 
+                            <span [style.background-color]="badge.color"
+                                [style.color]="badge.color === '#ffc107' ? 'black' : 'white'" style="
                                     padding: 2px 6px; 
                                     border-radius: 3px; 
                                     font-size: 10px; 
                                     font-weight: bold;
                                     text-shadow: 0 1px 2px rgba(0,0,0,0.2);
                                     white-space: nowrap;
-                                ">
-                                    {{ badge.text }}
-                                </span>
+                            ">
+                                {{ badge.text }}
+                            </span>
                             }
                         </div>
                     </td>

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environnements/environnement';
+import { environment } from '../../../environnements/environnement';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Boutique } from '../models/boutique.model';
-import { AuthService } from './auth.service';
+import { Boutique } from '../../models/boutique.model';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -51,11 +51,11 @@ export class BoutiqueService {
   }
 
   createBoutique(boutique: any): Observable<Boutique> {
-    return this.http.post<Boutique>(this.apiUrl, boutique);
+    return this.http.post<Boutique>(this.apiUrl, boutique, { headers: this.getHeaders() });
   }
 
   updateBoutique(id: string, boutique: any): Observable<Boutique> {
-    return this.http.put<Boutique>(`${this.apiUrl}/${id}`, boutique);
+    return this.http.put<Boutique>(`${this.apiUrl}/${id}`, boutique, { headers: this.getHeaders() });
   }
 
   deleteBoutique(id: string): Observable<Boutique> {
@@ -64,6 +64,10 @@ export class BoutiqueService {
 
   validateBoutique(id: string, isValidated: boolean): Observable<Boutique> {
     return this.http.patch<Boutique>(`${this.apiUrl}/${id}/toggle-status`, { isValidated });
+  }
+
+  deleteStoreImage(storeId: string, imageId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${storeId}/images/${imageId}`, { headers: this.getHeaders() });
   }
 
   getBoutiqueByOwner(ownerId: string): Observable<Boutique[]> {

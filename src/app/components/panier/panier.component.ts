@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PanierService } from '../../services/panier.service';
+import { PanierService } from '../../services/panier/panier.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 

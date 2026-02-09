@@ -1,50 +1,59 @@
-<p>promotion-list works!</p>
-<div>
-  <h1>Liste des promotions</h1>
+<div class="promotion-list-container">
+  <div class="list-header">
+    <h1>Gestion des Promotions</h1>
+    <button routerLink="/promotions/ajouter" class="btn-primary">Ajouter une promotion</button>
+  </div>
 
-  <a routerLink="/api/promotions/ajouter">Ajouter une promotion</a>
+  <div class="glass-card overflow-hidden">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Type</th>
+          <th>Montant</th>
+          <th>Code</th>
+          <th>Début</th>
+          <th>Fin</th>
+          <th>Statut</th>
+          <th style="text-align: center;">Actions</th>
+        </tr>
+      </thead>
 
-  <table border="1" cellpadding="8" cellspacing="0">
-    <thead>
-      <tr>
-        <th>Produit</th>
-        <th>Type</th>
-        <th>Montant</th>
-        <th>Code</th>
-        <th>Début</th>
-        <th>Fin</th>
-        <th>Active</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let promo of promotions">
-        <td>{{ promo.prod_id?.nom_prod }}</td>
-
-        <td>{{ promo.type_prom }}</td>
-
-        <td>
-          {{ promo.montant?.$numberDecimal | number:'1.0-0' }}
-          <span *ngIf="promo.type_prom === 'POURCENTAGE'">%</span>
-        </td>
-
-        <td>{{ promo.code_promo || '-' }}</td>
-
-        <td>{{ promo.debut | date:'dd/MM/yyyy' }}</td>
-        <td>{{ promo.fin | date:'dd/MM/yyyy' }}</td>
-
-        <td>
-          <span *ngIf="promo.est_Active">Oui</span>
-          <span *ngIf="!promo.est_Active">Non, c'est termine</span>
-        </td>
-
-        <td>
-          <a [routerLink]="['/api/promotions/modifier', promo._id]">Modifier</a>
-          &nbsp;
-          <button (click)="deletePromotion(promo._id)">Supprimer</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <tbody>
+        <tr *ngFor="let promo of promotions">
+          <td class="font-bold">{{ promo.prod_id?.nom_prod || 'Produit inconnu' }}</td>
+          <td>
+            <span style="font-size: 0.9rem; opacity: 0.8;">{{ promo.type_prom }}</span>
+          </td>
+          <td class="price-cell">
+            @if (promo.type_prom === 'POURCENTAGE') {
+            {{ promo.montant?.$numberDecimal | number:'1.0-2' }}%
+            } @else {
+            {{ promo.montant?.$numberDecimal | number:'1.0-0' }} Ar
+            }
+          </td>
+          <td>
+            <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;">
+              {{ promo.code_promo || '-' }}
+            </code>
+          </td>
+          <td><span style="opacity: 0.7; font-size: 0.9rem;">{{ promo.debut | date:'dd/MM/yyyy' }}</span></td>
+          <td><span style="opacity: 0.7; font-size: 0.9rem;">{{ promo.fin | date:'dd/MM/yyyy' }}</span></td>
+          <td>
+            <span class="badge" [ngClass]="promo.est_Active ? 'badge-success' : 'badge-danger'">
+              {{ promo.est_Active ? 'Active' : 'Expirée' }}
+            </span>
+          </td>
+          <td class="actions-cell" style="justify-content: center;">
+            <button [routerLink]="['/promotions/modifier', promo._id]" class="btn-icon" title="Modifier">
+              <img src="/img/svg/icon-update.svg" alt="Modifier">
+            </button>
+            <button (click)="deletePromotion(promo._id)" class="btn-icon btn-delete" title="Supprimer">
+              <img src="/img/svg/icon-delete.svg" alt="Supprimer">
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

@@ -1,8 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AchatService } from '../../services/achat.service';
-import { BoutiqueService } from '../../services/boutique.service';
+import { AchatService } from '../../services/achat/achat.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({

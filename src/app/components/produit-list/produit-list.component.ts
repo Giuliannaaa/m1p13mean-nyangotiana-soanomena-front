@@ -1,13 +1,13 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { ProduitService } from '../../services/produits.service';
-import { BoutiqueService } from '../../services/boutique.service';
+import { ProduitService } from '../../services/produits/produits.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { Produit } from '../../models/produit.model';
 import { Router } from "@angular/router";
-import { PanierService } from '../../services/panier.service';
+import { PanierService } from '../../services/panier/panier.service';
 
 
 @Component({
