@@ -1,4 +1,5 @@
-<a routerLink="/boutiques" routerLinkActive="active">
+<a routerLink="/boutiques" routerLinkActive="active" class="return-link">
+    <img src="/img/svg/icon-arrow.svg" alt="Retour" class="w-5 h-5">
     Retour aux boutiques
 </a>
 <div class="boutique-detail-container" *ngIf="!isLoading; else loading">
@@ -6,6 +7,18 @@
         <!-- Section Produits (Gauche - Scrollable) -->
         <div class="products-side">
             <div class="products-section">
+
+                <!-- Galerie Photos -->
+                <div class="boutique-gallery-section" *ngIf="boutique?.images && boutique!.images!.length > 1">
+                    <div class="gallery-scroll-container">
+                        <ng-container *ngFor="let img of boutique?.images; let i = index">
+                            <div class="gallery-item" *ngIf="i > 0">
+                                <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + i">
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
                 <h2 class="section-title">
                     Collections de la Boutique
                 </h2>
