@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SuiviService } from '../../services/suivi.service';
-import { BoutiqueService } from '../../services/boutique.service';
-import { CategorieService } from '../../services/categorie.service';
-import { UserService } from '../../services/user.service';
-import { AuthService } from '../../services/auth.service';
+import { BoutiqueService } from '../../services/boutique/boutique.service';
+import { CategorieService } from '../../services/categorie/categorie.service';
+import { UserService } from '../../services/user/user.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-mes-suivis',
@@ -18,15 +18,15 @@ import { AuthService } from '../../services/auth.service';
 export class MesSuivisComponent implements OnInit {
   boutiques: any[] = [];
   filteredBoutiques: any[] = [];
-  
+
   categories: any[] = [];
   users: any[] = [];
-  
+
   searchText: string = '';
   categorie_selectionnee: string = '';
   isFiltering: boolean = false;
   isLoading: boolean = false;
-  
+
   private suiviService = inject(SuiviService);
   private boutiqueService = inject(BoutiqueService);
   private categorieService = inject(CategorieService);
@@ -45,16 +45,16 @@ export class MesSuivisComponent implements OnInit {
     this.suiviService.getMesSuivis().subscribe({
       next: (response: any) => {
         console.log('Mes suivis reçus:', response);
-        
+
         // Extraire les IDs des boutiques
         const boutiqueIds = response.data?.map((suivi: any) => suivi.boutique_id._id) || [];
-        
+
         // Charger les détails complets des boutiques
         this.boutiqueService.getAllBoutiques().subscribe({
           next: (boutiques: any) => {
             // Filtrer pour n'afficher que les boutiques suivies
             const allBoutiques = boutiques.data || boutiques;
-            this.boutiques = allBoutiques.filter((b: any) => 
+            this.boutiques = allBoutiques.filter((b: any) =>
               boutiqueIds.includes(b._id)
             );
             this.filteredBoutiques = this.boutiques;
@@ -113,17 +113,17 @@ export class MesSuivisComponent implements OnInit {
   // Filtrer les boutiques
   filterBoutiques(): void {
     this.filteredBoutiques = this.boutiques.filter(boutique => {
-      const matchCategory = !this.categorie_selectionnee || 
+      const matchCategory = !this.categorie_selectionnee ||
         boutique.categoryId === this.categorie_selectionnee;
-      
+
       const searchLower = this.searchText.toLowerCase();
-      const matchSearch = !this.searchText || 
+      const matchSearch = !this.searchText ||
         boutique.name.toLowerCase().includes(searchLower) ||
         (boutique.description && boutique.description.toLowerCase().includes(searchLower));
-      
+
       return matchCategory && matchSearch;
     });
-    
+
     this.isFiltering = this.categorie_selectionnee !== '' || this.searchText !== '';
     this.cdr.markForCheck();
   }

@@ -79,9 +79,9 @@
                 @for (boutique of filteredBoutiques; track boutique._id) {
                 <tr>
                     <td class="font-bold">
-                    <a [routerLink]="['/boutiques', boutique._id]" style="color: #007bff; text-decoration: none;">
-                        {{ boutique.name }}
-                    </a>
+                        <a [routerLink]="['/boutiques', boutique._id]" style="color: #007bff; text-decoration: none;">
+                            {{ boutique.name }}
+                        </a>
                     </td>
                     <td>{{ getCategoryName(boutique.categoryId) }}</td>
                     <td>{{ getOwnerName(boutique.ownerId) }}</td>
@@ -106,17 +106,15 @@
                         <button (click)="validateBoutique(boutique._id, boutique.isValidated)" class="btn-icon"
                             *ngIf="isAdmin" [title]="boutique.isValidated ? 'Désactiver' : 'Activer'">
                             @if (boutique.isValidated) {
-                                <img src="/img/svg/icon-on.svg" alt="Désactiver">
+                            <img src="/img/svg/icon-on.svg" alt="Désactiver">
                             } @else {
-                                <img src="/img/svg/icon-off.svg" alt="Activer">
+                            <img src="/img/svg/icon-off.svg" alt="Activer">
                             }
                         </button>
-                    }
-                    
-                    <!-- Bouton Suivre pour les acheteurs -->
-                    @if (isAcheteur) {
-                        <button 
-                            (click)="toggleSuivreBoutique(boutique._id)"
+
+                        <!-- Bouton Suivre pour les acheteurs -->
+                        @if (isAcheteur) {
+                        <button (click)="toggleSuivreBoutique(boutique._id)"
                             [style.background-color]="isBoutiqueSuivie(boutique._id) ? '#28a745' : '#007bff'"
                             [title]="isBoutiqueSuivie(boutique._id) ? 'Arrêter de suivre' : 'Suivre cette boutique'"
                             style="
@@ -129,12 +127,11 @@
                                 font-weight: bold;
                                 transition: background-color 0.3s;
                                 white-space: nowrap;
-                            "
-                        >
+                            ">
                             {{ isBoutiqueSuivie(boutique._id) ? 'Suivi(e)' : '+ Suivre' }}
                         </button>
-                    }
-                </td>
+                        }
+                    </td>
                 </tr>
                 } @empty {
                 <tr>

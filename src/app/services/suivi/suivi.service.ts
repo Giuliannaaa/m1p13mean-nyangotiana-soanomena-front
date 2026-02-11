@@ -8,8 +8,8 @@ import { Suivi } from '../../models/suivi.model';
   providedIn: 'root'
 })
 export class SuiviService {
-  private apiUrl = `${environment.apiUrl}/suivis`;
-  
+  private apiUrl = `${environment.apiUrl}/api/suivis`;
+
   // Subject pour tracker les boutiques suivies
   private boutiquesSuivies$ = new BehaviorSubject<string[]>([]);
 
