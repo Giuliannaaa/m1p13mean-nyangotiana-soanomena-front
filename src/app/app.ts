@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Import CommonModule for ngIf
-import { AuthService } from './services/auth.service';
-import { PanierService } from './services/panier.service';
+import { AuthService } from './services/auth/auth.service';
+import { PanierService } from './services/panier/panier.service';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from './components/layout/navbar/navbar.component';
@@ -94,7 +94,7 @@ export class App {
         this.closeCartModal();
         this.cartData = { items: [], total: 0 };
         // Redirect to purchases page
-        this.router.navigate(['/api/achats']);
+        this.router.navigate(['/achats']);
       },
       error: (err) => {
         alert('Erreur lors de la validation: ' + (err.error?.error || 'Erreur serveur'));

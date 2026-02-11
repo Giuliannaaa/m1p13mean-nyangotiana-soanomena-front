@@ -31,6 +31,8 @@ import { ProduitDetailComponent } from './components/produit-detail/produit-deta
 import { SignalementsAdminComponent } from './components/signalements-admin/signalements-admin.component';
 import { MesSignalementsComponent } from './components/mes-signalements/mes-signalements.component';
 
+import { BoutiqueDetailComponent } from './components/boutique-detail/boutique-detail.component';
+
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -53,6 +55,7 @@ export const routes: Routes = [
     { path: 'boutiques', component: BoutiqueListComponent },
     { path: 'boutiques/ajouter', component: BoutiqueAddComponent },
     { path: 'boutiques/modifier/:id', component: BoutiqueEditComponent },
+    { path: 'boutique/:id', component: BoutiqueDetailComponent }, // Vue détails boutique
 
     //CRUD produit
 
@@ -62,16 +65,16 @@ export const routes: Routes = [
 
     //Achat
     { path: 'achats/ajouter/:prod_id', component: AchatAddComponent },
-    { path: 'api/achats', component: AchatListComponent },
+    { path: 'achats', component: AchatListComponent },
 
     // Panier
     { path: 'panier', component: PanierComponent },
 
     //CRUD promotion
 
-    { path: 'api/promotions', component: PromotionListComponent },
-    { path: 'api/promotions/ajouter', component: PromotionAddComponent },
-    { path: 'api/promotions/modifier/:id', component: PromotionEditComponent },
+    { path: 'promotions', component: PromotionListComponent },
+    { path: 'promotions/ajouter', component: PromotionAddComponent },
+    { path: 'promotions/modifier/:id', component: PromotionEditComponent },
     { path: 'admin/utilisateurs', component: UserListComponent },
 
     //Liste suivi

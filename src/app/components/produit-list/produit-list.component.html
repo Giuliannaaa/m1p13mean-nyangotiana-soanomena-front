@@ -6,97 +6,96 @@
     @if (isAcheteur) {
         <a routerLink="/mes-signalements" class="nav-link">Mes signalements</a>
     }
-    <!-- Section de filtrage (Spécial + Boutique + Prix) -->
-    <div style="margin-bottom: 20px; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
-        <h3 style="margin-top: 0;">Filtres</h3>
-        
-        <!-- Filtre Spécial (Nouveau, Populaire, etc.) -->
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Catégorie</label>
-            <select 
-                [(ngModel)]="filtre_special" 
-                (change)="filterProduits()"
-                style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 100%; max-width: 300px;"
-            >
-                <option value="tous">Tous les produits</option>
-                <option value="nouveau">Nouveaux produits</option>
-                <option value="populaire">Produits populaires</option>
-                <option value="promo">Produits en promotion</option>
-                <option value="bestseller">Best-sellers</option>
-            </select>
-        </div>
-
-        <!-- Filtre Boutique -->
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Boutique</label>
-            <select 
-                [(ngModel)]="boutique_selectionnee" 
-                (change)="filterProduits()"
-                style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; width: 100%; max-width: 300px;"
-            >
-                <option value="">-- Toutes les boutiques --</option>
-                <option *ngFor="let boutique of boutiques" [value]="boutique._id">
-                    {{ boutique.name }}
-                </option>
-            </select>
-        </div>
-
-        <!-- Filtre Prix -->
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 8px; font-weight: bold;">
-                Prix : {{ prix_min | number:'1.0-0' }} Ar - {{ prix_max | number:'1.0-0' }} Ar
-            </label>
-            
-            <!-- Slider Prix Min -->
-            <div style="margin-bottom: 10px;">
-                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Prix minimum</label>
-                <input 
-                    type="range" 
-                    [(ngModel)]="prix_min" 
-                    (change)="filterProduits()"
-                    [min]="0" 
-                    [max]="prix_max_range"
-                    style="width: 100%; max-width: 300px;"
-                />
-                <span style="font-size: 12px; color: #666;">{{ prix_min | number:'1.0-0' }} Ar</span>
+    <!-- FILTER SECTION (Unified) -->
+    <div class="glass-card filters-container">
+        <!-- Search Bar -->
+        <div class="filters-header">
+            <div class="search-group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clip-rule="evenodd" />
+                </svg>
+                <input type="text" [(ngModel)]="searchText" (keyup)="filterProduits()" class="search-input"
+                    id="search-input" placeholder="Rechercher un produit (nom, description, boutique)..." />
             </div>
-            
-            <!-- Slider Prix Max -->
-            <div style="margin-bottom: 10px;">
-                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Prix maximum</label>
-                <input 
-                    type="range" 
-                    [(ngModel)]="prix_max" 
-                    (change)="filterProduits()"
-                    [min]="0" 
-                    [max]="prix_max_range"
-                    style="width: 100%; max-width: 300px;"
-                />
-                <span style="font-size: 12px; color: #666;">{{ prix_max | number:'1.0-0' }} Ar</span>
+            <p *ngIf="searchText" style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">
+                Résultats pour: <strong class="text-white">"{{ searchText }}"</strong>
+            </p>
+        </div>
+
+        <!-- Advanced Filters Grid -->
+        <div class="filters-actions">
+            <!-- Category Filter -->
+            <div class="filter-group">
+                <label for="category-filter">Catégorie</label>
+                <select id="category-filter" [(ngModel)]="filtre_special" (change)="filterProduits()"
+                    class="filter-select">
+                    <option value="">Toutes les catégories</option>
+                    <option value="tous">Tous les produits</option>
+                    <option value="nouveau">Nouveaux produits</option>
+                    <option value="populaire">Produits populaires</option>
+                    <option value="promo">Produits en promotion</option>
+                    <option value="bestseller">Best-sellers</option>
+                </select>
+            </div>
+
+            <!-- Shop Filter -->
+            <div class="filter-group">
+                <label for="boutique-filter">Boutique</label>
+                <select id="boutique-filter" [(ngModel)]="boutique_selectionnee" (change)="filterProduits()"
+                    class="filter-select">
+                    <option value="">Toutes les boutiques</option>
+                    <option *ngFor="let boutique of boutiques" [value]="boutique._id || ''">
+                        {{ boutique.name }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- Price Filter -->
+            <div class="filter-group">
+                <label>Prix : <span style="color: #fbbf24;">{{ prix_min | number:'1.0-0' }} Ar - {{ prix_max |
+                        number:'1.0-0' }} Ar</span></label>
+                <div class="price-range-container">
+                    <div class="range-inputs">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted); width: 30px;">Min</span>
+                            <input type="range" [(ngModel)]="prix_min" (change)="filterProduits()" [min]="0"
+                                [max]="prix_max_range" class="modern-range" />
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted); width: 30px;">Max</span>
+                            <input type="range" [(ngModel)]="prix_max" (change)="filterProduits()" [min]="0"
+                                [max]="prix_max_range" class="modern-range" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Bouton Réinitialiser -->
-        <div>
-            <button 
-                (click)="resetFilter()" 
-                style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;"
-            >
-                Réinitialiser les filtres
+        <!-- Action Footer -->
+        <div class="filter-actions">
+            <button (click)="resetFilter()" class="btn-icon-reset">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
             </button>
+
+            <div class="results-count">
+                <span *ngIf="!isLoadingSpecial">
+                    {{ filteredProduits.length }} produit(s) trouvé(s)
+                </span>
+                <span *ngIf="isLoadingSpecial">Chargement...</span>
+            </div>
         </div>
-        
-        <p *ngIf="isFiltering || isLoadingSpecial" style="margin-top: 10px; color: #007bff; font-size: 14px;">
-            <strong *ngIf="!isLoadingSpecial">Résultats :</strong> 
-            <strong *ngIf="isLoadingSpecial">Chargement...</strong>
-            {{ filteredProduits.length }} produit(s) / {{ produits.length }} total
-        </p>
     </div>
 
-    <!-- Message si aucun produit -->
-    <div *ngIf="filteredProduits.length === 0" style="text-align: center; padding: 40px;">
-        <p style="font-size: 16px; color: #666;">
-            {{ isFiltering ? 'Aucun produit ne correspond à vos critères' : 'Aucun produit disponible' }}
+    <!-- No Results State -->
+    <div *ngIf="filteredProduits.length === 0" class="no-results">
+        <p>
+            {{ isFiltering || searchText ? 'Aucun produit ne correspond à vos critères de recherche.' : 'Aucun produit
+            disponible pour le moment.' }}
         </p>
     </div>
 
@@ -121,8 +120,8 @@
                 @for (produit of filteredProduits; track produit._id) {
                 <tr>
                     <td class="td-image" style="position: relative;">
-                        <img [src]="produit.image_preview || ('http://localhost:5000/' + produit.image_Url)"
-                            alt="Image du produit" class="product-thumb" />
+                        <img [src]="produit.image_Url ? ('http://localhost:5000/' + produit.image_Url) : 'img/png/elementor-placeholder-image.png'"
+                            alt="{{ produit.nom_prod }}" class="product-thumb" />
                         
                         <!-- AFFICHER PLUSIEURS BADGES -->
                         <div style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
@@ -169,7 +168,7 @@
                     </td>
                     <td *ngIf="isAcheteur">
                         <button (click)="addToPanier(produit)" class="btn-icon-buy" title="Ajouter au Panier">
-                            <i class="fas fa-cart-plus"></i> <img src="/img/svg/icon-cart.svg" alt="Ajouter au Panier">
+                            <img src="/img/svg/icon-cart.svg" alt="Ajouter au Panier">
                         </button>
                     </td>
                 </tr>

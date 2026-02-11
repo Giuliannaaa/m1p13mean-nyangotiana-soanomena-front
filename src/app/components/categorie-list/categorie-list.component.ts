@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CategorieService } from '../../services/categorie.service';
+import { CategorieService } from '../../services/categorie/categorie.service';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-categorie-list',

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProduitService } from '../../services/produits.service';
-import { AchatService } from '../../services/achat.service';
-import { PromotionService } from '../../services/promotion.service';
+import { ProduitService } from '../../services/produits/produits.service';
+import { AchatService } from '../../services/achat/achat.service';
+import { PromotionService } from '../../services/promotion/promotion.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 

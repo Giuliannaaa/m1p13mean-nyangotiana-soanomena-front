@@ -35,7 +35,7 @@
                     rows="4"></textarea>
             </div>
 
-            <div class="form-section">
+            <!-- <div class="form-section">
                 <h3>Informations Légales</h3>
                 <div class="form-grid">
                     <div class="form-group">
@@ -51,6 +51,47 @@
                     <label for="rent">RENT (Patente/Loyer)</label>
                     <input type="text" id="rent" name="rent" [(ngModel)]="boutique.legal.rent" class="form-control">
                 </div>
+            </div> -->
+
+            <div class="form-group">
+                <label>Image(s) actuelle(s)</label>
+                <div class="image-previews-grid mb-3">
+                    @for (img of boutique.images; track img._id) {
+                    <div class="preview-item existing">
+                        <img [src]="getImageUrl(img.url)" alt="Image boutique" class="img-preview">
+                        <button type="button" class="btn-remove" (click)="deleteExistingImage(img._id)">×</button>
+                    </div>
+                    } @empty {
+                    <p class="text-muted">Aucune image pour cette boutique.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="images">Ajouter des image(s)</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="images" (change)="onImageSelected($event)" class="file-input" multiple />
+                    <div class="file-input-label">
+                        <span>📁 Choisir des images</span>
+                    </div>
+                </div>
+
+                <!-- Aperçu des nouvelles images -->
+                @if (previews.length > 0) {
+                <div>
+                    <label for="">Image(s) ajoutée(s)</label>
+                    @if (previews.length > 0) {
+                    <div class="image-previews-grid mt-1">
+                        @for (preview of previews; track preview; let i = $index) {
+                        <div class="preview-item">
+                            <img [src]="preview" alt="Prévisualisation" class="img-preview">
+                            <button type="button" class="btn-remove" (click)="removeNewImage(i)">×</button>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+                }
             </div>
 
             <div class="form-actions">

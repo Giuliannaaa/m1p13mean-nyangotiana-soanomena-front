@@ -4,39 +4,60 @@
         <button *ngIf="isAdmin" routerLink="/boutiques/ajouter" class="btn-primary">Ajouter une boutique</button>
     </div>
 
-    <!-- ✅ Section de filtrage par catégorie -->
-    <div style="margin-bottom: 20px; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
-        <h3 style="margin-top: 0;">Filtrer par catégorie</h3>
-        
-        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <select 
-                [(ngModel)]="categorie_selectionnee" 
-                (change)="filterByCategory()"
-                style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
-            >
-                <option value="">-- Toutes les catégories --</option>
-                <option *ngFor="let categorie of categories" [value]="categorie._id">
-                    {{ categorie.nom_cat }}
-                </option>
-            </select>
-            
-            <button 
-                (click)="resetFilter()" 
-                style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;"
-            >
-                Réinitialiser
-            </button>
+    <!-- SEARCH & FILTERS -->
+    <div class="glass-card filters-container">
+        <div class="filters-header">
+            <div class="search-group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clip-rule="evenodd" />
+                </svg>
+                <input type="text" [(ngModel)]="searchText" (keyup)="filterBoutiques()"
+                    placeholder="Rechercher une boutique par nom..." class="search-input" id="search-input" />
+            </div>
+
+            <div class="filters-actions">
+                <select [(ngModel)]="filtre_special" (change)="filterBoutiques()" class="filter-select">
+                    <option value="tous">Tout voir</option>
+                    <option value="nouveau">Nouveautés</option>
+                    <option value="populaire">Populaires</option>
+                    <option value="featured">En vedette</option>
+                    <option value="top-rated">Mieux notées</option>
+                </select>
+
+                <select [(ngModel)]="categorie_selectionnee" (change)="filterBoutiques()" class="filter-select">
+                    <option value="">Toutes catégories</option>
+                    <option *ngFor="let categorie of categories" [value]="categorie._id">
+                        {{ categorie.nom_cat }}
+                    </option>
+                </select>
+
+                <button (click)="resetFilter()" class="btn-icon-reset" title="Réinitialiser">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </button>
+            </div>
         </div>
-        
-        <p *ngIf="isFiltering" style="margin-top: 10px; color: #007bff; font-size: 14px;">
-            <strong>Boutiques filtrées :</strong> {{ filteredBoutiques.length }} résultat(s) / {{ boutiques.length }} total
-        </p>
+
+        <!-- Active Filter Indicator -->
+        <div class="results-bar" *ngIf="searchText || isFiltering || isLoadingSpecial">
+            <span class="result-count">
+                {{ filteredBoutiques.length }} résultat(s)
+            </span>
+            <span class="active-filter-tag" *ngIf="searchText">
+                Recherche: "{{ searchText }}"
+            </span>
+        </div>
     </div>
 
     <!-- Message si aucune boutique -->
     <div *ngIf="filteredBoutiques.length === 0" style="text-align: center; padding: 40px;">
         <p style="font-size: 16px; color: #666;">
-            {{ isFiltering ? 'Aucune boutique pour cette catégorie' : 'Aucune boutique disponible' }}
+            {{ isFiltering || searchText ? 'Aucune boutique correspondant à votre recherche' : 'Aucune boutique
+            disponible' }}
         </p>
     </div>
 
@@ -70,17 +91,20 @@
                             {{ boutique.isValidated ? 'Validée' : 'En attente' }}
                         </span>
                     </td>
-                    <td *ngIf="isAdmin || isAcheteur" class="actions-cell">
-                    <!-- Les boutons Admin -->
-                    @if (isAdmin) {
-                        <button [routerLink]="['/boutiques/modifier', boutique._id]" class="btn-icon" title="Modifier">
+                    <td class="actions-cell">
+                        <button (click)="viewBoutique(boutique._id)" class="btn-icon btn-view" title="Voir">
+                            <img src="/img/svg/icon-eye.svg" alt="Voir">
+                        </button>
+                        <button [routerLink]="['/boutiques/modifier', boutique._id]" class="btn-icon" title="Modifier"
+                            *ngIf="isAdmin">
                             <img src="/img/svg/icon-update.svg" alt="Modifier">
                         </button>
-                        <button (click)="deleteBoutique(boutique._id)" class="btn-icon btn-delete" title="Supprimer">
+                        <button (click)="deleteBoutique(boutique._id)" class="btn-icon btn-delete" title="Supprimer"
+                            *ngIf="isAdmin">
                             <img src="/img/svg/icon-delete.svg" alt="Supprimer">
                         </button>
                         <button (click)="validateBoutique(boutique._id, boutique.isValidated)" class="btn-icon"
-                            [title]="boutique.isValidated ? 'Désactiver' : 'Activer'">
+                            *ngIf="isAdmin" [title]="boutique.isValidated ? 'Désactiver' : 'Activer'">
                             @if (boutique.isValidated) {
                                 <img src="/img/svg/icon-on.svg" alt="Désactiver">
                             } @else {

@@ -1,4 +1,131 @@
-<div class="boutique-detail-container">
+<a routerLink="/boutiques" routerLinkActive="active" class="return-link">
+    <img src="/img/svg/icon-arrow.svg" alt="Retour" class="w-5 h-5">
+    Retour aux boutiques
+</a>
+<div class="boutique-detail-container" *ngIf="!isLoading; else loading">
+    <div class="side-layout-wrapper">
+        <!-- Section Produits (Gauche - Scrollable) -->
+        <div class="products-side">
+            <div class="products-section">
+
+                <!-- Galerie Photos -->
+                <div class="boutique-gallery-section" *ngIf="boutique?.images && boutique!.images!.length > 1">
+                    <div class="gallery-scroll-container">
+                        <ng-container *ngFor="let img of boutique?.images; let i = index">
+                            <div class="gallery-item" *ngIf="i > 0">
+                                <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + i">
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <h2 class="section-title">
+                    Collections de la Boutique
+                </h2>
+
+                <div class="product-grid" *ngIf="produits.length > 0; else noProducts">
+                    <div *ngFor="let produit of produits; let i = index" class="glass-product-card"
+                        [style.animation-delay]="(i * 0.1) + 's'">
+                        <div class="product-image-wrapper">
+                            @if(produit.image_Url){
+                            <img [src]="('http://localhost:5000/' + produit.image_Url)" [alt]="produit.nom_prod">
+                            }
+                            @else{
+                            <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="produit.nom_prod">
+                            }
+                            <div class="product-badges">
+                                <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
+                                <span *ngIf="produit.isPromoted" class="badge-promo">Promotion</span>
+                            </div>
+                        </div>
+
+                        <div class="product-info">
+                            <h3 class="product-name">{{ produit.nom_prod }}</h3>
+                            <span class="product-price">{{ getProductPrice(produit) | currency:'MGA ':'code':'1.0-0'
+                                }}</span>
+
+                            <div class="buttons-container mt-auto">
+                                <button (click)="addToPanier(produit)" class="btn-pill btn-pill-light"
+                                    title="Ajouter au panier">
+                                    <img src="/img/svg/icon-cart-add.svg" alt=""> Ajouter
+                                </button>
+                                <button [routerLink]="['/achats/ajouter', produit._id]" class="btn-pill btn-pill-dark">
+                                    Acheter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-template #noProducts>
+                    <div class="no-products-card">
+                        <div class="empty-state-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                            </svg>
+                        </div>
+                        <h3>Aucun produit pour le moment</h3>
+                        <p>Bientôt de nouveaux articles dans cette boutique...</p>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+
+        <!-- Section Boutique (Droite - Fixe/Sticky) -->
+        <div class="boutique-side">
+            <div class="glass-header text-white p-8 rounded-[30px] relative">
+                <div class="header-overlay"></div>
+                <div class="relative boutique-detail">
+                    <div class="boutique-logo-container">
+                        @if(boutique?.images?.[0]?.url){
+                        <img [src]="('http://localhost:5000/' + boutique?.images?.[0]?.url )" [alt]="boutique?.name"
+                            class="boutique-logo">
+                        }
+                        @else{
+                        <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="boutique?.name"
+                            class="boutique-logo">
+                        }
+                    </div>
+
+                    <div class="text-center">
+                        <h1 class="boutique-name">{{ boutique?.name }}</h1>
+                        <div class="mb-4">
+                            <span class="badge-category">{{ getCategoryName(boutique?.categoryId) }}</span>
+                        </div>
+
+                        <p class="description-text">
+                            {{ boutique?.description || 'Cette boutique n\'a pas encore de description.' }}
+                        </p>
+
+                        <div class="detail-rating-followers-container">
+                            <div class="stat-item">
+                                <img src="/img/svg/icon-star.svg" alt="Rating" class="w-5 h-5">
+                                <span>{{ (boutique?.rating || 0) | number:'1.1-1' }} / 5</span>
+                            </div>
+                            <div class="stat-item">
+                                <img src="/img/svg/icon-followers.svg" alt="Followers" class="w-5 h-5">
+                                <span>{{ boutique?.followers || 0 }} Abonnés</span>
+                            </div>
+                        </div>
+
+                        <button *ngIf="isAcheteur" (click)="toggleSuivi()"
+                            [ngClass]="isSuivie ? 'btn-following' : 'btn-follow'">
+                            {{ isSuivie ? '✓ Suivi(e)' : '+ Suivre la Boutique' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loading>
+    <div class="flex items-center justify-center min-h-[500px]">
+        <div class="loader"></div>
+    </div>
+</ng-template><div class="boutique-detail-container">
   <!-- Chargement -->
   @if (isLoading) {
     <div style="text-align: center; padding: 40px;">
