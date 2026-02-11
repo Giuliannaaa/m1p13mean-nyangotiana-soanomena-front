@@ -1,0 +1,104 @@
+<div class="boutique-detail-container">
+  <!-- Chargement -->
+  @if (isLoading) {
+    <div style="text-align: center; padding: 40px;">
+      <p style="font-size: 16px; color: #007bff;">Chargement...</p>
+    </div>
+  }
+
+  <!-- Boutique trouvée -->
+  @if (boutique && !isLoading) {
+    <div class="boutique-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px;">
+      <div style="max-width: 1200px; margin: 0 auto;">
+        <h1 style="margin: 0 0 10px 0; font-size: 32px;">{{ boutique.name }}</h1>
+        
+        <!-- Note et followers -->
+        <div style="display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap;">
+          <div>
+            <span style="font-size: 18px; margin-right: 5px;">{{ getRatingStar() }}</span>
+            <span style="font-size: 14px;">{{ boutique.rating || 0 }}/5</span>
+          </div>
+          <div>
+            <span style="font-size: 14px;">{{ boutique.followers || 0 }} followers</span>
+          </div>
+        </div>
+
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">{{ boutique.description }}</p>
+      </div>
+    </div>
+
+    <!-- Informations légales -->
+    @if (boutique.legal) {
+      <div class="glass-card" style="margin-bottom: 30px;">
+        <h3>Informations légales</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <strong>NIF :</strong> {{ boutique.legal.nif || 'N/A' }}
+          </div>
+          <div>
+            <strong>STAT :</strong> {{ boutique.legal.stat || 'N/A' }}
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <strong>Patente :</strong> {{ boutique.legal.rent || 'N/A' }}
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Composant de notation -->
+    <div style="margin-bottom: 30px;">
+      <app-note-boutique [boutiqueId]="boutique._id"></app-note-boutique>
+    </div>
+
+    <!-- Produits de la boutique -->
+    <div class="glass-card">
+      <h3>Produits de cette boutique ({{ produits.length }})</h3>
+
+      @if (produits.length === 0) {
+        <p style="text-align: center; color: #999; padding: 20px;">
+          Aucun produit trouvé pour cette boutique
+        </p>
+      } @else {
+        <div style="overflow-x: auto;">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (produit of produits; track produit._id) {
+                <tr>
+                  <td class="font-bold">{{ produit.nom_prod }}</td>
+                  <td class="td-desc">{{ produit.descriptions }}</td>
+                  <td class="price-cell">
+                    {{ produit.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="produit.stock_etat ? 'badge-success' : 'badge-danger'">
+                      {{ produit.stock_etat ? 'Disponible' : 'Rupture' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Boutique non trouvée -->
+  @if (!boutique && !isLoading) {
+    <div style="text-align: center; padding: 40px;">
+      <p style="font-size: 16px; color: #dc3545;">Boutique non trouvée</p>
+      <a routerLink="/boutiques" style="color: #007bff; text-decoration: underline;">
+        Retour à la liste des boutiques
+      </a>
+    </div>
+  }
+</div>
+

@@ -23,6 +23,8 @@ export class BoutiqueListComponent implements OnInit {
     
     // ✅ Variables pour le filtre
     categorie_selectionnee: string = '';
+    filtre_special: string = 'tous';
+    searchText: string = '';
     isFiltering: boolean = false;
     
     isAdmin = false;
@@ -35,9 +37,20 @@ export class BoutiqueListComponent implements OnInit {
 
     ngOnInit(): void {
         this.isAdmin = this.authService.getRole() === 'Admin';
+        this.isAcheteur = this.authService.getRole() === 'Acheteur';
+        
         this.loadCategories();
         this.loadUsers();
         this.loadBoutiques();
+
+        // ÉCOUTER LES CHANGEMENTS DU SERVICE
+        if (this.isAcheteur) {
+            this.suiviService.getBoutiquesSuivies().subscribe(ids => {
+                this.boutiquesSuivies = ids;
+                console.log('Boutiques suivies mises à jour:', ids);
+                this.cdr.markForCheck();
+            });
+        }
     }
 
     loadCategories(): void {
@@ -107,19 +120,67 @@ export class BoutiqueListComponent implements OnInit {
         });
     }
 
-    // ✅ Filtrer les boutiques par catégorie
-    filterByCategory(): void {
-        if (!this.categorie_selectionnee) {
-            // Si aucune catégorie n'est sélectionnée, afficher toutes les boutiques
-            this.filteredBoutiques = this.boutiques;
-            this.isFiltering = false;
-        } else {
-            // Filtrer les boutiques localement
-            this.filteredBoutiques = this.boutiques.filter(boutique => 
-                boutique.categoryId === this.categorie_selectionnee
-            );
-            this.isFiltering = true;
+    // CHARGER LES BOUTIQUES SPÉCIALES
+    loadSpecialBoutiques(): void {
+        this.isLoadingSpecial = true;
+        console.log('Filtre spécial boutique:', this.filtre_special);
+        
+        let request$;
+        
+        switch(this.filtre_special) {
+            case 'nouveau':
+                request$ = this.boutiqueService.getNewBoutiques();
+                break;
+            case 'populaire':
+                request$ = this.boutiqueService.getPopularBoutiques();
+                break;
+            case 'featured':
+                request$ = this.boutiqueService.getFeaturedBoutiques();
+                break;
+            case 'top-rated':
+                request$ = this.boutiqueService.getTopRatedBoutiques();
+                break;
+            default:
+                this.loadBoutiques();
+                return;
         }
+        
+        request$.subscribe({
+            next: (response: any) => {
+                console.log('Boutiques spéciales reçues:', response);
+                this.boutiques = response.data || response;
+                this.filterBoutiques();
+                this.isLoadingSpecial = false;
+                this.cdr.markForCheck();
+            },
+            error: (err) => {
+                console.error('Erreur chargement boutiques spéciales:', err);
+                this.isLoadingSpecial = false;
+            }
+        });
+    }
+
+    // FILTRER LES BOUTIQUES
+    filterBoutiques(): void {
+        if (this.filtre_special !== 'tous') {
+            this.loadSpecialBoutiques();
+            return;
+        }
+        
+        this.filteredBoutiques = this.boutiques.filter(boutique => {
+            const matchCategory = !this.categorie_selectionnee || 
+                boutique.categoryId === this.categorie_selectionnee;
+            
+            const searchLower = this.searchText.toLowerCase();
+            const ownerName = this.getOwnerName(boutique.ownerId).toLowerCase();
+            
+            const matchSearch = !this.searchText || 
+                boutique.name.toLowerCase().includes(searchLower) ||
+                (boutique.description && boutique.description.toLowerCase().includes(searchLower)) ||
+                ownerName.includes(searchLower);
+            
+            return matchCategory && matchSearch;
+        });
         
         console.log('Boutiques filtrées:', this.filteredBoutiques.length);
         this.cdr.markForCheck();
@@ -128,7 +189,9 @@ export class BoutiqueListComponent implements OnInit {
     // ✅ Réinitialiser le filtre
     resetFilter(): void {
         this.categorie_selectionnee = '';
-        this.filteredBoutiques = this.boutiques;
+        this.filtre_special = 'tous';
+        this.searchText = '';
+        this.loadBoutiques();
         this.isFiltering = false;
         this.cdr.markForCheck();
     }
@@ -157,5 +220,44 @@ export class BoutiqueListComponent implements OnInit {
                 }
             });
         }
+    }
+
+    // SUIVRE/ARRÊTER - LAISSER LE SERVICE GÉRER LA MISE À JOUR
+    toggleSuivreBoutique(boutiqueId: string | undefined): void {
+        if (!boutiqueId) {
+            alert('ID de la boutique manquant');
+            return;
+        }
+
+        if (this.boutiquesSuivies.includes(boutiqueId)) {
+            // Arrêter de suivre
+            this.suiviService.arreterSuivreBoutique(boutiqueId).subscribe({
+                next: () => {
+                    alert('Vous ne suivez plus cette boutique');
+                    // Le service met à jour automatiquement boutiquesSuivies$
+                },
+                error: (err) => {
+                    console.error('Erreur arrêt suivi:', err);
+                    alert('Erreur lors de l\'arrêt du suivi');
+                }
+            });
+        } else {
+            // Suivre
+            this.suiviService.suivreBoutique(boutiqueId).subscribe({
+                next: () => {
+                    alert('Vous suivez maintenant cette boutique !');
+                    // Le service met à jour automatiquement boutiquesSuivies$
+                },
+                error: (err) => {
+                    console.error('Erreur suivi:', err);
+                    alert('Erreur lors du suivi de la boutique');
+                }
+            });
+        }
+    }
+
+    // VÉRIFIER SI UNE BOUTIQUE EST SUIVIE
+    isBoutiqueSuivie(boutiqueId: string | undefined): boolean {
+        return boutiqueId ? this.boutiquesSuivies.includes(boutiqueId) : false;
     }
 }

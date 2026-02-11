@@ -1,0 +1,73 @@
+
+  .boutique-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .glass-card {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  }
+
+  .glass-card h3 {
+    margin-top: 0;
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .modern-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+    color: #fff;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  .modern-table td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .badge-success {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .badge-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .td-desc {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .price-cell {
+    font-weight: bold;
+    color: #28a745;
+  }
