@@ -1,0 +1,296 @@
+<div class="mes-signalements-container">
+  <div class="page-header">
+    <h1>Mes Signalements</h1>
+    <p style="margin: 10px 0 0 0;">{{ filteredSignalements.length }} signalement(s)</p>
+  </div>
+
+  <!-- Chargement -->
+  @if (isLoading) {
+    <div style="text-align: center; padding: 40px;">
+      <p style="font-size: 16px; color: #007bff;">Chargement de vos signalements...</p>
+    </div>
+  }
+
+  <!-- Filtres -->
+  @if (!isLoading && signalements.length > 0) {
+    <div class="filters-section">
+      <h3>Filtrer mes signalements</h3>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+        <!-- Filtre Statut -->
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px;">Statut</label>
+          <select
+            [(ngModel)]="filtreStatut"
+            (change)="filterSignalements()"
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+          >
+            <option value="">-- Tous les statuts --</option>
+            <option value="signale">Signalé</option>
+            <option value="en_cours">En cours</option>
+            <option value="resolu">Résolu</option>
+            <option value="rejete">Rejeté</option>
+          </select>
+        </div>
+
+        <!-- Recherche -->
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px;">Recherche</label>
+          <input
+            type="text"
+            [(ngModel)]="searchText"
+            (keyup)="filterSignalements()"
+            placeholder="Produit, boutique..."
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+          />
+        </div>
+
+        <!-- Bouton Réinitialiser -->
+        <div style="display: flex; align-items: flex-end;">
+          <button
+            (click)="resetFilters()"
+            style="
+              width: 100%;
+              padding: 8px;
+              background-color: #6c757d;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: bold;
+              font-size: 14px;
+            "
+          >
+            Réinitialiser
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Affichage en cartes -->
+  @if (!isLoading && filteredSignalements.length > 0) {
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+      @for (signalement of filteredSignalements; track signalement._id) {
+        <div class="signalement-card" (click)="openModal(signalement)">
+          <!-- Statut badge -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <span
+              style="
+                display: inline-block;
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: bold;
+              "
+              [style.background-color]="getStatutBadgeColor(signalement.statut)"
+            >
+              {{ getStatutIcon(signalement.statut) }} {{ getStatutLabel(signalement.statut) }}
+            </span>
+            <span style="font-size: 12px; color: #999;">
+              {{ signalement.createdAt | date: 'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <!-- Produit -->
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 0; font-size: 12px; color: #999;">Produit</p>
+            <p style="margin: 5px 0; font-weight: bold; font-size: 16px;">
+              {{ signalement.produit_id?.nom_prod || 'Produit supprimé' }}
+            </p>
+          </div>
+
+          <!-- Boutique -->
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 0; font-size: 12px; color: #999;">Boutique</p>
+            <p style="margin: 5px 0; font-size: 14px;">
+              {{ signalement.boutique_id?.name || 'Boutique supprimée' }}
+            </p>
+          </div>
+
+          <!-- Raison -->
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 0; font-size: 12px; color: #999;">Raison du signalement</p>
+            <p style="margin: 5px 0; font-size: 14px;">
+              {{ getRaisonLabel(signalement.raison) }}
+            </p>
+          </div>
+
+          <!-- Réponse admin -->
+          @if (signalement.reponse_admin) {
+            <div style="
+              margin-top: 15px;
+              padding: 12px;
+              background-color: #e7f3ff;
+              border-left: 4px solid #007bff;
+              border-radius: 4px;
+            ">
+              <p style="margin: 0; font-size: 12px; color: #004085; font-weight: bold;">
+                Réponse de l'admin
+              </p>
+              <p style="margin: 8px 0 0 0; font-size: 13px; color: #004085;">
+                {{ signalement.reponse_admin.substring(0, 100) }}...
+              </p>
+            </div>
+          }
+
+          <!-- Bouton voir détail -->
+          <button
+            style="
+              width: 100%;
+              margin-top: 15px;
+              padding: 10px;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: bold;
+              font-size: 14px;
+            "
+          >
+            Voir les détails
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Message si aucun signalement -->
+  @if (!isLoading && signalements.length === 0) {
+    <div style="
+      text-align: center;
+      padding: 60px 20px;
+      border-radius: 8px;
+      border: 2px dashed #dee2e6;
+    ">
+      <p style="font-size: 18px; color: #999; margin: 0;">
+        Vous n'avez pas encore signalé de produits
+      </p>
+    </div>
+  }
+
+  <!-- Modal de détail -->
+  @if (showModal && selectedSignalement) {
+    <div style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    ">
+      <div style="
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      ">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="margin: 0;">Détail du signalement</h2>
+          <button
+            (click)="closeModal()"
+            style="
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+            "
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Statut -->
+        <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h4 style="margin: 0;">Statut</h4>
+            <span
+              style="
+                display: inline-block;
+                padding: 6px 15px;
+                border-radius: 12px;
+                font-size: 14px;
+                font-weight: bold;
+                color: white;
+              "
+              [style.background-color]="getStatutBadgeColor(selectedSignalement.statut)"
+            >
+              {{ getStatutIcon(selectedSignalement.statut) }} {{ getStatutLabel(selectedSignalement.statut) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Infos produit -->
+        <div style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 4px;">
+          <h4 style="margin: 0 0 10px 0;">Produit</h4>
+          <p style="margin: 5px 0;">
+            <strong>Nom:</strong> {{ selectedSignalement.produit_id?.nom_prod || 'Produit supprimé' }}
+          </p>
+          <p style="margin: 5px 0;">
+            <strong>Boutique:</strong> {{ selectedSignalement.boutique_id?.name || 'Boutique supprimée' }}
+          </p>
+        </div>
+
+        <!-- Raison et description -->
+        <div style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 4px;">
+          <h4 style="margin: 0 0 10px 0;">Mon signalement</h4>
+          <p style="margin: 5px 0;">
+            <strong>Raison:</strong> {{ getRaisonLabel(selectedSignalement.raison) }}
+          </p>
+          <p style="margin: 5px 0;">
+            <strong>Description:</strong>
+          </p>
+          <p style="margin: 10px 0; padding: 10px; background-color: white; border-radius: 4px; font-style: italic; border-left: 4px solid #007bff;">
+            "{{ selectedSignalement.description }}"
+          </p>
+          <p style="margin: 5px 0; font-size: 12px; color: #999;">
+            <strong>Signalé le:</strong> {{ selectedSignalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+        </div>
+
+        <!-- Réponse de l'admin -->
+        @if (selectedSignalement.reponse_admin) {
+          <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px; border-left: 4px solid #007bff;">
+            <h4 style="margin: 0 0 10px 0; color: #004085;">💬 Réponse de l'administrateur</h4>
+            <p style="margin: 0; color: #004085; line-height: 1.6;">
+              {{ selectedSignalement.reponse_admin }}
+            </p>
+          </div>
+        } @else {
+          <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px; border-left: 4px solid #ffc107;">
+            <p style="margin: 0; color: #856404;">
+              Votre signalement est en attente de traitement par les administrateurs.
+            </p>
+          </div>
+        }
+
+        <!-- Bouton fermer -->
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button
+            (click)="closeModal()"
+            style="
+              padding: 10px 20px;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: bold;
+            "
+          >
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

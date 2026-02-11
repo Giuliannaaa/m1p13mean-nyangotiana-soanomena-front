@@ -1,0 +1,330 @@
+<div class="signalements-admin-container">
+  <div class="page-header">
+    <h1>Gestion des Signalements</h1>
+    <p style="margin: 10px 0 0 0;">{{ filteredSignalements.length }} signalement(s) trouvé(s)</p>
+  </div>
+
+  <!-- Chargement -->
+  @if (isLoading) {
+    <div style="text-align: center; padding: 40px;">
+      <p style="font-size: 16px; color: #007bff;">Chargement des signalements...</p>
+    </div>
+  }
+
+  <!-- Filtres -->
+  @if (!isLoading && signalements.length > 0) {
+    <div class="filters-section">
+      <h3>Filtrer les signalements</h3>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+        <!-- Filtre Statut -->
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px;">Statut</label>
+          <select
+            [(ngModel)]="filtreStatut"
+            (change)="filterSignalements()"
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+          >
+            <option value="">-- Tous les statuts --</option>
+            <option value="signale">Signalé</option>
+            <option value="en_cours">En cours</option>
+            <option value="resolu">Résolu</option>
+            <option value="rejete">Rejeté</option>
+          </select>
+        </div>
+
+        <!-- Filtre Raison -->
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px;">Raison</label>
+          <select
+            [(ngModel)]="filtreRaison"
+            (change)="filterSignalements()"
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+          >
+            <option value="">-- Toutes les raisons --</option>
+            <option value="produit_defectueux">Produit défectueux</option>
+            <option value="description_inexacte">Description inexacte</option>
+            <option value="prix_incorrect">Prix incorrect</option>
+            <option value="contenu_offensant">Contenu offensant</option>
+            <option value="produit_non_conforme">Produit non conforme</option>
+            <option value="arnaque">Arnaque</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+
+        <!-- Recherche -->
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px;">Recherche</label>
+          <input
+            type="text"
+            [(ngModel)]="searchText"
+            (keyup)="filterSignalements()"
+            placeholder="Produit, acheteur, boutique..."
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+          />
+        </div>
+
+        <!-- Bouton Réinitialiser -->
+        <div style="display: flex; align-items: flex-end;">
+          <button
+            (click)="resetFilters()"
+            style="
+              width: 100%;
+              padding: 8px;
+              background-color: #6c757d;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: bold;
+              font-size: 14px;
+            "
+          >
+            Réinitialiser
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Tableau des signalements -->
+  @if (!isLoading && filteredSignalements.length > 0) {
+    <div class="table-section">
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <thead>
+          <tr style="border-bottom: 2px solid #dee2e6; color: #ddd;">
+            <th style="padding: 12px; text-align: left; font-weight: bold;">Produit</th>
+            <th style="padding: 12px; text-align: left; font-weight: bold;">Acheteur</th>
+            <th style="padding: 12px; text-align: left; font-weight: bold;">Boutique</th>
+            <th style="padding: 12px; text-align: left; font-weight: bold;">Raison</th>
+            <th style="padding: 12px; text-align: left; font-weight: bold;">Statut</th>
+            <th style="padding: 12px; text-align: left; font-weight: bold;">Date</th>
+            <th style="padding: 12px; text-align: center; font-weight: bold;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (signalement of filteredSignalements; track signalement._id) {
+            <tr style="border-bottom: 1px solid #dee2e6; hover-background: #f9f9f9;">
+              <td style="padding: 12px;">
+                <strong>{{ signalement.produit_id?.nom_prod || 'N/A' }}</strong>
+              </td>
+              <td style="padding: 12px;">
+                {{ signalement.acheteur_id?.firstname }} {{ signalement.acheteur_id?.lastname }}
+              </td>
+              <td style="padding: 12px;">
+                {{ signalement.boutique_id?.name || 'N/A' }}
+              </td>
+              <td style="padding: 12px;">
+                {{ getRaisonLabel(signalement.raison) }}
+              </td>
+              <td style="padding: 12px;">
+                <span
+                  style="
+                    display: inline-block;
+                    padding: 4px 12px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: white;
+                  "
+                  [style.background-color]="getStatutBadgeColor(signalement.statut)"
+                >
+                  {{ getStatutLabel(signalement.statut) }}
+                </span>
+              </td>
+              <td style="padding: 12px;">
+                {{ signalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+              </td>
+              <td style="padding: 12px; text-align: center;">
+                <button
+                  (click)="openModal(signalement)"
+                  style="
+                    padding: 6px 12px;
+                    background-color: #007bff;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    margin-right: 5px;
+                    font-weight: bold;
+                  "
+                >
+                  Voir détail
+                </button>
+                <button
+                  (click)="deleteSignalement(signalement._id)"
+                  style="
+                    padding: 6px 12px;
+                    background-color: #dc3545;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    font-weight: bold;
+                  "
+                >
+                  Supprimer
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Message si aucun signalement -->
+  @if (!isLoading && signalements.length === 0) {
+    <div style="text-align: center; padding: 40px;">
+      <p style="font-size: 16px; color: #999;">Aucun signalement pour le moment</p>
+    </div>
+  }
+
+  <!-- Modal de détail -->
+  @if (showModal && selectedSignalement) {
+    <div style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    ">
+      <div style="
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      ">
+        <h2 style="margin-top: 0;">Détail du signalement</h2>
+
+        <!-- Infos produit -->
+        <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px;">
+          <h4 style="margin: 0 0 10px 0;">Produit</h4>
+          <p style="margin: 5px 0;">
+            <strong>Nom:</strong> {{ selectedSignalement.produit_id?.nom_prod }}
+          </p>
+          <p style="margin: 5px 0;">
+            <strong>Boutique:</strong> {{ selectedSignalement.boutique_id?.name }}
+          </p>
+        </div>
+
+        <!-- Infos acheteur -->
+        <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px;">
+          <h4 style="margin: 0 0 10px 0;">Acheteur</h4>
+          <p style="margin: 5px 0;">
+            <strong>Nom:</strong> {{ selectedSignalement.acheteur_id?.firstname }} {{ selectedSignalement.acheteur_id?.lastname }}
+          </p>
+          <p style="margin: 5px 0;">
+            <strong>Email:</strong> {{ selectedSignalement.acheteur_id?.email }}
+          </p>
+        </div>
+
+        <!-- Raison et description -->
+        <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px;">
+          <h4 style="margin: 0 0 10px 0;">Signalement</h4>
+          <p style="margin: 5px 0;">
+            <strong>Raison:</strong> {{ getRaisonLabel(selectedSignalement.raison) }}
+          </p>
+          <p style="margin: 5px 0;">
+            <strong>Description:</strong>
+          </p>
+          <p style="margin: 10px 0; padding: 10px; border-radius: 4px; font-style: italic;">
+            {{ selectedSignalement.description }}
+          </p>
+          <p style="margin: 5px 0; font-size: 12px; color: #000000;">
+            <strong>Signalé le:</strong> {{ selectedSignalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+        </div>
+
+        <!-- Formulaire de traitement -->
+        <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px;">
+          <h4 style="margin: 0 0 15px 0;">Traitement</h4>
+
+          <!-- Nouveau statut -->
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Nouveau statut</label>
+            <select
+              [(ngModel)]="newStatut"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+              "
+            >
+              <option value="signale">Signalé</option>
+              <option value="en_cours">En cours</option>
+              <option value="resolu">Résolu</option>
+              <option value="rejete">Rejeté</option>
+            </select>
+          </div>
+
+          <!-- Réponse admin -->
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Réponse/Commentaire (optionnel)</label>
+            <textarea
+              [(ngModel)]="reponse"
+              placeholder="Votre réponse à l'acheteur..."
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+                min-height: 100px;
+                font-family: Arial;
+              "
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button
+            (click)="closeModal()"
+            style="
+              padding: 10px 20px;
+              background-color: #6c757d;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: bold;
+            "
+          >
+            Annuler
+          </button>
+          <button
+            (click)="updateStatus()"
+            [disabled]="isSaving"
+            style="
+              padding: 10px 20px;
+              background-color: #28a745;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: bold;
+            "
+            [style.opacity]="isSaving ? '0.5' : '1'"
+          >
+            {{ isSaving ? 'Enregistrement...' : 'Enregistrer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+

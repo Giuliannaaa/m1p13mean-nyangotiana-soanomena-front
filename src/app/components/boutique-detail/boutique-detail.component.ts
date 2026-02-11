@@ -60,6 +60,21 @@ export class BoutiqueDetailComponent implements OnInit {
         });
     }
 
+    loadProduitsOfBoutique(boutiqueId: string): void {
+        this.produitService.getProduits().subscribe({
+        next: (response: any) => {
+            const allProduits = response.data || response;
+            // Filtrer les produits de cette boutique
+            this.produits = allProduits.filter((p: any) => 
+            p.store_id?._id === boutiqueId || p.store_id === boutiqueId
+            );
+        },
+        error: (err) => {
+            console.error('Erreur chargement produits:', err);
+        }
+        });
+    }
+
     loadCategories(): void {
         this.categorieService.getCategories().subscribe({
             next: (response: any) => {
@@ -94,6 +109,17 @@ export class BoutiqueDetailComponent implements OnInit {
             }
         });
     }
+
+    getRatingStar(): string {
+    if (!this.boutique || !this.boutique.rating) return '☆☆☆☆☆';
+    
+    const rating = this.boutique.rating;
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+      stars += i <= rating ? '⭐' : '☆';
+    }
+    return stars;
+  }
 
     toggleSuivi(): void {
         if (!this.boutique) return;
