@@ -15,6 +15,19 @@ export interface Boutique {
         stat?: string;
         rent?: string;
     };
+    images?: [
+        {
+            url: string;
+            altText?: string;
+            isLogo: boolean;
+            position: number;
+        }
+    ];
+    isNew?: boolean;
+    isPopular?: boolean;
+    isFeatured?: boolean;
+    rating?: number;
+    followers?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
