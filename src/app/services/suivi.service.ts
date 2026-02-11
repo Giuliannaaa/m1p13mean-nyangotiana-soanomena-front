@@ -3,14 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../environnements/environnement';
 import { Suivi } from '../models/suivi.model';
-import { AuthService } from './auth.service'; 
+import { AuthService } from './auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SuiviService {
   private apiUrl = `${environment.apiUrl}/api/suivis`;
-  
+
   private boutiquesSuivies$ = new BehaviorSubject<string[]>([]);
 
   constructor(
@@ -36,10 +36,10 @@ export class SuiviService {
       .subscribe({
         next: (response) => {
           console.log('Réponse mes-suivis:', response);
-          
+
           // Gérer différents formats de réponse
           let ids: string[] = [];
-          
+
           if (response.data && Array.isArray(response.data)) {
             // Format: { data: [ { boutique_id: "...", ... }, ... ] }
             ids = response.data.map((suivi: any) => {
@@ -51,7 +51,7 @@ export class SuiviService {
               return suivi.boutique_id;
             });
           }
-          
+
           console.log('IDs des boutiques suivies:', ids);
           // METTRE À JOUR LE SUBJECT
           this.boutiquesSuivies$.next(ids);
@@ -77,7 +77,7 @@ export class SuiviService {
   suivreBoutique(boutiqueId: string): Observable<Suivi> {
     console.log('Appel API POST:', `${this.apiUrl}/suivre`);
     console.log('Boutique ID:', boutiqueId);
-    
+
     return new Observable(observer => {
       this.http.post<Suivi>(
         `${this.apiUrl}/suivre`,
@@ -86,13 +86,13 @@ export class SuiviService {
       ).subscribe({
         next: (response) => {
           console.log('Suivi réussi:', response);
-          
+
           // AJOUTER À LA LISTE DES SUIVIS
           const currentIds = this.boutiquesSuivies$.value;
           if (!currentIds.includes(boutiqueId)) {
             this.boutiquesSuivies$.next([...currentIds, boutiqueId]);
           }
-          
+
           observer.next(response);
           observer.complete();
         },
@@ -113,13 +113,13 @@ export class SuiviService {
       ).subscribe({
         next: (response) => {
           console.log('Arrêt du suivi réussi:', response);
-          
+
           // ENLEVER DE LA LISTE DES SUIVIS
           const currentIds = this.boutiquesSuivies$.value;
           this.boutiquesSuivies$.next(
             currentIds.filter(id => id !== boutiqueId)
           );
-          
+
           observer.next(response);
           observer.complete();
         },

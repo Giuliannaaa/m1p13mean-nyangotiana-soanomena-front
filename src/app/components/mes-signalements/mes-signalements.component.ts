@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SignalementService } from '../../services/signalement.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-mes-signalements',
@@ -15,15 +15,15 @@ import { AuthService } from '../../services/auth.service';
 export class MesSignalementsComponent implements OnInit {
   signalements: any[] = [];
   filteredSignalements: any[] = [];
-  
+
   // Filtres
   filtreStatut: string = '';
   searchText: string = '';
-  
+
   // Modal
   selectedSignalement: any = null;
   showModal: boolean = false;
-  
+
   // Loading
   isLoading: boolean = false;
   isAcheteur: boolean = false;
@@ -34,48 +34,48 @@ export class MesSignalementsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAcheteur = this.authService.getRole() === 'Acheteur';
-    
+
     if (!this.isAcheteur) {
       alert('Vous devez être connecté en tant qu\'acheteur');
       return;
     }
-    
+
     this.loadMesSignalements();
   }
 
   // Charger tous les signalements et filtrer pour l'utilisateur connecté
   loadMesSignalements(): void {
-  this.isLoading = true;
-  
-  // APPELER LA NOUVELLE ROUTE ACHETEUR AU LIEU DE L'ADMIN
-  this.signalementService.getMesSignalements().subscribe({
-    next: (response: any) => {
-      console.log('Mes signalements:', response);
-      this.signalements = response.data || [];
-      this.filteredSignalements = this.signalements;
-      this.isLoading = false;
-      this.cdr.markForCheck();
-    },
-    error: (err) => {
-      console.error('Erreur chargement signalements:', err);
-      alert('Erreur lors du chargement de vos signalements');
-      this.isLoading = false;
-    }
-  });
-}
+    this.isLoading = true;
+
+    // APPELER LA NOUVELLE ROUTE ACHETEUR AU LIEU DE L'ADMIN
+    this.signalementService.getMesSignalements().subscribe({
+      next: (response: any) => {
+        console.log('Mes signalements:', response);
+        this.signalements = response.data || [];
+        this.filteredSignalements = this.signalements;
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Erreur chargement signalements:', err);
+        alert('Erreur lors du chargement de vos signalements');
+        this.isLoading = false;
+      }
+    });
+  }
 
   // Filtrer les signalements
   filterSignalements(): void {
     this.filteredSignalements = this.signalements.filter(sig => {
       const matchStatut = !this.filtreStatut || sig.statut === this.filtreStatut;
       const searchLower = this.searchText.toLowerCase();
-      const matchSearch = !this.searchText || 
+      const matchSearch = !this.searchText ||
         sig.produit_id?.nom_prod?.toLowerCase().includes(searchLower) ||
         sig.boutique_id?.name?.toLowerCase().includes(searchLower);
-      
+
       return matchStatut && matchSearch;
     });
-    
+
     this.cdr.markForCheck();
   }
 

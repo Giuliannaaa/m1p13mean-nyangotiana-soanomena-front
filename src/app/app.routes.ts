@@ -31,8 +31,6 @@ import { ProduitDetailComponent } from './components/produit-detail/produit-deta
 import { SignalementsAdminComponent } from './components/signalements-admin/signalements-admin.component';
 import { MesSignalementsComponent } from './components/mes-signalements/mes-signalements.component';
 
-import { BoutiqueDetailComponent } from './components/boutique-detail/boutique-detail.component';
-
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
