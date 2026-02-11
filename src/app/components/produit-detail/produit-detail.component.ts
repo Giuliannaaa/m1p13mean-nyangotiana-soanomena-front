@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ProduitService } from '../../services/produits.service';
-import { AuthService } from '../../services/auth.service';
+import { ProduitService } from '../../services/produits/produits.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { SignalerProduitComponent } from '../../components/signalement-produit/signalement-produit.component';
 
 @Component({
@@ -25,12 +25,12 @@ export class ProduitDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAcheteur = this.authService.getRole() === 'Acheteur';
-    
+
     // RÉCUPÉRER L'ID ET LE STOCKER
     this.route.params.subscribe(params => {
       this.produitId = params['id']; // Stocker dans la propriété
       console.log('Produit ID reçu:', this.produitId); // Debug
-      
+
       if (this.produitId) {
         this.loadProduit(this.produitId);
       }
@@ -62,12 +62,12 @@ export class ProduitDetailComponent implements OnInit {
   }
 
   getImageUrl(imagePath: string): string {
-  // Si le chemin commence par 'uploads/', c'est bon
-  if (imagePath.startsWith('uploads/') || imagePath.startsWith('/uploads/')) {
-    return `http://localhost:5000/${imagePath}`;
+    // Si le chemin commence par 'uploads/', c'est bon
+    if (imagePath.startsWith('uploads/') || imagePath.startsWith('/uploads/')) {
+      return `http://localhost:5000/${imagePath}`;
+    }
+
+    // Sinon, ajouter 'uploads/' devant
+    return `http://localhost:5000/uploads/${imagePath}`;
   }
-  
-  // Sinon, ajouter 'uploads/' devant
-  return `http://localhost:5000/uploads/${imagePath}`;
-}
 }

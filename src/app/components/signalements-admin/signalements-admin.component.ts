@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SignalementService } from '../../services/signalement.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-signalements-admin',
@@ -15,22 +15,22 @@ import { AuthService } from '../../services/auth.service';
 export class SignalementsAdminComponent implements OnInit {
   signalements: any[] = [];
   filteredSignalements: any[] = [];
-  
+
   // Filtres
   filtreStatut: string = '';
   filtreRaison: string = '';
   searchText: string = '';
-  
+
   // Modal
   selectedSignalement: any = null;
   showModal: boolean = false;
   newStatut: string = '';
   reponse: string = '';
-  
+
   // Loading
   isLoading: boolean = false;
   isSaving: boolean = false;
-  
+
   isAdmin: boolean = false;
 
   private signalementService = inject(SignalementService);
@@ -39,12 +39,12 @@ export class SignalementsAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAdmin = this.authService.getRole() === 'Admin';
-    
+
     if (!this.isAdmin) {
       alert('Accès refusé');
       return;
     }
-    
+
     this.loadSignalements();
   }
 
@@ -72,15 +72,15 @@ export class SignalementsAdminComponent implements OnInit {
       const matchStatut = !this.filtreStatut || sig.statut === this.filtreStatut;
       const matchRaison = !this.filtreRaison || sig.raison === this.filtreRaison;
       const searchLower = this.searchText.toLowerCase();
-      const matchSearch = !this.searchText || 
+      const matchSearch = !this.searchText ||
         sig.produit_id?.nom_prod?.toLowerCase().includes(searchLower) ||
         sig.acheteur_id?.firstname?.toLowerCase().includes(searchLower) ||
         sig.acheteur_id?.lastname?.toLowerCase().includes(searchLower) ||
         sig.boutique_id?.name?.toLowerCase().includes(searchLower);
-      
+
       return matchStatut && matchRaison && matchSearch;
     });
-    
+
     this.cdr.markForCheck();
   }
 
@@ -112,7 +112,7 @@ export class SignalementsAdminComponent implements OnInit {
   // Mettre à jour le statut du signalement
   updateStatus(): void {
     if (!this.selectedSignalement) return;
-    
+
     this.isSaving = true;
     this.signalementService.updateStatusSignalement(
       this.selectedSignalement._id,
@@ -122,13 +122,13 @@ export class SignalementsAdminComponent implements OnInit {
       next: (response: any) => {
         console.log('Statut mis à jour:', response);
         alert('Signalement mis à jour avec succès');
-        
+
         // Mettre à jour la liste
         const index = this.signalements.findIndex(s => s._id === this.selectedSignalement._id);
         if (index !== -1) {
           this.signalements[index] = response.data;
         }
-        
+
         this.filterSignalements();
         this.closeModal();
         this.isSaving = false;
@@ -147,7 +147,7 @@ export class SignalementsAdminComponent implements OnInit {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce signalement ?')) {
       return;
     }
-    
+
     this.signalementService.supprimerSignalement(signalementId).subscribe({
       next: () => {
         alert('Signalement supprimé');
