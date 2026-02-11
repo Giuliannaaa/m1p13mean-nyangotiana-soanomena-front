@@ -36,7 +36,7 @@ export class ProduitService {
   // Filtrer par boutique
   getProduitsByBoutique(store_id: string): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}?store_id=${store_id}`, 
+      `${this.baseUrl}/store/${store_id}`,
       { headers: this.getHeaders() }
     );
   }
@@ -44,28 +44,28 @@ export class ProduitService {
   // Filtres avancés
   getNewProduits(): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}/filter/new`, 
+      `${this.baseUrl}/filter/new`,
       { headers: this.getHeaders() }
     );
   }
 
   getPopularProduits(): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}/filter/popular`, 
+      `${this.baseUrl}/filter/popular`,
       { headers: this.getHeaders() }
     );
   }
 
   getBestSellerProduits(): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}/filter/bestseller`, 
+      `${this.baseUrl}/filter/bestseller`,
       { headers: this.getHeaders() }
     );
   }
 
   getPromotedProduits(): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}/filter/promoted`, 
+      `${this.baseUrl}/filter/promoted`,
       { headers: this.getHeaders() }
     );
   }

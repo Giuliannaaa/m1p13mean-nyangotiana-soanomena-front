@@ -26,6 +26,8 @@ import { AchatAddComponent } from './components/achat-add/achat-add.component';
 import { AchatListComponent } from './components/achat-list/achat-list.component';
 import { PanierComponent } from './components/panier/panier.component';
 
+import { BoutiqueDetailComponent } from './components/boutique-detail/boutique-detail.component';
+
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -48,6 +50,7 @@ export const routes: Routes = [
     { path: 'boutiques', component: BoutiqueListComponent },
     { path: 'boutiques/ajouter', component: BoutiqueAddComponent },
     { path: 'boutiques/modifier/:id', component: BoutiqueEditComponent },
+    { path: 'boutique/:id', component: BoutiqueDetailComponent }, // Vue détails boutique
 
     //CRUD produit
 
