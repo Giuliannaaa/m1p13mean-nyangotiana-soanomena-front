@@ -25,6 +25,11 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { AchatAddComponent } from './components/achat-add/achat-add.component';
 import { AchatListComponent } from './components/achat-list/achat-list.component';
 import { PanierComponent } from './components/panier/panier.component';
+import { MesSuivisComponent } from './components/mes-suivis/mes-suivis.component';
+import { BoutiqueDetailComponent } from './components/boutique-detail/boutique-detail.component';
+import { ProduitDetailComponent } from './components/produit-detail/produit-detail.component';
+import { SignalementsAdminComponent } from './components/signalements-admin/signalements-admin.component';
+import { MesSignalementsComponent } from './components/mes-signalements/mes-signalements.component';
 
 import { BoutiqueDetailComponent } from './components/boutique-detail/boutique-detail.component';
 
@@ -71,5 +76,18 @@ export const routes: Routes = [
     { path: 'promotions/ajouter', component: PromotionAddComponent },
     { path: 'promotions/modifier/:id', component: PromotionEditComponent },
     { path: 'admin/utilisateurs', component: UserListComponent },
+
+    //Liste suivi
+    { path: 'mes-suivis', component: MesSuivisComponent },
+
+    //Detail boutique
+    { path: 'boutiques/:id', component: BoutiqueDetailComponent },
+
+    //Detail produit
+    { path: 'produits/:id', component: ProduitDetailComponent },
+
+    //Page de signalement
+    { path: 'admin/signalements', component: SignalementsAdminComponent }, //admin
+    { path: 'mes-signalements', component: MesSignalementsComponent } //acheteurs
 
 ];

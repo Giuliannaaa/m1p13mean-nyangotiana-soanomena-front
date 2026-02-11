@@ -46,6 +46,8 @@ export class BoutiqueListComponent implements OnInit {
 
     ngOnInit(): void {
         this.isAdmin = this.authService.getRole() === 'Admin';
+        this.isAcheteur = this.authService.getRole() === 'Acheteur';
+        
         this.loadCategories();
         this.loadUsers();
         this.loadBoutiques();
@@ -200,7 +202,7 @@ export class BoutiqueListComponent implements OnInit {
     resetFilter(): void {
         this.categorie_selectionnee = '';
         this.filtre_special = 'tous';
-        this.searchText = ''; // RÉINITIALISER LA RECHERCHE
+        this.searchText = '';
         this.loadBoutiques();
         this.isFiltering = false;
         this.cdr.markForCheck();
@@ -232,7 +234,7 @@ export class BoutiqueListComponent implements OnInit {
         }
     }
 
-    // SUIVRE/ARRÊTER DE SUIVRE UNE BOUTIQUE
+    // SUIVRE/ARRÊTER - LAISSER LE SERVICE GÉRER LA MISE À JOUR
     toggleSuivreBoutique(boutiqueId: string | undefined): void {
         if (!boutiqueId) {
             alert('ID de la boutique manquant');
@@ -243,9 +245,8 @@ export class BoutiqueListComponent implements OnInit {
             // Arrêter de suivre
             this.suiviService.arreterSuivreBoutique(boutiqueId).subscribe({
                 next: () => {
-                    this.boutiquesSuivies = this.boutiquesSuivies.filter(id => id !== boutiqueId);
                     alert('Vous ne suivez plus cette boutique');
-                    this.cdr.markForCheck();
+                    // Le service met à jour automatiquement boutiquesSuivies$
                 },
                 error: (err) => {
                     console.error('Erreur arrêt suivi:', err);
@@ -256,9 +257,8 @@ export class BoutiqueListComponent implements OnInit {
             // Suivre
             this.suiviService.suivreBoutique(boutiqueId).subscribe({
                 next: () => {
-                    this.boutiquesSuivies.push(boutiqueId);
                     alert('Vous suivez maintenant cette boutique !');
-                    this.cdr.markForCheck();
+                    // Le service met à jour automatiquement boutiquesSuivies$
                 },
                 error: (err) => {
                     console.error('Erreur suivi:', err);
@@ -272,7 +272,6 @@ export class BoutiqueListComponent implements OnInit {
     isBoutiqueSuivie(boutiqueId: string | undefined): boolean {
         return boutiqueId ? this.boutiquesSuivies.includes(boutiqueId) : false;
     }
-
     viewBoutique(boutiqueId: string) {
         this.router.navigate(['/boutique', boutiqueId]);
     }
