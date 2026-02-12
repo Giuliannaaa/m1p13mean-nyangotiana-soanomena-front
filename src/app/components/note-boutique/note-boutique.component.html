@@ -1,1 +1,107 @@
-<p>note-boutique works!</p>
+<div class="note-boutique-wrapper glass-container">
+    <div class="note-header">
+        <h3 class="section-title">Évaluer cette boutique</h3>
+        <p class="section-subtitle">Votre avis nous aide à nous améliorer</p>
+    </div>
+
+    @if (canRate) {
+    <div class="rating-input-section">
+        <div class="stars-label">Votre note :</div>
+        <div class="interactive-stars">
+            @for (star of [1,2,3,4,5]; track star) {
+            <button type="button" (click)="setRating(star)" class="star-btn" [class.star-active]="userRating >= star"
+                [title]="'Noter ' + star + ' étoile(s)'">
+                <svg viewBox="0 0 24 24" class="star-icon">
+                    <path
+                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                </svg>
+            </button>
+            }
+            @if (userRating > 0) {
+            <span class="rating-badge">{{ userRating }}/5</span>
+            }
+        </div>
+    </div>
+
+    <div class="comment-input-section">
+        <label for="review-comment" class="field-label">Commentaire (optionnel)</label>
+        <div class="textarea-wrapper">
+            <textarea id="review-comment" [(ngModel)]="comment"
+                placeholder="Partagez votre expérience avec cette boutique..." class="glass-textarea"
+                rows="3"></textarea>
+        </div>
+    </div>
+
+    <div class="actions-footer">
+        <button (click)="envoyer()" [disabled]="userRating === 0 || isLoading" class="btn-pill btn-pill-primary"
+            [class.loading]="isLoading">
+            <span class="btn-content">
+                @if (isLoading) {
+                <span class="spinner-small"></span>
+                }
+                {{ isLoading ? 'Envoi...' : (hasRating ? 'Mettre à jour mon avis' : 'Envoyer mon avis') }}
+            </span>
+        </button>
+
+        @if (hasRating) {
+        <button (click)="supprimer()" [disabled]="isLoading" class="btn-pill btn-pill-danger-outline">
+            Supprimer
+        </button>
+        }
+    </div>
+    } @else {
+    <div class="login-notice-section">
+        <p class="notice-text">Vous devez être connecté en tant qu'acheteur pour évaluer cette boutique.</p>
+    </div>
+    }
+
+    @if (successMessage) {
+    <div class="alert alert-success mt-4">
+        <img src="/img/svg/icon-check-circle.svg" alt="Success" class="alert-icon">
+        <span>{{ successMessage }}</span>
+    </div>
+    }
+
+    <div class="reviews-list-section">
+        <h4 class="sub-section-title">Avis des clients</h4>
+
+        @if (avis.length > 0) {
+        <div class="reviews-scroll-area">
+            @for (item of avis; track item._id) {
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">
+                            {{ (item.acheteur_id?.firstname?.charAt(0) || 'U') }}
+                        </div>
+                        <div class="reviewer-meta">
+                            <span class="reviewer-name">{{ item.acheteur_id?.firstname }} {{ item.acheteur_id?.lastname
+                                }}</span>
+                            <span class="review-date">{{ item.createdAt | date:'dd/MM/yyyy' }}</span>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        @for (star of [1,2,3,4,5]; track star) {
+                        <svg viewBox="0 0 24 24" class="star-icon-small" [class.active]="item.rating >= star">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        }
+                    </div>
+                </div>
+                @if (item.comment) {
+                <div class="review-body">
+                    <p class="review-text">"{{ item.comment }}"</p>
+                </div>
+                }
+            </div>
+            }
+        </div>
+        } @else {
+        <div class="empty-reviews">
+            <img src="/img/svg/icon-message-empty.svg" alt="No reviews" class="empty-icon">
+            <p>Aucun avis pour le moment. Soyez le premier à donner le vôtre !</p>
+        </div>
+        }
+    </div>
+</div>
