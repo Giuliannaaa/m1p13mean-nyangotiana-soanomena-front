@@ -11,11 +11,13 @@ import { PanierService } from '../../services/panier/panier.service';
 import { CategorieService } from '../../services/categorie/categorie.service';
 import { Categorie } from '../../models/categorie.model';
 import { NoteBoutiqueComponent } from '../note-boutique/note-boutique.component';
+import { SignalerProduitComponent } from '../signalement-produit/signalement-produit.component';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
     selector: 'app-boutique-detail',
     standalone: true,
-    imports: [CommonModule, RouterModule, NoteBoutiqueComponent],
+    imports: [CommonModule, RouterModule, NoteBoutiqueComponent, SignalerProduitComponent],
     templateUrl: './boutique-detail.component.html',
     styleUrls: ['./boutique-detail.component.css']
 })
@@ -26,6 +28,8 @@ export class BoutiqueDetailComponent implements OnInit {
     isAcheteur = false;
     isSuivie = false;
     categories: Categorie[] = [];
+    showReportModal = false;
+    selectedProduitId: string | null = null;
 
     private route = inject(ActivatedRoute);
     private boutiqueService = inject(BoutiqueService);
@@ -34,6 +38,7 @@ export class BoutiqueDetailComponent implements OnInit {
     private suiviService = inject(SuiviService);
     private panierService = inject(PanierService);
     private categorieService = inject(CategorieService);
+    private cdr = inject(ChangeDetectorRef);
 
     ngOnInit(): void {
         this.isAcheteur = this.authService.getRole() === 'Acheteur';
@@ -162,5 +167,11 @@ export class BoutiqueDetailComponent implements OnInit {
             return parseFloat(produit.prix_unitaire.$numberDecimal);
         }
         return typeof produit.prix_unitaire === 'number' ? produit.prix_unitaire : 0;
+    }
+
+    toggleReportModal(produitId: string | null = null): void {
+        this.selectedProduitId = produitId;
+        this.showReportModal = !!produitId;
+        this.cdr.markForCheck();
     }
 }

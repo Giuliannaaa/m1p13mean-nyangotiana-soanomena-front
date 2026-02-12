@@ -421,6 +421,10 @@
     animation: fadeInScale 0.3s ease-out;
 }
 
+.btn-primary {
+    text-decoration: none;
+}
+
 @keyframes fadeInScale {
     from {
         opacity: 0;

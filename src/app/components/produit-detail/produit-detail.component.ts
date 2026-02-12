@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ProduitService } from '../../services/produits/produits.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { SignalerProduitComponent } from '../../components/signalement-produit/signalement-produit.component';
+import { PanierService } from '../../services/panier/panier.service';
 
 @Component({
   selector: 'app-produit-detail',
@@ -18,10 +19,12 @@ export class ProduitDetailComponent implements OnInit {
   produitId: string = '';
   isLoading: boolean = true;
   isAcheteur: boolean = false;
+  showReportModal: boolean = false;
 
   private route = inject(ActivatedRoute);
   private produitService = inject(ProduitService);
   private authService = inject(AuthService);
+  private panierService = inject(PanierService);
 
   ngOnInit(): void {
     this.isAcheteur = this.authService.getRole() === 'Acheteur';
@@ -69,5 +72,26 @@ export class ProduitDetailComponent implements OnInit {
 
     // Sinon, ajouter 'uploads/' devant
     return `http://localhost:5000/uploads/${imagePath}`;
+  }
+
+  toggleReportModal(): void {
+    this.showReportModal = !this.showReportModal;
+  }
+
+  onAddToPanier(): void {
+    if (!this.produit?._id) return;
+
+    if (!this.isAcheteur) {
+      alert("Vous devez être connecté en tant qu'acheteur pour ajouter au panier.");
+      return;
+    }
+
+    this.panierService.addToPanier(this.produit._id, 1).subscribe({
+      next: () => alert('Produit ajouté au panier !'),
+      error: (err) => {
+        console.error(err);
+        alert("Erreur lors de l'ajout au panier");
+      }
+    });
   }
 }

@@ -1,231 +1,158 @@
 <a routerLink="/boutiques" routerLinkActive="active" class="return-link">
-    <img src="/img/svg/icon-arrow.svg" alt="Retour" class="w-5 h-5">
-    Retour aux boutiques
+  <img src="/img/svg/icon-arrow.svg" alt="Retour" class="w-5 h-5">
+  Retour aux boutiques
 </a>
 <div class="boutique-detail-container" *ngIf="!isLoading; else loading">
-    <div class="side-layout-wrapper">
-        <!-- Section Produits (Gauche - Scrollable) -->
-        <div class="products-side">
-            <div class="products-section">
+  <div class="side-layout-wrapper">
+    <!-- Section Produits (Gauche - Scrollable) -->
+    <div class="products-side">
+      <div class="products-section">
 
-                <!-- Galerie Photos -->
-                <div class="boutique-gallery-section" *ngIf="boutique?.images && boutique!.images!.length > 1">
-                    <div class="gallery-scroll-container">
-                        <ng-container *ngFor="let img of boutique?.images; let i = index">
-                            <div class="gallery-item" *ngIf="i > 0">
-                                <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + i">
-                            </div>
-                        </ng-container>
-                    </div>
-                </div>
-
-                <h2 class="section-title">
-                    Collections de la Boutique
-                </h2>
-
-                <div class="product-grid" *ngIf="produits.length > 0; else noProducts">
-                    <div *ngFor="let produit of produits; let i = index" class="glass-product-card"
-                        [style.animation-delay]="(i * 0.1) + 's'">
-                        <div class="product-image-wrapper">
-                            @if(produit.image_Url){
-                            <img [src]="('http://localhost:5000/' + produit.image_Url)" [alt]="produit.nom_prod">
-                            }
-                            @else{
-                            <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="produit.nom_prod">
-                            }
-                            <div class="product-badges">
-                                <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
-                                <span *ngIf="produit.isPromoted" class="badge-promo">Promotion</span>
-                            </div>
-                        </div>
-
-                        <div class="product-info">
-                            <h3 class="product-name">{{ produit.nom_prod }}</h3>
-                            <span class="product-price">{{ getProductPrice(produit) | currency:'MGA ':'code':'1.0-0'
-                                }}</span>
-
-                            <div class="buttons-container mt-auto">
-                                <button (click)="addToPanier(produit)" class="btn-pill btn-pill-light"
-                                    title="Ajouter au panier">
-                                    <img src="/img/svg/icon-cart-add.svg" alt=""> Ajouter
-                                </button>
-                                <button [routerLink]="['/achats/ajouter', produit._id]" class="btn-pill btn-pill-dark">
-                                    Acheter
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <ng-template #noProducts>
-                    <div class="no-products-card">
-                        <div class="empty-state-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                            </svg>
-                        </div>
-                        <h3>Aucun produit pour le moment</h3>
-                        <p>Bientôt de nouveaux articles dans cette boutique...</p>
-                    </div>
-                </ng-template>
-            </div>
+        <!-- Galerie Photos -->
+        <div class="boutique-gallery-section" *ngIf="boutique?.images && boutique!.images!.length > 1">
+          <div class="gallery-scroll-container">
+            <ng-container *ngFor="let img of boutique?.images; let i = index">
+              <div class="gallery-item" *ngIf="i > 0">
+                <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + i">
+              </div>
+            </ng-container>
+          </div>
         </div>
 
-        <!-- Section Boutique (Droite - Fixe/Sticky) -->
-        <div class="boutique-side">
-            <div class="glass-header text-white p-8 rounded-[30px] relative">
-                <div class="header-overlay"></div>
-                <div class="relative boutique-detail">
-                    <div class="boutique-logo-container">
-                        @if(boutique?.images?.[0]?.url){
-                        <img [src]="('http://localhost:5000/' + boutique?.images?.[0]?.url )" [alt]="boutique?.name"
-                            class="boutique-logo">
-                        }
-                        @else{
-                        <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="boutique?.name"
-                            class="boutique-logo">
-                        }
-                    </div>
+        <h2 class="section-title">
+          Collections de la Boutique
+        </h2>
 
-                    <div class="text-center">
-                        <h1 class="boutique-name">{{ boutique?.name }}</h1>
-                        <div class="mb-4">
-                            <span class="badge-category">{{ getCategoryName(boutique?.categoryId) }}</span>
-                        </div>
+        <div class="product-grid" *ngIf="produits.length > 0; else noProducts">
+          <div *ngFor="let produit of produits; let i = index" class="glass-product-card"
+            [style.animation-delay]="(i * 0.1) + 's'">
+            <div class="product-image-wrapper">
+              @if(produit.image_Url){
+              <img [src]="('http://localhost:5000/' + produit.image_Url)" [alt]="produit.nom_prod">
+              }
+              @else{
+              <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="produit.nom_prod">
+              }
+              <div class="product-badges">
+                <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
+                <span *ngIf="produit.isPromoted" class="badge-promo">Promotion</span>
+              </div>
 
-                        <p class="description-text">
-                            {{ boutique?.description || 'Cette boutique n\'a pas encore de description.' }}
-                        </p>
-
-                        <div class="detail-rating-followers-container">
-                            <div class="stat-item">
-                                <img src="/img/svg/icon-star.svg" alt="Rating" class="w-5 h-5">
-                                <span>{{ (boutique?.rating || 0) | number:'1.1-1' }} / 5</span>
-                            </div>
-                            <div class="stat-item">
-                                <img src="/img/svg/icon-followers.svg" alt="Followers" class="w-5 h-5">
-                                <span>{{ boutique?.followers || 0 }} Abonnés</span>
-                            </div>
-                        </div>
-
-                        <button *ngIf="isAcheteur" (click)="toggleSuivi()"
-                            [ngClass]="isSuivie ? 'btn-following' : 'btn-follow'">
-                            {{ isSuivie ? '✓ Suivi(e)' : '+ Suivre la Boutique' }}
-                        </button>
-                    </div>
-                </div>
+              <!-- Bouton Signalement sur la carte -->
+              <button *ngIf="isAcheteur" class="report-btn-card" (click)="toggleReportModal(produit._id)"
+                title="Signaler un problème">
+                <img src="img/svg/icon-alert.svg" alt="" width="32px" height="32px">
+              </button>
             </div>
+
+            <div class="product-info">
+              <h3 class="product-name">{{ produit.nom_prod }}</h3>
+              <span class="product-price">{{ getProductPrice(produit) | currency:'MGA ':'code':'1.0-0'
+                }}</span>
+
+              <div class="buttons-container mt-auto">
+                <button (click)="addToPanier(produit)" class="btn-pill btn-pill-light" title="Ajouter au panier">
+                  <img src="/img/svg/icon-cart-add.svg" alt=""> Ajouter
+                </button>
+                <button [routerLink]="['/achats/ajouter', produit._id]" class="btn-pill btn-pill-dark">
+                  Acheter
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <ng-template #noProducts>
+          <div class="no-products-card">
+            <div class="empty-state-icon">
+              <img src="/img/svg/icon-bag.svg" alt="no-products-card" width="32px" height="32px">
+
+            </div>
+            <h3>Aucun produit pour le moment</h3>
+            <p>Bientôt de nouveaux articles dans cette boutique...</p>
+          </div>
+        </ng-template>
+
+        <!-- Composant de notation (Exposé à tous pour voir les avis, restriction d'envoi à l'intérieur) -->
+        <div *ngIf="boutique" class="rating-section-wrapper">
+          <app-note-boutique [boutiqueId]="boutique._id"></app-note-boutique>
+        </div>
+      </div>
     </div>
+
+    <!-- Section Boutique (Droite - Fixe/Sticky) -->
+    <div class="boutique-side">
+      <div class="glass-header text-white p-8 rounded-[30px] relative">
+        <div class="header-overlay"></div>
+        <div class="relative boutique-detail">
+          <div class="boutique-logo-container">
+            @if(boutique?.images?.[0]?.url){
+            <img [src]="('http://localhost:5000/' + boutique?.images?.[0]?.url )" [alt]="boutique?.name"
+              class="boutique-logo">
+            }
+            @else{
+            <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="boutique?.name" class="boutique-logo">
+            }
+          </div>
+
+          <div class="text-center">
+            <h1 class="boutique-name">{{ boutique?.name }}</h1>
+            <div class="mb-4">
+              <span class="badge-category">{{ getCategoryName(boutique?.categoryId) }}</span>
+            </div>
+
+            <p class="description-text">
+              {{ boutique?.description || 'Cette boutique n\'a pas encore de description.' }}
+            </p>
+
+            <div class="detail-rating-followers-container">
+              <div class="stat-item">
+                <img src="/img/svg/icon-star.svg" alt="Rating" class="w-5 h-5">
+                <span>{{ (boutique?.rating || 0) | number:'1.1-1' }} / 5</span>
+              </div>
+              <div class="stat-item">
+                <img src="/img/svg/icon-followers.svg" alt="Followers" class="w-5 h-5">
+                <span>{{ boutique?.followers || 0 }} Abonnés</span>
+              </div>
+            </div>
+
+            <button *ngIf="isAcheteur" (click)="toggleSuivi()" [ngClass]="isSuivie ? 'btn-following' : 'btn-follow'">
+              {{ isSuivie ? '✓ Suivi(e)' : '+ Suivre la Boutique' }}
+            </button>
+          </div>
+          <!-- Informations légales -->
+          @if (boutique?.legal) {
+          <div class="" style="margin-bottom: 14px;">
+            <h3>Informations légales</h3>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div>
+                <strong>NIF :</strong> {{ boutique?.legal?.nif || 'N/A' }}
+              </div>
+              <div>
+                <strong>STAT :</strong> {{ boutique?.legal?.stat || 'N/A' }}
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <strong>Patente :</strong> {{ boutique?.legal?.rent || 'N/A' }}
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Signalement -->
+  <div class="modal-overlay" *ngIf="showReportModal" (click)="toggleReportModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="btn-close-modal" (click)="toggleReportModal()">&times;</button>
+      <app-signaler-produit [produitId]="selectedProduitId!"></app-signaler-produit>
+    </div>
+  </div>
 </div>
 
 <ng-template #loading>
-    <div class="flex items-center justify-center min-h-[500px]">
-        <div class="loader"></div>
-    </div>
-</ng-template><div class="boutique-detail-container">
-  <!-- Chargement -->
-  @if (isLoading) {
-    <div style="text-align: center; padding: 40px;">
-      <p style="font-size: 16px; color: #007bff;">Chargement...</p>
-    </div>
-  }
-
-  <!-- Boutique trouvée -->
-  @if (boutique && !isLoading) {
-    <div class="boutique-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px;">
-      <div style="max-width: 1200px; margin: 0 auto;">
-        <h1 style="margin: 0 0 10px 0; font-size: 32px;">{{ boutique.name }}</h1>
-        
-        <!-- Note et followers -->
-        <div style="display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap;">
-          <div>
-            <span style="font-size: 18px; margin-right: 5px;">{{ getRatingStar() }}</span>
-            <span style="font-size: 14px;">{{ boutique.rating || 0 }}/5</span>
-          </div>
-          <div>
-            <span style="font-size: 14px;">{{ boutique.followers || 0 }} followers</span>
-          </div>
-        </div>
-
-        <p style="margin: 0; font-size: 16px; opacity: 0.9;">{{ boutique.description }}</p>
-      </div>
-    </div>
-
-    <!-- Informations légales -->
-    @if (boutique.legal) {
-      <div class="glass-card" style="margin-bottom: 30px;">
-        <h3>Informations légales</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          <div>
-            <strong>NIF :</strong> {{ boutique.legal.nif || 'N/A' }}
-          </div>
-          <div>
-            <strong>STAT :</strong> {{ boutique.legal.stat || 'N/A' }}
-          </div>
-          <div style="grid-column: 1 / -1;">
-            <strong>Patente :</strong> {{ boutique.legal.rent || 'N/A' }}
-          </div>
-        </div>
-      </div>
-    }
-
-    <!-- Composant de notation -->
-    <div style="margin-bottom: 30px;">
-      <app-note-boutique [boutiqueId]="boutique._id"></app-note-boutique>
-    </div>
-
-    <!-- Produits de la boutique -->
-    <div class="glass-card">
-      <h3>Produits de cette boutique ({{ produits.length }})</h3>
-
-      @if (produits.length === 0) {
-        <p style="text-align: center; color: #999; padding: 20px;">
-          Aucun produit trouvé pour cette boutique
-        </p>
-      } @else {
-        <div style="overflow-x: auto;">
-          <table class="modern-table">
-            <thead>
-              <tr>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Prix</th>
-                <th>Stock</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (produit of produits; track produit._id) {
-                <tr>
-                  <td class="font-bold">{{ produit.nom_prod }}</td>
-                  <td class="td-desc">{{ produit.descriptions }}</td>
-                  <td class="price-cell">
-                    {{ produit.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar
-                  </td>
-                  <td>
-                    <span class="badge" [ngClass]="produit.stock_etat ? 'badge-success' : 'badge-danger'">
-                      {{ produit.stock_etat ? 'Disponible' : 'Rupture' }}
-                    </span>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
-    </div>
-  }
-
-  <!-- Boutique non trouvée -->
-  @if (!boutique && !isLoading) {
-    <div style="text-align: center; padding: 40px;">
-      <p style="font-size: 16px; color: #dc3545;">Boutique non trouvée</p>
-      <a routerLink="/boutiques" style="color: #007bff; text-decoration: underline;">
-        Retour à la liste des boutiques
-      </a>
-    </div>
-  }
-</div>
-
+  <div class="flex items-center justify-center min-h-[500px]">
+    <div class="loader"></div>
+  </div>
+</ng-template>
