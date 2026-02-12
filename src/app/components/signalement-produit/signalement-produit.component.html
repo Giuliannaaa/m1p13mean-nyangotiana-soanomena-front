@@ -1,1 +1,82 @@
-<p>signalement-produit works!</p>
+<div class="signalement-wrapper glass-container-red">
+    <div class="signalement-header">
+        <h4 class="section-title-red">Signaler un problème</h4>
+        <p class="section-subtitle">Aidez-nous à maintenir la qualité de notre marketplace</p>
+    </div>
+
+    @if (!hasSignale) {
+    <div class="form-container">
+        <div class="field-group">
+            <label for="raison-select" class="field-label">Raison du signalement *</label>
+            <div class="select-wrapper">
+                <select id="raison-select" [(ngModel)]="raison" class="glass-select">
+                    <option value="">-- Sélectionnez une raison --</option>
+                    <option value="produit_defectueux">Produit défectueux</option>
+                    <option value="description_inexacte">Description inexacte</option>
+                    <option value="prix_incorrect">Prix incorrect</option>
+                    <option value="contenu_offensant">Contenu offensant</option>
+                    <option value="produit_non_conforme">Produit non conforme</option>
+                    <option value="arnaque">Arnaque/Escroquerie</option>
+                    <option value="autre">Autre</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label for="description-text" class="field-label">Description du problème *</label>
+            <div class="textarea-wrapper">
+                <textarea id="description-text" [(ngModel)]="description"
+                    placeholder="Décrivez le problème en détail (max 1000 caractères)..." maxlength="1000"
+                    class="glass-textarea" rows="4"></textarea>
+                <div class="char-count" [class.near-limit]="description.length > 900">
+                    {{ description.length }}/1000
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-footer">
+            <button (click)="envoyer()" [disabled]="!raison || !description || isLoading"
+                class="btn-pill btn-pill-danger" [class.loading]="isLoading">
+                <span class="btn-content">
+                    @if (isLoading) {
+                    <span class="spinner-small"></span>
+                    }
+                    {{ isLoading ? 'Envoi...' : 'Envoyer le signalement' }}
+                </span>
+            </button>
+        </div>
+    </div>
+    }
+
+    @if (hasSignale) {
+    <div class="success-container animate-fade-in">
+        <div class="success-icon-wrapper">
+            <img src="/img/svg/icon-check-circle.svg" alt="Success" class="success-icon">
+        </div>
+        <h5 class="success-title">Signalement enregistré</h5>
+        <div class="report-summary">
+            <div class="summary-item">
+                <span class="label">Raison:</span>
+                <span class="value">{{ getRaisonLabel(raison) }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Statut:</span>
+                <span class="status-badge">En attente</span>
+            </div>
+        </div>
+        <p class="success-notice">
+            Notre équipe de modération examinera votre signalement sous peu.
+        </p>
+        <button (click)="resetFormulaire()" class="btn-pill btn-pill-outline-white">
+            Signaler un autre problème
+        </button>
+    </div>
+    }
+
+    @if (errorMessage) {
+    <div class="alert alert-error">
+        <img src="/img/svg/icon-alert.svg" alt="Error" class="alert-icon">
+        <span>{{ errorMessage }}</span>
+    </div>
+    }
+</div>

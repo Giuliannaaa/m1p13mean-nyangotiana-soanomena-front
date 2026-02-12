@@ -2,10 +2,10 @@
     <div class="list-header">
         <h1>Nos Produits</h1>
         <button *ngIf="isAdmin" routerLink="/produits/ajouter" class="btn-primary">Ajouter un produit</button>
+        @if (isAcheteur) {
+        <a routerLink="/mes-signalements" class="btn-primary">Mes signalements</a>
+        }
     </div>
-    @if (isAcheteur) {
-        <a routerLink="/mes-signalements" class="nav-link">Mes signalements</a>
-    }
     <!-- FILTER SECTION (Unified) -->
     <div class="glass-card filters-container">
         <!-- Search Bar -->
@@ -122,11 +122,12 @@
                     <td class="td-image" style="position: relative;">
                         <img [src]="produit.image_Url ? ('http://localhost:5000/' + produit.image_Url) : 'img/png/elementor-placeholder-image.png'"
                             alt="{{ produit.nom_prod }}" class="product-thumb" />
-                        
+
                         <!-- AFFICHER PLUSIEURS BADGES -->
-                        <div style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
+                        <div
+                            style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
                             @for (badge of getProductBadges(produit); track badge.text) {
-                                <span style="
+                            <span style="
                                     background-color: {{ badge.color }}; 
                                     color: {{ badge.color === '#ffc107' ? 'black' : 'white' }}; 
                                     padding: 2px 6px; 
@@ -136,15 +137,15 @@
                                     text-shadow: 0 1px 2px rgba(0,0,0,0.2);
                                     white-space: nowrap;
                                 ">
-                                    {{ badge.text }}
-                                </span>
+                                {{ badge.text }}
+                            </span>
                             }
                         </div>
                     </td>
                     <td class="font-bold">
-                    <a [routerLink]="['/produits', produit._id]" style="color: #007bff; text-decoration: none;">
-                        {{ produit.nom_prod }}
-                    </a>
+                        <a [routerLink]="['/produits', produit._id]" style="color: #007bff; text-decoration: none;">
+                            {{ produit.nom_prod }}
+                        </a>
                     </td>
                     <td>{{ produit.store_id?.name || 'Boutique inconnue' }}</td>
                     <td class="td-desc">{{ produit.descriptions }}</td>

@@ -37,6 +37,12 @@
                 <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
                 <span *ngIf="produit.isPromoted" class="badge-promo">Promotion</span>
               </div>
+
+              <!-- Bouton Signalement sur la carte -->
+              <button *ngIf="isAcheteur" class="report-btn-card" (click)="toggleReportModal(produit._id)"
+                title="Signaler un problème">
+                <img src="img/svg/icon-alert.svg" alt="" width="32px" height="32px">
+              </button>
             </div>
 
             <div class="product-info">
@@ -133,6 +139,14 @@
           }
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal de Signalement -->
+  <div class="modal-overlay" *ngIf="showReportModal" (click)="toggleReportModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="btn-close-modal" (click)="toggleReportModal()">&times;</button>
+      <app-signaler-produit [produitId]="selectedProduitId!"></app-signaler-produit>
     </div>
   </div>
 </div>
