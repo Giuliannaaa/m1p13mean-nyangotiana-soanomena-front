@@ -66,7 +66,8 @@ export class ProduitDetailComponent implements OnInit {
 
   getImageUrl(imagePath: string): string {
     // Si le chemin commence par 'uploads/', c'est bon
-    if (imagePath.startsWith('uploads/') || imagePath.startsWith('/uploads/')) {
+
+    if (imagePath.startsWith('uploads/') || imagePath.startsWith('/uploads/') || imagePath.startsWith('uploads\\')) {
       return `http://localhost:5000/${imagePath}`;
     }
 

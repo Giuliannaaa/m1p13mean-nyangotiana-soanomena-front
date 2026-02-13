@@ -66,7 +66,7 @@
 
         <div class="actions-group">
           <button (click)="onAddToPanier()" [disabled]="!produit.stock_etat"
-            class="btn-pill btn-pill-primary btn-pill-large">
+            class="btn-icon btn-pill btn-pill-primary btn-pill-large">
             <img src="/img/svg/icon-cart-add.svg" alt="" class="btn-icon">
             {{ produit.stock_etat ? 'Ajouter au panier' : 'Rupture de stock' }}
           </button>
