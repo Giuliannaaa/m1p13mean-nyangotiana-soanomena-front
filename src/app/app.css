@@ -24,6 +24,8 @@ main {
 
 .content-area {
     flex: 1;
+    padding-left: 32px;
+    padding-right: 32px;
 }
 
 /* Global Transitions */
