@@ -1,0 +1,256 @@
+<div class="messagerie-container">
+  <div class="messagerie-header">
+    <h1>Messagerie</h1>
+    @if (unreadCount > 0) {
+      <span class="unread-badge">{{ unreadCount }} non lu(s)</span>
+    }
+  </div>
+
+  <div class="messagerie-content">
+    <!-- Liste des conversations -->
+    <div class="conversations-panel">
+      <h2>Conversations</h2>
+      <button 
+        (click)="openNewConversationModal()" 
+        class="btn-new-conversation"
+        title="Nouvelle conversation"
+      >
+        + Nouvelle discussion
+      </button>
+      @if (isLoading) {
+        <div style="text-align: center; padding: 20px;">
+          <p style="color: #007bff;">Chargement...</p>
+        </div>
+      }
+
+      @if (!isLoading && conversations.length > 0) {
+        <div class="conversations-list">
+          @for (conv of conversations; track conv._id) {
+            <div
+              class="conversation-item"
+              [class.active]="selectedConversation?.otherUserId === conv._id.otherUserId"
+              (click)="loadConversation(conv._id.otherUserId, conv._id.boutique_id, conv)"
+              [style.cursor]="'pointer'"
+            >
+              <div class="conversation-header">
+                <span class="conversation-title">
+                  {{ conv.boutiqueName }}
+                </span>
+                @if (conv.unreadCount > 0) {
+                  <span class="unread-count">{{ conv.unreadCount }}</span>
+                }
+              </div>
+              <p class="last-message" [title]="conv.lastMessage">
+                {{ conv.lastMessage?.substring(0, 50) }}...
+              </p>
+              <small class="message-date">
+                {{ formatDate(conv.lastMessageDate) }}
+              </small>
+            </div>
+          }
+        </div>
+      }
+
+      @if (!isLoading && conversations.length === 0) {
+        <div style="text-align: center; padding: 20px; color: #999;">
+          <p>Aucune conversation</p>
+        </div>
+      }
+    </div>
+
+    <!-- Zone de messages -->
+    <div class="messages-panel">
+      @if (selectedConversation) {
+        <!-- HEADER AMÉLIORÉ AVEC BOUTON SUPPRIMER -->
+        <div class="messages-header">
+          <div class="messages-header-content">
+            <div>
+              <h2>Conversation</h2>
+              <small style="color: #999;">
+                {{ selectedConversation.boutiqueName || selectedConversation.boutiqueId }}
+              </small>
+            </div>
+            <button 
+              (click)="deleteConversation()"
+              class="btn-delete-conversation"
+              title="Supprimer cette conversation"
+            >
+              Supprimer
+            </button>
+          </div>
+        </div>
+
+        <!-- Zone des messages -->
+        <div class="messages-list">
+          @for (msg of messages; track msg._id) {
+            <div
+              class="message"
+              [class.sent]="msg.sender_id._id === userId"
+              [class.received]="msg.receiver_id._id === userId"
+            >
+              <div class="message-content">
+                <div class="message-header-item">
+                  <strong>{{ msg.sender_id.firstname }} {{ msg.sender_id.lastname }}</strong>
+                  @if (msg.message_type && msg.message_type !== 'other') {
+                    <span
+                      class="message-type-badge"
+                      [style.background-color]="getMessageTypeColor(msg.message_type)"
+                    >
+                      {{ getMessageTypeLabel(msg.message_type) }}
+                    </span>
+                  }
+                </div>
+
+                @if (msg.subject) {
+                  <p class="message-subject">
+                    <strong>Sujet:</strong> {{ msg.subject }}
+                  </p>
+                }
+
+                <p class="message-text">{{ msg.message }}</p>
+
+                <div class="message-footer">
+                  <small class="message-time">
+                    {{ formatDate(msg.createdAt) }}
+                  </small>
+
+                  @if (msg.is_read && msg.receiver_id._id === userId) {
+                    <small class="message-read">✓ Lu</small>
+                  }
+
+                  @if (msg.sender_id._id === userId) {
+                    <button
+                      (click)="deleteMessage(msg._id)"
+                      class="btn-delete-msg"
+                      title="Supprimer"
+                    >
+                      Supprimer
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Formulaire d'envoi -->
+        <div class="message-form">
+          <div class="form-group">
+            <input
+              type="text"
+              [(ngModel)]="subject"
+              placeholder="Sujet (optionnel)..."
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <select
+              [(ngModel)]="messageType"
+              class="form-select"
+            >
+              <option value="other">Type: Autre</option>
+              <option value="info">Type: Information</option>
+              <option value="question">Type: Question</option>
+              <option value="avertissement">Type: Attention</option>
+              <option value="validation">Type: Validation</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <textarea
+              [(ngModel)]="newMessage"
+              placeholder="Écrivez votre message..."
+              class="form-textarea"
+              rows="4"
+              (keydown.enter)="checkSendMessage($event)"
+            ></textarea>
+            <small style="color: #999; font-size: 12px;">
+              Ctrl + Entrée pour envoyer
+            </small>
+          </div>
+
+          <button
+            (click)="sendMessage()"
+            [disabled]="!newMessage.trim() || isSending"
+            class="btn-send"
+          >
+            {{ isSending ? 'Envoi...' : 'Envoyer' }}
+          </button>
+        </div>
+      } @else {
+        <div style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          color: #999;
+        ">
+          <p>Sélectionnez une conversation pour commencer</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Modal nouvelle conversation -->
+  @if (showNewConversationModal) {
+    <div class="modal-overlay" (click)="cancelNewConversation()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3>Nouvelle conversation</h3>
+        
+        <!-- SI C'EST UNE BOUTIQUE : SÉLECTIONNER UN ADMIN -->
+        @if (userRole === 'Boutique') {
+          <div class="form-group">
+            <label>Contacter un administrateur :</label>
+            <select 
+              [(ngModel)]="selectedAdminId" 
+              class="form-select"
+            >
+              <option value="">-- Choisir un admin --</option>
+              @for (admin of availableAdmins; track admin._id) {
+                <option [value]="admin._id">
+                  {{ admin.firstname }} {{ admin.lastname }}
+                </option>
+              }
+            </select>
+          </div>
+        }
+        
+        <!-- SI C'EST UN ADMIN : SÉLECTIONNER UNE BOUTIQUE -->
+        @if (userRole === 'Admin') {
+          <div class="form-group">
+            <label>Sélectionnez une boutique :</label>
+            <select 
+              [(ngModel)]="selectedBoutiqueId" 
+              class="form-select"
+            >
+              <option value="">-- Choisir une boutique --</option>
+              @for (boutique of availableBoutiques; track boutique._id) {
+                <option [value]="boutique._id">
+                  {{ boutique.name }} ({{ boutique.ownerId?.firstname }} {{ boutique.ownerId?.lastname }})
+                </option>
+              }
+            </select>
+          </div>
+        }
+
+        <div class="modal-actions">
+          <button 
+            (click)="cancelNewConversation()" 
+            class="btn-cancel"
+          >
+            Annuler
+          </button>
+          <button 
+            (click)="startNewConversation()" 
+            class="btn-confirm"
+            [disabled]="(userRole === 'Boutique' && !selectedAdminId) || (userRole === 'Admin' && !selectedBoutiqueId)"
+          >
+            Démarrer
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+

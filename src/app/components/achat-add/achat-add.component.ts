@@ -52,7 +52,7 @@ export class AchatAddComponent implements OnInit {
       next: (response: any) => {
         // console.log('Réponse API:', response);
 
-        // ✅ Les vraies données sont dans response.data !
+        // Les vraies données sont dans response.data !
         const data = response.data || response;
 
         // console.log('Données du produit:', data);

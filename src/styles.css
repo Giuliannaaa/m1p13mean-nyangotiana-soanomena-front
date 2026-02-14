@@ -15,7 +15,7 @@ body {
   margin: 0;
   font-family: 'Outfit', sans-serif;
   background: var(--bg-gradient);
-  color: var(--text-main);
+  /*color: var(--text-main);*/
   min-height: 100vh;
   overflow-x: hidden;
 }
