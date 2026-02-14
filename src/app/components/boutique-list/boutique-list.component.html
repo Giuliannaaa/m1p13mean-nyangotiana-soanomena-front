@@ -1,6 +1,8 @@
 <div class="boutique-list-container">
     <div class="list-header">
-        <h1>Nos Boutiques</h1>
+        <h1 *ngIf="isAdmin">Nos Boutiques</h1>
+        <h1 *ngIf="isBoutique">Vos Boutiques</h1>
+        <h1 *ngIf="isAcheteur">Boutiques</h1>
         <button *ngIf="isAdmin" routerLink="/boutiques/ajouter" class="btn-primary">Ajouter une boutique</button>
     </div>
 

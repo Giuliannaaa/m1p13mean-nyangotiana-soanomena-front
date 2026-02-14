@@ -81,4 +81,8 @@ export class ProduitService {
   deleteProduit(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }
+
+  updatePrixProduit(id: string, prix: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/update-prix-produit/${id}`, { prix_unitaire: prix }, { headers: this.getHeaders() });
+  }
 }

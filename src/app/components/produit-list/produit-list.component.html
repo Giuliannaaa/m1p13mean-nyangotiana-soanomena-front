@@ -2,10 +2,10 @@
     <div class="list-header">
         <h1>Nos Produits</h1>
         <button *ngIf="isAdmin" routerLink="/produits/ajouter" class="btn-primary">Ajouter un produit</button>
+        @if (isAcheteur) {
+        <a routerLink="/mes-signalements" class="btn-primary">Mes signalements</a>
+        }
     </div>
-    @if (isAcheteur) {
-        <a routerLink="/mes-signalements" class="nav-link">Mes signalements</a>
-    }
     <!-- FILTER SECTION (Unified) -->
     <div class="glass-card filters-container">
         <!-- Search Bar -->
@@ -112,7 +112,7 @@
                     <th>Stock</th>
                     <th>Type</th>
                     <th>Livraison</th>
-                    <th *ngIf="isAdmin || isAcheteur">Actions</th>
+                    <th *ngIf="isAdmin || isAcheteur || isBoutique">Actions</th>
                 </tr>
             </thead>
 
@@ -122,11 +122,12 @@
                     <td class="td-image" style="position: relative;">
                         <img [src]="produit.image_Url ? ('http://localhost:5000/' + produit.image_Url) : 'img/png/elementor-placeholder-image.png'"
                             alt="{{ produit.nom_prod }}" class="product-thumb" />
-                        
+
                         <!-- AFFICHER PLUSIEURS BADGES -->
-                        <div style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
+                        <div
+                            style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
                             @for (badge of getProductBadges(produit); track badge.text) {
-                                <span style="
+                            <span style="
                                     background-color: {{ badge.color }}; 
                                     color: {{ badge.color === '#ffc107' ? 'black' : 'white' }}; 
                                     padding: 2px 6px; 
@@ -136,15 +137,15 @@
                                     text-shadow: 0 1px 2px rgba(0,0,0,0.2);
                                     white-space: nowrap;
                                 ">
-                                    {{ badge.text }}
-                                </span>
+                                {{ badge.text }}
+                            </span>
                             }
                         </div>
                     </td>
                     <td class="font-bold">
-                    <a [routerLink]="['/produits', produit._id]" style="color: #007bff; text-decoration: none;">
-                        {{ produit.nom_prod }}
-                    </a>
+                        <a [routerLink]="['/produits', produit._id]" style="color: #007bff; text-decoration: none;">
+                            {{ produit.nom_prod }}
+                        </a>
                     </td>
                     <td>{{ produit.store_id?.name || 'Boutique inconnue' }}</td>
                     <td class="td-desc">{{ produit.descriptions }}</td>
@@ -171,10 +172,48 @@
                             <img src="/img/svg/icon-cart.svg" alt="Ajouter au Panier">
                         </button>
                     </td>
+                    <td *ngIf="isBoutique">
+                        <button (click)="openPriceModal(produit)" class="btn-icon" title="Modifier le prix">
+                            <img src="/img/svg/icon-update.svg" alt="Modifier le prix">
+                        </button>
+                    </td>
                 </tr>
                 }
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Modal de modification de prix -->
+<div class="price-modal-overlay" *ngIf="showPriceModal" (click)="closePriceModal()">
+    <div class="price-modal-content glass-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Modifier le prix</h2>
+            <button class="btn-close" (click)="closePriceModal()">&times;</button>
+        </div>
+
+        <div class="modal-body" *ngIf="selectedProduct">
+            <div class="product-info-brief">
+                <img [src]="selectedProduct.image_Url ? ('http://localhost:5000/' + selectedProduct.image_Url) : 'img/png/elementor-placeholder-image.png'"
+                    alt="Product" class="modal-product-thumb">
+                <div class="product-text">
+                    <h3>{{ selectedProduct.nom_prod }}</h3>
+                    <p class="current-price">Prix actuel: <span>{{ selectedProduct.prix_unitaire.$numberDecimal |
+                            number:'1.0-0' }} Ar</span></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="new-price">Nouveau prix (Ar)</label>
+                <input type="number" id="new-price" [(ngModel)]="updatedPrice" class="form-control"
+                    placeholder="Entrez le nouveau prix">
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-primary" (click)="updatePrixProduit()">Confirmer</button>
+            <button class="btn-secondary" (click)="closePriceModal()">Annuler</button>
+        </div>
     </div>
 </div>
 

@@ -45,6 +45,7 @@ export class BoutiqueListComponent implements OnInit {
     private suiviService = inject(SuiviService);
 
     ngOnInit(): void {
+        this.isBoutique = this.authService.getRole() === 'Boutique';
         this.isAdmin = this.authService.getRole() === 'Admin';
         this.isAcheteur = this.authService.getRole() === 'Acheteur';
         
