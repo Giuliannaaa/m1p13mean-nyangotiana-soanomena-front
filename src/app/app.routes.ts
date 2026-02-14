@@ -30,6 +30,7 @@ import { BoutiqueDetailComponent } from './components/boutique-detail/boutique-d
 import { ProduitDetailComponent } from './components/produit-detail/produit-detail.component';
 import { SignalementsAdminComponent } from './components/signalements-admin/signalements-admin.component';
 import { MesSignalementsComponent } from './components/mes-signalements/mes-signalements.component';
+import { MessagereieComponent } from './components/messagerie/messagerie.component';
 
 
 export const routes: Routes = [
@@ -86,6 +87,9 @@ export const routes: Routes = [
 
     //Page de signalement
     { path: 'admin/signalements', component: SignalementsAdminComponent }, //admin
-    { path: 'mes-signalements', component: MesSignalementsComponent } //acheteurs
+    { path: 'mes-signalements', component: MesSignalementsComponent }, //acheteurs
+
+    //Messagerie
+    { path: 'messagerie', component: MessagereieComponent }
 
 ];

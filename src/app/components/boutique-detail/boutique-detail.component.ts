@@ -163,4 +163,5 @@ export class BoutiqueDetailComponent implements OnInit {
         }
         return typeof produit.prix_unitaire === 'number' ? produit.prix_unitaire : 0;
     }
+    
 }
