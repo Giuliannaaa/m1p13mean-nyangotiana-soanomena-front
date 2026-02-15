@@ -9,13 +9,16 @@
             <li><a routerLink="/categories" routerLinkActive="active">Catégories</a></li>
             <li><a routerLink="/boutiques" routerLinkActive="active">Boutiques</a></li>
             @if (userRole === 'Admin' || userRole === 'Boutique' || userRole === 'Acheteur') {
-            <a routerLink="/messagerie" class="nav-link">
-                Messagerie
-                @if (unreadCount > 0) {
-                <span class="badge">{{ unreadCount }}</span>
-                }
-            </a>
+            <li>
+                <a routerLink="/messagerie" class="nav-link" routerLinkActive="active">
+                    Messagerie
+                    @if (unreadCount > 0) {
+                    <span class="badge">{{ unreadCount }}</span>
+                    }
+                </a>
+            </li>
             }
+            <li><a routerLink="/achats" routerLinkActive="active">Mes achats</a></li>
         </ul>
     </div>
     <div class="navbar-actions">

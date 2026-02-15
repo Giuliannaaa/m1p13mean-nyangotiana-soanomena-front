@@ -48,11 +48,13 @@
         </div>
 
         <div class="modal-footer" *ngIf="cartData && cartData.items && cartData.items.length > 0">
+          @if(hasPhysicalProduct) {
           <div class="delivery-option" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
             <input type="checkbox" id="livraisonCheck" [(ngModel)]="avec_livraison" style="width: 20px; height: 20px;">
             <label for="livraisonCheck" style="font-size: 1rem; color: #333;">Livraison à domicile (+ {{ fraisLivraison
               | number:'1.0-0' }} Ar)</label>
           </div>
+          }
           <div class="total-price">
             <span>Total:</span>
             <strong>{{ totalAvecLivraison | number:'1.0-0' }} Ar</strong>

@@ -42,6 +42,7 @@
                     </select>
                 </div>
 
+
                 <div class="form-group">
                     <label for="type_produit">Type de vente</label>
                     <select id="type_produit" name="type_produit" [(ngModel)]="newProduit.type_produit"
@@ -50,6 +51,12 @@
                         <option value="SERVICE">Services</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="form-group" *ngIf="newProduit.type_produit === 'PRODUIT'">
+                <label for="stock">Nombre en stock</label>
+                <input type="number" id="stock" name="stock" [(ngModel)]="newProduit.stock" class="form-control"
+                    placeholder="0" />
             </div>
 
             <div class="form-section">

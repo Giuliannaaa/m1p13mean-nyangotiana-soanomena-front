@@ -52,6 +52,11 @@
         </div>
       </div>
 
+      <div class="form-group" *ngIf="produit.type_produit === 'PRODUIT'">
+        <label for="stock">Nombre en stock</label>
+        <input type="number" id="stock" name="stock" [(ngModel)]="produit.stock" class="form-control" placeholder="0" />
+      </div>
+
       <div class="form-section">
         <h3>Livraison</h3>
         <div class="form-grid">

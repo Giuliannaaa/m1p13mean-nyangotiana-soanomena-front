@@ -85,7 +85,7 @@ export class ProduitListComponent implements OnInit {
   loadProduits(): void {
     this.produitService.getProduits().subscribe({
       next: (response) => {
-        console.log('Produits reçus:', response);
+        // console.log('Produits reçus:', response);
         this.produits = response.data || response;
 
         // Calculer le prix max automatiquement
@@ -114,7 +114,7 @@ export class ProduitListComponent implements OnInit {
   loadBoutiques(): void {
     this.boutiqueService.getAllBoutiques().subscribe({
       next: (response: any) => {
-        console.log('Boutiques reçues:', response);
+        // console.log('Boutiques reçues:', response);
 
         if (Array.isArray(response)) {
           this.boutiques = response;
@@ -124,7 +124,7 @@ export class ProduitListComponent implements OnInit {
           this.boutiques = [];
         }
 
-        console.log('Boutiques chargées:', this.boutiques);
+        // console.log('Boutiques chargées:', this.boutiques);
       },
       error: (err) => {
         console.error('Erreur chargement boutiques:', err);
