@@ -48,24 +48,31 @@ export class BoutiqueListComponent implements OnInit {
         this.isBoutique = this.authService.getRole() === 'Boutique';
         this.isAdmin = this.authService.getRole() === 'Admin';
         this.isAcheteur = this.authService.getRole() === 'Acheteur';
-        
+
         this.loadCategories();
         this.loadUsers();
         this.loadBoutiques();
-        
-        // CHARGER LES BOUTIQUES SUIVIES SI ACHETEUR
+
+        // ATTENDRE LE CHARGEMENT DES SUIVIS AVANT D'ÉCOUTER
         if (this.isAcheteur) {
-            this.suiviService.getBoutiquesSuivies().subscribe(ids => {
-                this.boutiquesSuivies = ids;
-                this.cdr.markForCheck();
-            });
+            // Charger explicitement les suivis
+            this.suiviService.loadBoutiquesSuivies();
+
+            // PUIS écouter les changements
+            setTimeout(() => {
+                this.suiviService.getBoutiquesSuivies().subscribe(ids => {
+                    this.boutiquesSuivies = ids;
+                    console.log('Boutiques suivies mises à jour:', ids);
+                    this.cdr.markForCheck();
+                });
+            }, 500); // Attendre 500ms que les données se chargent
         }
     }
 
     loadCategories(): void {
         this.categorieService.getCategories().subscribe({
             next: (response: any) => {
-                console.log('Catégories reçues:', response);
+                // console.log('Catégories reçues:', response);
 
                 if (Array.isArray(response)) {
                     this.categories = response;
@@ -77,7 +84,7 @@ export class BoutiqueListComponent implements OnInit {
                     this.categories = [];
                 }
 
-                console.log('Catégories chargées:', this.categories);
+                // console.log('Catégories chargées:', this.categories);
             },
             error: (err) => {
                 console.error('Erreur chargement catégories:', err);
@@ -105,7 +112,7 @@ export class BoutiqueListComponent implements OnInit {
     loadBoutiques(): void {
         this.boutiqueService.getAllBoutiques().subscribe({
             next: (data: any) => {
-                console.log('Données reçues (Boutiques):', data);
+                // console.log('Données reçues (Boutiques):', data);
 
                 if (Array.isArray(data)) {
                     this.boutiques = data;
@@ -272,6 +279,7 @@ export class BoutiqueListComponent implements OnInit {
     isBoutiqueSuivie(boutiqueId: string | undefined): boolean {
         return boutiqueId ? this.boutiquesSuivies.includes(boutiqueId) : false;
     }
+
     viewBoutique(boutiqueId: string) {
         this.router.navigate(['/boutique', boutiqueId]);
     }

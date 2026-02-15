@@ -30,10 +30,24 @@
         </a>
       </li>
       <li>
+        <a routerLink="/achats" routerLinkActive="active">
+          <i class="icon-achats"></i> Achats
+        </a>
+      </li>
+      <li>
         <a routerLink="/admin/utilisateurs" routerLinkActive="active">
           <i class="icon-users"></i> Utilisateurs
         </a>
       </li>
+      <li>
+        <a routerLink="/messagerie" class="nav-link">
+        Messagerie
+        @if (unreadCount > 0) {
+          <span class="badge">{{ unreadCount }}</span>
+        }
+      </a>
+      </li>
+      
       <!-- Add more admin specific links here -->
     </ul>
   </nav>

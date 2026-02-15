@@ -25,7 +25,8 @@ export class ProduitEditComponent {
     stock_etat: true,
     type_produit: 'PRODUIT',
     livraison: { disponibilite: false, frais: 0 },
-    image_Url: ''
+    image_Url: '',
+    stock: 0
   };
 
 
@@ -141,6 +142,7 @@ export class ProduitEditComponent {
     formData.append('type_produit', this.produit.type_produit);
     formData.append('livraison', JSON.stringify(this.produit.livraison));
     formData.append('store_id', this.produit.store_id);
+    formData.append('stock', this.produit.stock);
 
     if (this.selectedFile) {
       formData.append('image_Url', this.selectedFile);

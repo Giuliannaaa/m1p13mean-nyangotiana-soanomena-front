@@ -1,6 +1,7 @@
 .app-container {
     min-height: 100vh;
     display: flex;
+    color: white;
 }
 
 .main-wrapper {
