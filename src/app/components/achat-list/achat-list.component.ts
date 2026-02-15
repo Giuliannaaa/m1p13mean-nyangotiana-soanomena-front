@@ -196,7 +196,7 @@ export class AchatListComponent implements OnInit {
     }
   }
 
-  // ✅ Récupérer les transitions possibles selon le statut actuel et le rôle de l'utilisateur
+  // Récupérer les transitions possibles selon le statut actuel et le rôle de l'utilisateur
   getTransitions(status: string, avecLivraison: boolean): string[] {
     const currentStatus = status || 'EN_ATTENTE';
 
@@ -223,7 +223,7 @@ export class AchatListComponent implements OnInit {
     }
   }
 
-  // ✅ Helper pour le label du bouton
+  // Helper pour le label du bouton
   getStatusActionLabel(status: string): string {
     const labels: { [key: string]: string } = {
       'CONFIRMEE': 'Confirmer',
@@ -234,7 +234,7 @@ export class AchatListComponent implements OnInit {
     return labels[status] || status;
   }
 
-  // ✅ Helper pour la couleur du bouton
+  // Helper pour la couleur du bouton
   getStatusActionColor(status: string): string {
     const colors: { [key: string]: string } = {
       'CONFIRMEE': '#007bff', // Bleu
@@ -245,7 +245,7 @@ export class AchatListComponent implements OnInit {
     return colors[status] || '#6c757d';
   }
 
-  // ✅ Helper pour récupérer le nom de la boutique
+  // Helper pour récupérer le nom de la boutique
   getNomBoutique(achat: any): string {
     const names = new Set<string>();
 

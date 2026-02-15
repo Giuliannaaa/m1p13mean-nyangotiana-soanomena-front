@@ -28,7 +28,8 @@ export class ProduitAddComponent implements OnInit {
       disponibilite: false,
       frais: 0
     },
-    image_Url: ''
+    image_Url: '',
+    stock: 0
   };
 
   private boutiqueService = inject(BoutiqueService);
@@ -86,6 +87,7 @@ export class ProduitAddComponent implements OnInit {
     formData.append('stock_etat', String(this.newProduit.stock_etat));
     formData.append('type_produit', this.newProduit.type_produit);
     formData.append('store_id', this.newProduit.store_id);
+    formData.append('stock', String(this.newProduit.stock));
 
     // Objet → JSON
     formData.append(

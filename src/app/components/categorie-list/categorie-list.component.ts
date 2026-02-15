@@ -25,12 +25,12 @@ export class CategorieListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAdmin = this.authService.getRole() === 'Admin';
-    console.log('ngOnInit appelé');
+    // console.log('ngOnInit appelé');
     this.loadCategories();
   }
 
   loadCategories(): void {
-    console.log('loadCategories appelé');
+    // console.log('loadCategories appelé');
 
     this.categorieService.getCategories().subscribe({
       next: (data) => {
