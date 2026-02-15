@@ -10,7 +10,7 @@
             <li><a routerLink="/boutiques" routerLinkActive="active">Boutiques</a></li>
             @if (userRole === 'Admin' || userRole === 'Boutique' || userRole === 'Acheteur') {
             <li>
-                <a routerLink="/messagerie" class="nav-link">
+                <a routerLink="/messagerie" class="nav-link" routerLinkActive="active">
                     Messagerie
                     @if (unreadCount > 0) {
                     <span class="badge">{{ unreadCount }}</span>
