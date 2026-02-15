@@ -85,6 +85,13 @@ export class App {
     return this.cartData.total + (this.avec_livraison ? this.fraisLivraison : 0);
   }
 
+  get hasPhysicalProduct(): boolean {
+    if (!this.cartData || !this.cartData.items) return false;
+    return this.cartData.items.some((item: any) =>
+      item.type_produit === 'PRODUIT' || item.produit?.type_produit === 'PRODUIT'
+    );
+  }
+
   validateCart() {
     if (!confirm('Voulez-vous valider votre panier ?')) return;
 
