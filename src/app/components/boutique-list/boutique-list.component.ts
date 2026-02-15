@@ -53,12 +53,19 @@ export class BoutiqueListComponent implements OnInit {
         this.loadUsers();
         this.loadBoutiques();
 
-        // CHARGER LES BOUTIQUES SUIVIES SI ACHETEUR
+        // ATTENDRE LE CHARGEMENT DES SUIVIS AVANT D'ÉCOUTER
         if (this.isAcheteur) {
-            this.suiviService.getBoutiquesSuivies().subscribe(ids => {
-                this.boutiquesSuivies = ids;
-                this.cdr.markForCheck();
-            });
+            // Charger explicitement les suivis
+            this.suiviService.loadBoutiquesSuivies();
+
+            // PUIS écouter les changements
+            setTimeout(() => {
+                this.suiviService.getBoutiquesSuivies().subscribe(ids => {
+                    this.boutiquesSuivies = ids;
+                    console.log('Boutiques suivies mises à jour:', ids);
+                    this.cdr.markForCheck();
+                });
+            }, 500); // Attendre 500ms que les données se chargent
         }
     }
 
@@ -272,6 +279,7 @@ export class BoutiqueListComponent implements OnInit {
     isBoutiqueSuivie(boutiqueId: string | undefined): boolean {
         return boutiqueId ? this.boutiquesSuivies.includes(boutiqueId) : false;
     }
+
     viewBoutique(boutiqueId: string) {
         this.router.navigate(['/boutique', boutiqueId]);
     }

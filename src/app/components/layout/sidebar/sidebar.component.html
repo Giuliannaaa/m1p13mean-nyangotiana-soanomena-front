@@ -39,6 +39,15 @@
           <i class="icon-users"></i> Utilisateurs
         </a>
       </li>
+      <li>
+        <a routerLink="/messagerie" class="nav-link">
+        Messagerie
+        @if (unreadCount > 0) {
+          <span class="badge">{{ unreadCount }}</span>
+        }
+      </a>
+      </li>
+      
       <!-- Add more admin specific links here -->
     </ul>
   </nav>
