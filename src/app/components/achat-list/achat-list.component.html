@@ -60,6 +60,7 @@
           <th>Quantité</th>
           <th>Prix unitaire</th>
           <th>Sous-total</th>
+          <th>Statut</th>
         </tr>
       </thead>
       <tbody>
@@ -79,6 +80,15 @@
             {{ (item.quantity * (item.prix_unitaire?.$numberDecimal
             ? parseFloat(item.prix_unitaire.$numberDecimal)
             : item.prix_unitaire)) | number:'1.0-0' }} Ar
+          </td>
+          <td style="text-align: center;">
+            <span [style.color]="
+              item.status === 'DELIVREE' ? 'green' :
+              item.status === 'CONFIRMEE' ? 'blue' :
+              item.status === 'ANNULEE' ? 'red' : 'orange'
+            ">
+              {{ item.status || 'EN ATTENTE' }}
+            </span>
           </td>
         </tr>
       </tbody>
