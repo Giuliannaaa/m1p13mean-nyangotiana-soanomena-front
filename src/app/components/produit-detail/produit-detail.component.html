@@ -33,7 +33,19 @@
 
       <!-- Infos du produit -->
       <div class="info-section">
-        <h1 class="product-title">{{ produit.nom_prod }}</h1>
+        <div class="product-title-info">
+          <h1 class="product-title">{{ produit.nom_prod }}</h1>
+
+          <!-- Signalement Toggle (Seulement pour les acheteurs) -->
+          @if (isAcheteur) {
+          <div class="report-trigger-wrapper">
+            <button (click)="toggleReportModal()" class="btn-report">
+              <img src="/img/svg/icon-alert.svg" alt="" class="report-icon">
+              Signaler un problème
+            </button>
+          </div>
+          }
+        </div>
 
         <div class="price-box">
           <span class="price-label">Prix unitaire</span>
@@ -65,27 +77,17 @@
         }
 
         <div class="actions-group">
-          <button (click)="onAddToPanier()" [disabled]="!produit.stock_etat"
-            class="btn-icon btn-pill btn-pill-primary btn-pill-large">
+          <button (click)="onAddToPanier()" [disabled]="!produit.stock_etat" class="btn-action">
             <img src="/img/svg/icon-cart-add.svg" alt="" class="btn-icon">
             {{ produit.stock_etat ? 'Ajouter au panier' : 'Rupture de stock' }}
           </button>
 
           <button [routerLink]="['/achats/ajouter', produit._id]" [disabled]="!produit.stock_etat"
-            class="btn-pill btn-pill-dark btn-pill-large">
+            class="btn-pill btn-primary btn-pill-large">
             Acheter maintenant
           </button>
         </div>
 
-        <!-- Signalement Toggle (Seulement pour les acheteurs) -->
-        @if (isAcheteur) {
-        <div class="report-trigger-wrapper">
-          <button (click)="toggleReportModal()" class="btn-report">
-            <img src="/img/svg/icon-alert.svg" alt="" class="report-icon">
-            Signaler un problème
-          </button>
-        </div>
-        }
       </div>
     </div>
 
