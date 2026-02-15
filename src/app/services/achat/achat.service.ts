@@ -50,4 +50,10 @@ export class AchatService {
       headers: this.getHeaders()
     });
   }
+
+  updateStatus(id: string, status: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update-status/${id}`, { status }, {
+      headers: this.getHeaders()
+    });
+  }
 }
