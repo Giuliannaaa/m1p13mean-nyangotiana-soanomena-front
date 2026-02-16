@@ -53,19 +53,17 @@ export class BoutiqueListComponent implements OnInit {
         this.loadUsers();
         this.loadBoutiques();
 
-        // ATTENDRE LE CHARGEMENT DES SUIVIS AVANT D'ÉCOUTER
+        // SI C'EST UN ACHETEUR : ÉCOUTER LES CHANGEMENTS
         if (this.isAcheteur) {
-            // Charger explicitement les suivis
-            this.suiviService.loadBoutiquesSuivies();
-
-            // PUIS écouter les changements
-            setTimeout(() => {
-                this.suiviService.getBoutiquesSuivies().subscribe(ids => {
-                    this.boutiquesSuivies = ids;
-                    console.log('Boutiques suivies mises à jour:', ids);
-                    this.cdr.markForCheck();
-                });
-            }, 500); // Attendre 500ms que les données se chargent
+            console.log('Écoute des boutiques suivies...');
+            
+            this.suiviService.getBoutiquesSuivies().subscribe(ids => {
+            this.boutiquesSuivies = ids;
+            console.log('Boutiques suivies mises à jour:', ids);
+            this.cdr.markForCheck();
+            });
+            
+            // Le service charge automatiquement les suivis dans le constructor
         }
     }
 
