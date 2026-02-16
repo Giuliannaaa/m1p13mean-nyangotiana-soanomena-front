@@ -1,0 +1,166 @@
+<div class="signalements-boutique-container">
+  <div class="page-header">
+    <h1>Signalements reçus</h1>
+    <p class="subtitle">Consultez les signalements contre vos produits</p>
+  </div>
+
+  <!-- FILTRES -->
+  <div class="filters-card glass-card">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label>Filtrer par statut:</label>
+        <select [(ngModel)]="selectedStatus" (change)="filterSignalements()" class="filter-select">
+          <option value="">Tous les statuts</option>
+          <option value="signale">Signalé</option>
+          <option value="en_cours">En cours de traitement</option>
+          <option value="resolu">Résolu</option>
+          <option value="rejete">Rejeté</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Rechercher:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchText" 
+          (keyup)="filterSignalements()"
+          placeholder="Nom du produit ou acheteur..."
+          class="filter-input"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENU PRINCIPAL -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <p>Chargement...</p>
+    </div>
+  }
+
+  @if (!isLoading && filteredSignalements.length === 0) {
+    <div class="empty-state">
+      <img src="/img/svg/icon-check-circle.svg" alt="Aucun signalement" class="empty-icon">
+      <h3>Aucun signalement</h3>
+      <p>Vous n'avez aucun signalement en ce moment. Continuez comme ça!</p>
+    </div>
+  }
+
+  @if (!isLoading && filteredSignalements.length > 0) {
+    <div class="signalements-list">
+      @for (signalement of filteredSignalements; track signalement._id) {
+        <div class="signalement-card glass-card">
+          <div class="card-header">
+            <div class="product-info">
+              <h4 class="product-name">{{ signalement.produit_id?.nom_prod || 'Produit inconnu' }}</h4>
+              <p class="buyer-info">
+                Signalé par <strong>{{ signalement.acheteur_id?.firstname }} {{ signalement.acheteur_id?.lastname }}</strong>
+              </p>
+            </div>
+
+            <div class="status-badge" [style.background-color]="getStatutColor(signalement.statut)">
+              {{ getStatutLabel(signalement.statut) }}
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="reason-section">
+              <span class="label">Raison:</span>
+              <span class="reason-tag">{{ getRaisonLabel(signalement.raison) }}</span>
+            </div>
+
+            <div class="description-section">
+              <span class="label">Description:</span>
+              <p class="description-text">{{ signalement.description }}</p>
+            </div>
+
+            <div class="date-section">
+              <span class="label">Date:</span>
+              <span class="date-text">{{ formatDate(signalement.createdAt) }}</span>
+            </div>
+
+            @if (signalement.reponse_admin) {
+              <div class="admin-response-section">
+                <span class="label">Réponse de l'admin:</span>
+                <div class="admin-response-box">
+                  {{ signalement.reponse_admin }}
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="card-footer">
+            <button (click)="openModal(signalement)" class="btn-details">
+              Voir les détails
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- MODAL DÉTAIL -->
+  @if (showModal && selectedSignalement) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Détails du signalement</h3>
+          <button class="btn-close" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="info-group">
+            <label>Produit:</label>
+            <p>{{ selectedSignalement.produit_id?.nom_prod || 'Inconnu' }}</p>
+          </div>
+
+          <div class="info-group">
+            <label>Acheteur:</label>
+            <p>{{ selectedSignalement.acheteur_id?.firstname }} {{ selectedSignalement.acheteur_id?.lastname }}</p>
+            <p style="font-size: 12px; color: #999;">{{ selectedSignalement.acheteur_id?.email }}</p>
+          </div>
+
+          <div class="info-group">
+            <label>Raison:</label>
+            <p>{{ getRaisonLabel(selectedSignalement.raison) }}</p>
+          </div>
+
+          <div class="info-group">
+            <label>Description:</label>
+            <p>{{ selectedSignalement.description }}</p>
+          </div>
+
+          <div class="info-group">
+            <label>Statut:</label>
+            <div class="status-badge-large" [style.background-color]="getStatutColor(selectedSignalement.statut)">
+              {{ getStatutLabel(selectedSignalement.statut) }}
+            </div>
+          </div>
+
+          <div class="info-group">
+            <label>Date de signalement:</label>
+            <p>{{ formatDate(selectedSignalement.createdAt) }}</p>
+          </div>
+
+          @if (selectedSignalement.reponse_admin) {
+            <div class="info-group admin-response">
+              <label>Réponse de l'administrateur:</label>
+              <div class="admin-response-box-large">
+                {{ selectedSignalement.reponse_admin }}
+              </div>
+            </div>
+          }
+
+          <div class="info-box note">
+            <p><strong>Note:</strong> Seul l'administrateur peut modifier le statut du signalement et vous répondre.</p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button (click)="closeModal()" class="btn-primary">Fermer</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
