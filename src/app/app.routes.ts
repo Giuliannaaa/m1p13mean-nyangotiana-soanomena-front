@@ -31,6 +31,7 @@ import { ProduitDetailComponent } from './components/produit-detail/produit-deta
 import { SignalementsAdminComponent } from './components/signalements-admin/signalements-admin.component';
 import { MesSignalementsComponent } from './components/mes-signalements/mes-signalements.component';
 import { MessagereieComponent } from './components/messagerie/messagerie.component';
+import { SignalementBoutiqueComponent } from './components/signalement-boutique/signalement-boutique.component';
 
 
 export const routes: Routes = [
@@ -88,6 +89,7 @@ export const routes: Routes = [
     //Page de signalement
     { path: 'admin/signalements', component: SignalementsAdminComponent }, //admin
     { path: 'mes-signalements', component: MesSignalementsComponent }, //acheteurs
+    { path: 'signalement-boutique', component: SignalementBoutiqueComponent }, //boutique
 
     //Messagerie
     { path: 'messagerie', component: MessagereieComponent }

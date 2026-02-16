@@ -90,4 +90,12 @@ export class SignalementService {
       { headers: this.getHeaders() }
     );
   }
+
+  // Obtenir les signalements reçus par la boutique (Boutique)
+  getMesSignalementsBoutique(): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/boutique/mes-signalements`,
+      { headers: this.getHeaders() }
+    );
+  }
 }
