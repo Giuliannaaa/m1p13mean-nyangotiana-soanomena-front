@@ -24,8 +24,12 @@ export class AdminDashboardService {
   }
 
   // for Admin
-  getRevenuePerStore(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/revenue-per-store`, { headers: this.getHeaders() });
+  getRevenuePerStore(year?: number, month?: number): Observable<any[]> {
+    let params: any = {};
+    if (year) params.year = year;
+    if (month) params.month = month;
+
+    return this.http.get<any[]>(`${this.apiUrl}/revenue-per-store`, { headers: this.getHeaders(), params });
   }
 
   // for Admin

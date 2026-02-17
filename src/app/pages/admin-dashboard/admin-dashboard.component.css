@@ -439,4 +439,79 @@
     .stat-number {
         font-size: 2rem;
     }
+}.chart-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.title-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filters select {
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: #f9fafb;
+    color: #374151;
+    font-size: 0.875rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filters select:hover {
+    border-color: #d1d5db;
+}
+
+.filters select:focus {
+    border-color: #6366f1;
+    ring: 2px solid #6366f133;
+}
+.chart-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.title-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filters select {
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: #f9fafb;
+    color: #374151;
+    font-size: 0.875rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filters select:hover {
+    border-color: #d1d5db;
+}
+
+.filters select:focus {
+    border-color: #6366f1;
+    ring: 2px solid #6366f133;
 }

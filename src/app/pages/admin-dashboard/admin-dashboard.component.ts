@@ -2,14 +2,15 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminDashboardService } from '../../services/adminDashboard/admin-dashboard.service';
 import { AdminDashboard } from '../../models/adminDashboar.model';
-import { Chart, ChartConfiguration, ChartData } from 'chart.js';
+import { Chart } from 'chart.js';
+import { FormsModule } from '@angular/forms';
 
 import { NgChartsModule } from 'ng2-charts';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, NgChartsModule, FormsModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
@@ -32,6 +33,25 @@ export class AdminDashboardComponent implements OnInit {
   maxRevenue: number = 0;
   loading = true;
   error: string | null = null;
+
+  selectedYear: number = new Date().getFullYear();
+  selectedMonth: number = new Date().getMonth() + 1; // 1-12
+
+  availableYears: number[] = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  availableMonths = [
+    { value: 1, label: 'Janvier' },
+    { value: 2, label: 'Février' },
+    { value: 3, label: 'Mars' },
+    { value: 4, label: 'Avril' },
+    { value: 5, label: 'Mai' },
+    { value: 6, label: 'Juin' },
+    { value: 7, label: 'Juillet' },
+    { value: 8, label: 'Août' },
+    { value: 9, label: 'Septembre' },
+    { value: 10, label: 'Octobre' },
+    { value: 11, label: 'Novembre' },
+    { value: 12, label: 'Décembre' }
+  ];
 
   private chart: Chart | null = null;
 
@@ -62,7 +82,6 @@ export class AdminDashboardComponent implements OnInit {
               : (typeof item.revenue === 'number' ? item.revenue : 0)
           }));
           this.maxRevenue = Math.max(...this.revenuePerStore.map(item => item.revenue), 1); // Avoid division by zero
-          console.log("revenuePerStore", this.revenuePerStore);
         } else {
           console.error('Expected array for revenuePerStore but got:', rawData);
           this.revenuePerStore = [];
@@ -148,7 +167,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   private loadRevenueData(): void {
-    this.adminDashboardService.getRevenuePerStore().subscribe({
+    this.adminDashboardService.getRevenuePerStore(this.selectedYear, this.selectedMonth).subscribe({
       next: (rawData: any) => {
         const data = rawData.data || rawData;
         if (Array.isArray(data)) {
@@ -163,6 +182,11 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (err) => console.error('Error loading revenue per store', err)
     });
+  }
+
+  onFilterSubmit(): void {
+    console.log('Filter submitted:', this.selectedYear, this.selectedMonth);
+    this.loadRevenueData();
   }
 
   private updateChartData(): void {

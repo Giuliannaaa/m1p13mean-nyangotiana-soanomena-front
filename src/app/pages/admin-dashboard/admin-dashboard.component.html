@@ -139,13 +139,30 @@
             <!-- Dans votre dashboard, là où vous avez revenuePerStore -->
             <div class="chart-card">
                 <div class="chart-title">
-                    <span class="card-icon">
-                        <img src="/img/svg/icon-stat.svg" alt="category">
-                    </span>
-                    <h3>Revenus par boutique</h3>
+                    <div class="title-left">
+                        <span class="card-icon">
+                            <img src="/img/svg/icon-stat.svg" alt="category">
+                        </span>
+                        <h3>Revenus par boutique</h3>
+                    </div>
                 </div>
+                <form (ngSubmit)="onFilterSubmit()" #filterForm="ngForm">
+                    <div class="filters">
+                        <select [(ngModel)]="selectedMonth" name="month">
+                            <option *ngFor="let m of availableMonths" [value]="m.value">{{ m.label }}</option>
+                        </select>
+                        <select [(ngModel)]="selectedYear" name="year">
+                            <option *ngFor="let y of availableYears" [value]="y">{{ y }}</option>
+                        </select>
+                        <button type="submit" class="filter-btn">Filtrer</button>
+                    </div>
+                </form>
 
+                @if(revenuePerStore.length > 0) {
                 <canvas #revenueCanvas style="max-height: 300px;"></canvas>
+                } @else {
+                <p>Aucune donnée disponible</p>
+                }
             </div>
 
             <!-- Store Count By Category -->
