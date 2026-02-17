@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, NgModule, signal } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Import CommonModule for ngIf
 import { AuthService } from './services/auth/auth.service';
@@ -6,11 +6,12 @@ import { PanierService } from './services/panier/panier.service';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { NavbarComponent } from './components/layout/navbar/navbar.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, SidebarComponent, NavbarComponent, FormsModule],
+  imports: [RouterOutlet, CommonModule, SidebarComponent, NavbarComponent, FormsModule, NgChartsModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
