@@ -148,10 +148,10 @@
                 </div>
                 <form (ngSubmit)="onFilterSubmit()" #filterForm="ngForm">
                     <div class="filters">
-                        <select [(ngModel)]="selectedMonth" name="month">
+                        <select [(ngModel)]="selectedMonth" name="month" class="select-form">
                             <option *ngFor="let m of availableMonths" [value]="m.value">{{ m.label }}</option>
                         </select>
-                        <select [(ngModel)]="selectedYear" name="year">
+                        <select [(ngModel)]="selectedYear" name="year" class="select-form">
                             <option *ngFor="let y of availableYears" [value]="y">{{ y }}</option>
                         </select>
                         <button type="submit" class="filter-btn">Filtrer</button>
@@ -159,9 +159,11 @@
                 </form>
 
                 @if(revenuePerStore.length > 0) {
-                <canvas #revenueCanvas style="max-height: 300px;"></canvas>
+                <canvas #revenueCanvas style="max-height: 265px;"></canvas>
                 } @else {
-                <p>Aucune donnée disponible</p>
+                <div class="empty-state-container">
+                    <p class="empty-state">Aucune donnée disponible</p>
+                </div>
                 }
             </div>
 
