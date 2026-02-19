@@ -20,6 +20,8 @@ export class AdminDashboardService {
   }
 
   getAdminDashboardData(): Observable<AdminDashboard> {
+    console.log(this.http.get<AdminDashboard>(`${this.apiUrl}/data`, { headers: this.getHeaders() }));
+
     return this.http.get<AdminDashboard>(`${this.apiUrl}/data`, { headers: this.getHeaders() });
   }
 
@@ -38,8 +40,8 @@ export class AdminDashboardService {
   }
 
   // for store owner
-  getStoreRevenue(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/my-store-revenue`, { headers: this.getHeaders() });
+  getStoreRevenue(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/my-store-revenue`, { headers: this.getHeaders() });
   }
 
   // for admin
@@ -48,7 +50,22 @@ export class AdminDashboardService {
   }
 
   // for store owner
-  getNumberOfProductInMyStore(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/number-of-product-in-my-store`, { headers: this.getHeaders() });
+  getNumberOfProductInMyStore(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/number-of-product-in-my-store`, { headers: this.getHeaders() });
+  }
+
+  // for store owner - produits en rupture de stock
+  getOutOfStockProducts(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/out-of-stock-products`, { headers: this.getHeaders() });
+  }
+
+  // for store owner - top 5 produits les plus vendus
+  getTopSellingProducts(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/top-selling-products`, { headers: this.getHeaders() });
+  }
+
+  // for store owner - promotions actives
+  getActivePromotionsInMyStore(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/active-promotions-in-my-store`, { headers: this.getHeaders() });
   }
 }
