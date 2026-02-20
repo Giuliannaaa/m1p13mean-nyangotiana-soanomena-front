@@ -39,33 +39,10 @@ export class AdminDashboardService {
     return this.http.get<any[]>(`${this.apiUrl}/store-count-by-category`, { headers: this.getHeaders() });
   }
 
-  // for store owner
-  getStoreRevenue(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/my-store-revenue`, { headers: this.getHeaders() });
-  }
 
   // for admin
   getTop5Stores(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/top-5-stores`, { headers: this.getHeaders() });
   }
 
-  // for store owner
-  getNumberOfProductInMyStore(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/number-of-product-in-my-store`, { headers: this.getHeaders() });
-  }
-
-  // for store owner - produits en rupture de stock
-  getOutOfStockProducts(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/out-of-stock-products`, { headers: this.getHeaders() });
-  }
-
-  // for store owner - top 5 produits les plus vendus
-  getTopSellingProducts(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/top-selling-products`, { headers: this.getHeaders() });
-  }
-
-  // for store owner - promotions actives
-  getActivePromotionsInMyStore(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/active-promotions-in-my-store`, { headers: this.getHeaders() });
-  }
 }

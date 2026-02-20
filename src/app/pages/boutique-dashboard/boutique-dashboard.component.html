@@ -6,7 +6,7 @@
             </span>
             Tableau de Bord Boutique
         </h1>
-        <p class="dashboard-subtitle">Statistiques de votre boutique</p>
+        <p class="dashboard-subtitle">Statistiques de vos boutiques</p>
     </div>
 
     <div *ngIf="loading" class="loading-container">
@@ -58,35 +58,105 @@
             </div>
         </div>
 
-        <div class="section-card">
-            <div class="section-header">
-                <span class="section-icon">
-                    <img src="img/svg/icon-favorite.svg" alt="Produits les Plus Vendus" class="section-icon-img">
-                </span>
-                <h2>Produits les Plus Vendus</h2>
+        <div class="bottom-section">
+            <!-- ===== REVENUE DONUT CHART ===== -->
+            <div class="section-card revenue-section">
+                <div class="section-header">
+                    <span class="section-icon section-icon-revenue">
+                        <img src="img/svg/icon-gain.svg" alt="Chiffre d'Affaires" class="card-icon-img">
+                    </span>
+                    <h2>Chiffre d'Affaires par Boutique</h2>
+
+                    <!-- Filtres mois / année -->
+                    <div class="revenue-filters">
+                        <select class="filter-select" id="month-selected" [(ngModel)]="selectedMonth"
+                            (change)="onFilterChange()">
+                            <option *ngFor="let m of months" [value]="m.value">{{ m.label }}</option>
+                        </select>
+                        <select class="filter-select" id="year-selected" [(ngModel)]="selectedYear"
+                            (change)="onFilterChange()">
+                            <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Chargement -->
+                <div *ngIf="revenueLoading" class="chart-loading">
+                    <div class="spinner spinner-sm"></div>
+                </div>
+
+                <!-- Aucun revenu -->
+                <div *ngIf="!revenueLoading && donutTotal === 0" class="empty-state">
+                    <p>Aucun revenu enregistré pour {{ selectedMonthLabel }} {{ selectedYear }}.</p>
+                </div>
+
+                <!-- Donut Chart -->
+                <div *ngIf="!revenueLoading && donutTotal > 0" class="donut-layout">
+                    <!-- SVG Donut -->
+                    <div class="donut-wrapper">
+                        <svg viewBox="0 0 100 100" class="donut-svg">
+                            <!-- Track -->
+                            <circle cx="50" cy="50" r="50" fill="none" stroke="#f0f4ff" stroke-width="12" />
+                            <!-- Slices -->
+                            <circle *ngFor="let slice of donutSlices" cx="50" cy="50" r="35" fill="none"
+                                [attr.stroke]="slice.color" stroke-width="12" [attr.stroke-dasharray]="slice.dashArray"
+                                [attr.stroke-dashoffset]="slice.offset" stroke-linecap="round" class="donut-slice"
+                                transform="rotate(-90 50 50)" />
+                            <!-- Center text -->
+                            <text x="50" y="44" text-anchor="middle" class="donut-center-label">Total</text>
+                            <text x="50" y="57" text-anchor="middle" class="donut-center-value">
+                                {{ formatRevenue(donutTotal) }}
+                            </text>
+                        </svg>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="donut-legend">
+                        <div *ngFor="let slice of donutSlices" class="legend-item">
+                            <span class="legend-dot" [style.background]="slice.color"></span>
+                            <div class="legend-info">
+                                <span class="legend-name">{{ slice.boutiqueName }}</span>
+                                <span class="legend-revenue">{{ formatRevenue(slice.revenue) }}</span>
+                            </div>
+                            <span class="legend-pct">{{ slice.percentage | number:'1.0-1' }}%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div *ngIf="topSellingProducts.length === 0" class="empty-state">
-                <p>Aucune vente enregistrée pour le moment.</p>
-            </div>
+            <!-- Produits les plus vendus -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-icon">
+                        <img src="img/svg/icon-favorite.svg" alt="Produits les Plus Vendus" class="section-icon-img">
+                    </span>
+                    <h2>Produits les Plus Vendus</h2>
+                </div>
 
-            <div *ngIf="topSellingProducts.length > 0" class="top-products-list">
-                <div *ngFor="let product of topSellingProducts; let i = index" class="product-item">
-                    <div class="product-rank" [class]="'rank-' + (i + 1)">{{ i + 1 }}</div>
-                    <div class="product-image-wrapper">
-                        <img [src]="product.image_url ? ('http://localhost:5000/' + product.image_url) : 'img/png/elementor-placeholder-image.png'"
-                            [alt]="product.nom_prod" class="product-thumb" />
-                    </div>
-                    <div class="product-info">
-                        <span class="product-name">{{ product.nom_prod }}</span>
-                        <span class="product-revenue">{{ product.totalRevenue | number:'1.0-0' }} Ar</span>
-                    </div>
-                    <div class="product-qty">
-                        <span class="qty-value">{{ product.totalQuantity }}</span>
-                        <span class="qty-label">vendus</span>
+                <div *ngIf="topSellingProducts.length === 0" class="empty-state">
+                    <p>Aucune vente enregistrée pour le moment.</p>
+                </div>
+
+                <div *ngIf="topSellingProducts.length > 0" class="top-products-list">
+                    <div *ngFor="let product of topSellingProducts; let i = index" class="product-item">
+                        <div class="product-rank" [class]="'rank-' + (i + 1)">{{ i + 1 }}</div>
+                        <div class="product-image-wrapper">
+                            <img [src]="product.image_url ? ('http://localhost:5000/' + product.image_url) : 'img/png/elementor-placeholder-image.png'"
+                                [alt]="product.nom_prod" class="product-thumb" />
+                        </div>
+                        <div class="product-info">
+                            <span class="product-name">{{ product.nom_prod }}</span>
+                            <span class="product-revenue">{{ product.totalRevenue | number:'1.0-0' }} Ar</span>
+                        </div>
+                        <div class="product-qty">
+                            <span class="qty-value">{{ product.totalQuantity }}</span>
+                            <span class="qty-label">vendus</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
+
 </div>

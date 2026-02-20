@@ -6,6 +6,7 @@ import { Chart } from 'chart.js';
 import { FormsModule } from '@angular/forms';
 
 import { NgChartsModule } from 'ng2-charts';
+import { BoutiqueDashboardService } from '../../services/boutiqueDashboard/boutique-dashboard.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -55,7 +56,7 @@ export class AdminDashboardComponent implements OnInit {
 
   private chart: Chart | null = null;
 
-  constructor(private adminDashboardService: AdminDashboardService) { }
+  constructor(private adminDashboardService: AdminDashboardService, private boutiqueDashboardService: BoutiqueDashboardService) { }
 
   ngOnInit(): void {
     this.loadDashboardData();
