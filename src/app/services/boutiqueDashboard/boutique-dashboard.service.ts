@@ -46,4 +46,21 @@ export class BoutiqueDashboardService {
   getActivePromotionsInMyStore(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/active-promotions-in-my-store`, { headers: this.getHeaders() });
   }
+
+  // Revenue annuel des boutiques
+  getAnnualRevenueByOwner(month?: number, year?: number): Observable<any> {
+    let params: any = {};
+    if (month) params['month'] = month;
+    if (year) params['year'] = year;
+    return this.http.get<any>(`${this.apiUrl}/annual-revenue-by-owner`, { headers: this.getHeaders(), params });
+  }
+
+  getMonthlyRevenueByProduct(month?: number, year?: number): Observable<any> {
+    let params: any = {};
+    if (month) params['month'] = month;
+    if (year) params['year'] = year;
+    console.log("params", params);
+
+    return this.http.get<any>(`${this.apiUrl}/monthly-revenue-by-product`, { headers: this.getHeaders(), params });
+  }
 }

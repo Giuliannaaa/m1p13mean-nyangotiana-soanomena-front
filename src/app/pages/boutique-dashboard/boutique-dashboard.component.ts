@@ -61,6 +61,16 @@ export class BoutiqueDashboardComponent implements OnInit {
     { value: 12, label: 'Décembre' }
   ];
 
+  // Annual revenue by owner
+  annualRevenueByOwner: any[] = [];
+  annualRevenueLoading: boolean = false;
+
+  // Monthly revenue by product
+  monthlyRevenueByProduct: any[] = [];
+  monthlyRevenueLoading: boolean = false;
+  productPieSlices: DonutSlice[] = [];
+  productTotal: number = 0;
+
   readonly years: number[] = (() => {
     const current = new Date().getFullYear();
     return Array.from({ length: 5 }, (_, i) => current - i);
@@ -107,8 +117,9 @@ export class BoutiqueDashboardComponent implements OnInit {
         }
 
         this.loading = false;
-        // Load revenue separately (with filters)
+        // Load revenue and annual stats separately (with filters)
         this.loadRevenue();
+        this.loadAnnualRevenueByOwner();
       },
       error: (err) => {
         console.error('Error loading dashboard data', err);
@@ -137,6 +148,10 @@ export class BoutiqueDashboardComponent implements OnInit {
 
         // Compute donut slices
         this.donutSlices = this.computeDonutSlices(boutiqueMap);
+
+        // Also load product revenue with same filters
+        this.loadMonthlyRevenueByProduct();
+
         this.revenueLoading = false;
       },
       error: (err) => {
@@ -148,6 +163,7 @@ export class BoutiqueDashboardComponent implements OnInit {
 
   onFilterChange(): void {
     this.loadRevenue();
+    this.loadAnnualRevenueByOwner();
   }
 
   private computeDonutSlices(boutiqueMap: Map<string, number>): DonutSlice[] {
@@ -188,5 +204,47 @@ export class BoutiqueDashboardComponent implements OnInit {
 
   get selectedMonthLabel(): string {
     return this.months.find(m => m.value === this.selectedMonth)?.label || '';
+  }
+
+  loadAnnualRevenueByOwner(): void {
+    this.annualRevenueLoading = true;
+    this.boutiqueDashboardService.getAnnualRevenueByOwner(this.selectedMonth, this.selectedYear).subscribe({
+      next: (result: any) => {
+        this.annualRevenueByOwner = result?.data || [];
+        this.annualRevenueLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading annual revenue by owner', err);
+        this.annualRevenueLoading = false;
+      }
+    });
+  }
+
+  loadMonthlyRevenueByProduct(): void {
+    this.monthlyRevenueLoading = true;
+    this.boutiqueDashboardService.getMonthlyRevenueByProduct(this.selectedMonth, this.selectedYear).subscribe({
+      next: (result: any) => {
+        this.monthlyRevenueByProduct = result?.data || [];
+
+        // Aggregate revenue per product
+        const productMap = new Map<string, number>();
+        this.monthlyRevenueByProduct.forEach((item: any) => {
+          const name = item.productName || 'Produit';
+          productMap.set(name, (productMap.get(name) || 0) + (item.revenue || 0));
+        });
+
+        // Total product revenue
+        this.productTotal = Array.from(productMap.values()).reduce((s, v) => s + v, 0);
+
+        // Compute slices (reusing the logic, but Map key is product name)
+        this.productPieSlices = this.computeDonutSlices(productMap);
+
+        this.monthlyRevenueLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading monthly revenue by product', err);
+        this.monthlyRevenueLoading = false;
+      }
+    });
   }
 }

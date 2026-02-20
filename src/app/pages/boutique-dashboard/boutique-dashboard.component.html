@@ -90,35 +90,72 @@
                     <p>Aucun revenu enregistré pour {{ selectedMonthLabel }} {{ selectedYear }}.</p>
                 </div>
 
-                <!-- Donut Chart -->
-                <div *ngIf="!revenueLoading && donutTotal > 0" class="donut-layout">
-                    <!-- SVG Donut -->
-                    <div class="donut-wrapper">
-                        <svg viewBox="0 0 100 100" class="donut-svg">
-                            <!-- Track -->
-                            <circle cx="50" cy="50" r="50" fill="none" stroke="#f0f4ff" stroke-width="12" />
-                            <!-- Slices -->
-                            <circle *ngFor="let slice of donutSlices" cx="50" cy="50" r="35" fill="none"
-                                [attr.stroke]="slice.color" stroke-width="12" [attr.stroke-dasharray]="slice.dashArray"
-                                [attr.stroke-dashoffset]="slice.offset" stroke-linecap="round" class="donut-slice"
-                                transform="rotate(-90 50 50)" />
-                            <!-- Center text -->
-                            <text x="50" y="44" text-anchor="middle" class="donut-center-label">Total</text>
-                            <text x="50" y="57" text-anchor="middle" class="donut-center-value">
-                                {{ formatRevenue(donutTotal) }}
-                            </text>
-                        </svg>
+                <!-- Donut Chart & Product Statistics -->
+                <div *ngIf="!revenueLoading && donutTotal > 0" class="revenue-dash-grid">
+                    <!-- Boutique Revenue Donut -->
+                    <div class="donut-container">
+                        @if (this.annualRevenueByOwner.length > 0) {
+                        <h3 class="subsection-title">Revenue annuel : {{ this.annualRevenueByOwner[0].totalRevenue |
+                            number }} Ar</h3>
+                        }
+                        <div class="donut-layout">
+                            <div class="donut-wrapper">
+                                <svg viewBox="0 0 100 100" class="donut-svg">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#f0f4ff" stroke-width="10" />
+                                    <circle *ngFor="let slice of donutSlices" cx="50" cy="50" r="45" fill="none"
+                                        [attr.stroke]="slice.color" stroke-width="10"
+                                        [attr.stroke-dasharray]="slice.dashArray"
+                                        [attr.stroke-dashoffset]="slice.offset" stroke-linecap="round"
+                                        class="donut-slice" transform="rotate(-90 50 50)" />
+                                    <text x="50" y="44" text-anchor="middle" class="donut-center-label">Total</text>
+                                    <text x="50" y="57" text-anchor="middle" class="donut-center-value">
+                                        {{ formatRevenue(donutTotal) }}
+                                    </text>
+                                </svg>
+                            </div>
+                            <div class="donut-legend legend-narrow">
+                                <div *ngFor="let slice of donutSlices" class="legend-item">
+                                    <span class="legend-dot" [style.background]="slice.color"></span>
+                                    <div class="legend-info">
+                                        <span class="legend-name">{{ slice.boutiqueName }}</span>
+                                        <span class="legend-revenue">{{ formatRevenue(slice.revenue) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Legend -->
-                    <div class="donut-legend">
-                        <div *ngFor="let slice of donutSlices" class="legend-item">
-                            <span class="legend-dot" [style.background]="slice.color"></span>
-                            <div class="legend-info">
-                                <span class="legend-name">{{ slice.boutiqueName }}</span>
-                                <span class="legend-revenue">{{ formatRevenue(slice.revenue) }}</span>
+                    <!-- Product Revenue Pie (using similar styling) -->
+                    <div class="donut-container product-revenue-container" *ngIf="productTotal > 0">
+                        <h3 class="subsection-title">Par Produit (Mois)</h3>
+                        <div class="donut-layout">
+                            <div class="donut-wrapper">
+                                <svg viewBox="0 0 100 100" class="donut-svg">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#f0f4ff" stroke-width="10" />
+                                    <circle *ngFor="let slice of productPieSlices" cx="50" cy="50" r="45" fill="none"
+                                        [attr.stroke]="slice.color" stroke-width="10"
+                                        [attr.stroke-dasharray]="slice.dashArray"
+                                        [attr.stroke-dashoffset]="slice.offset" stroke-linecap="round"
+                                        class="donut-slice" transform="rotate(-90 50 50)" />
+                                    <text x="50" y="44" text-anchor="middle" class="donut-center-label">Total</text>
+                                    <text x="50" y="57" text-anchor="middle" class="donut-center-value">
+                                        {{ formatRevenue(productTotal) }}
+                                    </text>
+                                </svg>
                             </div>
-                            <span class="legend-pct">{{ slice.percentage | number:'1.0-1' }}%</span>
+                            <div class="donut-legend legend-narrow">
+                                <div *ngFor="let slice of productPieSlices | slice:0:5" class="legend-item">
+                                    <span class="legend-dot" [style.background]="slice.color"></span>
+                                    <div class="legend-info">
+                                        <span class="legend-name">{{ slice.boutiqueName }}</span>
+                                        <!-- Using boutiqueName property for product name -->
+                                        <span class="legend-revenue">{{ formatRevenue(slice.revenue) }}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="productPieSlices.length > 5" class="legend-more">
+                                    + {{ productPieSlices.length - 5 }} autres produits
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
