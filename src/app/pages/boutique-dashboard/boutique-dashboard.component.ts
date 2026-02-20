@@ -6,8 +6,8 @@ import { forkJoin } from 'rxjs';
 import { BoutiqueDashboardService } from '../../services/boutiqueDashboard/boutique-dashboard.service';
 
 interface DonutSlice {
-  boutiqueName: string;
-  revenue: number;
+  label: string;
+  value: number;
   percentage: number;
   color: string;
   offset: number;
@@ -147,7 +147,7 @@ export class BoutiqueDashboardComponent implements OnInit {
         this.totalRevenue = this.donutTotal;
 
         // Compute donut slices
-        this.donutSlices = this.computeDonutSlices(boutiqueMap);
+        this.donutSlices = this.computeDonutSlices(boutiqueMap, this.donutTotal);
 
         // Also load product revenue with same filters
         this.loadMonthlyRevenueByProduct();
@@ -165,9 +165,7 @@ export class BoutiqueDashboardComponent implements OnInit {
     this.loadRevenue();
     this.loadAnnualRevenueByOwner();
   }
-
-  private computeDonutSlices(boutiqueMap: Map<string, number>): DonutSlice[] {
-    const total = this.donutTotal;
+  private computeDonutSlices(dataMap: Map<string, number>, total: number): DonutSlice[] {
     if (total === 0) return [];
 
     const circumference = 2 * Math.PI * 45; // r=45, viewBox 100x100
@@ -175,14 +173,14 @@ export class BoutiqueDashboardComponent implements OnInit {
     const slices: DonutSlice[] = [];
 
     let idx = 0;
-    boutiqueMap.forEach((revenue, boutiqueName) => {
-      const percentage = (revenue / total) * 100;
+    dataMap.forEach((value, label) => {
+      const percentage = (value / total) * 100;
       const dash = (percentage / 100) * circumference;
       const gap = circumference - dash;
 
       slices.push({
-        boutiqueName,
-        revenue,
+        label,
+        value,
         percentage,
         color: this.DONUT_COLORS[idx % this.DONUT_COLORS.length],
         offset: circumference - cumulativeOffset,
@@ -225,19 +223,21 @@ export class BoutiqueDashboardComponent implements OnInit {
     this.boutiqueDashboardService.getMonthlyRevenueByProduct(this.selectedMonth, this.selectedYear).subscribe({
       next: (result: any) => {
         this.monthlyRevenueByProduct = result?.data || [];
+        console.log("monthlyRevenueByProduct", this.monthlyRevenueByProduct);
+
 
         // Aggregate revenue per product
         const productMap = new Map<string, number>();
         this.monthlyRevenueByProduct.forEach((item: any) => {
-          const name = item.productName || 'Produit';
-          productMap.set(name, (productMap.get(name) || 0) + (item.revenue || 0));
+          const name = item.nomProduit || 'Produit';
+          productMap.set(name, (productMap.get(name) || 0) + (item.totalRevenue || 0));
         });
 
         // Total product revenue
         this.productTotal = Array.from(productMap.values()).reduce((s, v) => s + v, 0);
 
         // Compute slices (reusing the logic, but Map key is product name)
-        this.productPieSlices = this.computeDonutSlices(productMap);
+        this.productPieSlices = this.computeDonutSlices(productMap, this.productTotal);
 
         this.monthlyRevenueLoading = false;
       },

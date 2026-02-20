@@ -91,7 +91,7 @@
                 </div>
 
                 <!-- Donut Chart & Product Statistics -->
-                <div *ngIf="!revenueLoading && donutTotal > 0" class="revenue-dash-grid">
+                <div *ngIf="donutTotal > 0 || productTotal > 0" class="revenue-dash-grid">
                     <!-- Boutique Revenue Donut -->
                     <div class="donut-container">
                         @if (this.annualRevenueByOwner.length > 0) {
@@ -117,8 +117,8 @@
                                 <div *ngFor="let slice of donutSlices" class="legend-item">
                                     <span class="legend-dot" [style.background]="slice.color"></span>
                                     <div class="legend-info">
-                                        <span class="legend-name">{{ slice.boutiqueName }}</span>
-                                        <span class="legend-revenue">{{ formatRevenue(slice.revenue) }}</span>
+                                        <span class="legend-name">{{ slice.label }}</span>
+                                        <span class="legend-revenue">{{ formatRevenue(slice.value) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +126,8 @@
                     </div>
 
                     <!-- Product Revenue Pie (using similar styling) -->
-                    <div class="donut-container product-revenue-container" *ngIf="productTotal > 0">
+                    <div class="donut-container product-revenue-container"
+                        *ngIf="donutTotal > 0 || monthlyRevenueByProduct.length > 0">
                         <h3 class="subsection-title">Par Produit (Mois)</h3>
                         <div class="donut-layout">
                             <div class="donut-wrapper">
@@ -144,12 +145,11 @@
                                 </svg>
                             </div>
                             <div class="donut-legend legend-narrow">
-                                <div *ngFor="let slice of productPieSlices | slice:0:5" class="legend-item">
+                                <div *ngFor="let slice of productPieSlices" class="legend-item">
                                     <span class="legend-dot" [style.background]="slice.color"></span>
                                     <div class="legend-info">
-                                        <span class="legend-name">{{ slice.boutiqueName }}</span>
-                                        <!-- Using boutiqueName property for product name -->
-                                        <span class="legend-revenue">{{ formatRevenue(slice.revenue) }}</span>
+                                        <span class="legend-name">{{ slice.label }}</span>
+                                        <span class="legend-revenue">{{ formatRevenue(slice.value) }}</span>
                                     </div>
                                 </div>
                                 <div *ngIf="productPieSlices.length > 5" class="legend-more">
