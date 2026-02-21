@@ -59,7 +59,6 @@ export class BoutiqueDashboardService {
     let params: any = {};
     if (month) params['month'] = month;
     if (year) params['year'] = year;
-    console.log("params", params);
 
     return this.http.get<any>(`${this.apiUrl}/monthly-revenue-by-product`, { headers: this.getHeaders(), params });
   }

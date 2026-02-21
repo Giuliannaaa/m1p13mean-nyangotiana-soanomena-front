@@ -139,6 +139,7 @@
     border-radius: 16px;
     padding: 1.75rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    height: 100%;
 }
 
 .section-header {
@@ -165,7 +166,13 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    box-sizing: border-box;
     overflow-y: scroll;
+    scrollbar-width: none;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 
 .product-item {
@@ -359,6 +366,7 @@
 /* ===== REVENUE DONUT CHART ===== */
 .revenue-section {
     box-sizing: border-box;
+    flex: 1;
 }
 
 .revenue-section .section-header {
@@ -459,12 +467,12 @@
 
 /* Legend */
 .donut-legend {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
     min-width: 200px;
     max-height: 220px;
+    height: 100px;
     overflow-y: auto;
 }
 
@@ -604,4 +612,219 @@
     .donut-layout {
         flex-direction: column;
     }
+}
+
+/* ===== MODAL STYLES ===== */
+/* Cards cliquables */
+.clickable {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-hint {
+    display: block;
+    font-size: 12px;
+    color: #000;
+    margin-top: 6px;
+    text-align: right;
+}
+
+/* Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+/* Container */
+.modal-container {
+    background: #fff;
+    border-radius: 14px;
+    width: 520px;
+    max-width: 92vw;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.stock-header {
+    border-top: 4px solid #e53e3e;
+    border-radius: 14px 14px 0 0;
+}
+
+.promo-header {
+    border-top: 4px solid #f6ad55;
+    border-radius: 14px 14px 0 0;
+}
+
+.modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-title h2 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.modal-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #aaa;
+    line-height: 1;
+    padding: 4px;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+/* Body */
+.modal-body {
+    overflow-y: auto;
+    padding: 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+.item-thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.item-name {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.item-meta {
+    font-size: 12px;
+    color: #888;
+}
+
+/* Badges */
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-danger {
+    background: #fff5f5;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+}
+
+.badge-promo {
+    background: #fffaf0;
+    color: #c05621;
+    border: 1px solid #fbd38d;
+}
+
+.badge-success {
+    background: #f0fff4;
+    color: #276749;
+    border: 1px solid #9ae6b4;
+}
+
+.badge-muted {
+    background: #f7fafc;
+    color: #718096;
+    border: 1px solid #e2e8f0;
+}
+
+.promo-badge-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+/* Footer */
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 22px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 13px;
+    color: #888;
+}
+
+.btn-close-modal {
+    background: #2d3748;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-close-modal:hover {
+    background: #1a202c;
 }

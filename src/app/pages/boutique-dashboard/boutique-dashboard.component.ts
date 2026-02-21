@@ -8,6 +8,7 @@ import { BoutiqueDashboardService } from '../../services/boutiqueDashboard/bouti
 interface DonutSlice {
   label: string;
   value: number;
+  title: string;
   percentage: number;
   color: string;
   offset: number;
@@ -71,6 +72,12 @@ export class BoutiqueDashboardComponent implements OnInit {
   productPieSlices: DonutSlice[] = [];
   productTotal: number = 0;
 
+  // Propriétés modales
+  showOutOfStockModal = false;
+  showPromotionsModal = false;
+  outOfStockProducts: any[] = [];
+  promotions: any[] = [];
+
   readonly years: number[] = (() => {
     const current = new Date().getFullYear();
     return Array.from({ length: 5 }, (_, i) => current - i);
@@ -79,7 +86,7 @@ export class BoutiqueDashboardComponent implements OnInit {
   loading: boolean = true;
   error: string | null = null;
 
-  constructor(private adminDashboardService: AdminDashboardService, private boutiqueDashboardService: BoutiqueDashboardService) { }
+  constructor(private boutiqueDashboardService: BoutiqueDashboardService) { }
 
   ngOnInit(): void {
     this.loadDashboardData();
@@ -97,6 +104,12 @@ export class BoutiqueDashboardComponent implements OnInit {
     }).subscribe({
       next: (results: any) => {
         // Nombre de produits — backend retourne { success, data: { boutiques, totalBoutiques, totalProduits } }
+
+        this.outOfStockProducts = results.outOfStock.data.products;
+        this.outOfStockCount = results.outOfStock.data.count;
+        this.promotions = results.promotions.data.promotions;
+        this.activePromotionsCount = results.promotions.data.count;
+
         if (results.products?.data) {
           this.numberOfProducts = results.products.data.totalProduits || 0;
         }
@@ -181,6 +194,7 @@ export class BoutiqueDashboardComponent implements OnInit {
       slices.push({
         label,
         value,
+        title: label,
         percentage,
         color: this.DONUT_COLORS[idx % this.DONUT_COLORS.length],
         offset: circumference - cumulativeOffset,
@@ -223,8 +237,6 @@ export class BoutiqueDashboardComponent implements OnInit {
     this.boutiqueDashboardService.getMonthlyRevenueByProduct(this.selectedMonth, this.selectedYear).subscribe({
       next: (result: any) => {
         this.monthlyRevenueByProduct = result?.data || [];
-        console.log("monthlyRevenueByProduct", this.monthlyRevenueByProduct);
-
 
         // Aggregate revenue per product
         const productMap = new Map<string, number>();
@@ -246,5 +258,19 @@ export class BoutiqueDashboardComponent implements OnInit {
         this.monthlyRevenueLoading = false;
       }
     });
+  }
+
+  // Méthodes modal
+  openModal(type: 'stock' | 'promo') {
+    if (type === 'stock' && this.outOfStockCount > 0) {
+      this.showOutOfStockModal = true;
+    } else if (type === 'promo' && this.activePromotionsCount > 0) {
+      this.showPromotionsModal = true;
+    }
+  }
+
+  closeModal() {
+    this.showOutOfStockModal = false;
+    this.showPromotionsModal = false;
   }
 }

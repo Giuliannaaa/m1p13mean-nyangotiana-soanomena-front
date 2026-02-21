@@ -33,7 +33,8 @@
                 </div>
             </div>
 
-            <div class="stat-card stock-card" [class.alert-card]="outOfStockCount > 0">
+            <div class="stat-card stock-card" [class.alert-card]="outOfStockCount > 0"
+                [class.clickable]="outOfStockCount > 0" (click)="openModal('stock')">
                 <div class="card-icon">
                     <img src="img/svg/icon-empty-stock.svg" alt="Rupture de Stock" class="card-icon-img">
                 </div>
@@ -43,9 +44,11 @@
                     <p class="card-label">{{ outOfStockCount > 0 ? 'produits à réapprovisionner' : 'aucun produit en
                         rupture' }}</p>
                 </div>
+                <span class="card-hint" *ngIf="outOfStockCount > 0">Voir la liste →</span>
             </div>
 
-            <div class="stat-card promo-card">
+            <div class="stat-card promo-card" [class.clickable]="activePromotionsCount > 0"
+                (click)="openModal('promo')">
                 <div class="card-icon">
                     <img src="img/svg/icon-gift.svg" alt="Promotions" class="card-icon-img">
                 </div>
@@ -55,6 +58,7 @@
                     <p class="card-label">{{ activePromotionsCount > 0 ? 'promotions en cours' : 'aucune promotion
                         active' }}</p>
                 </div>
+                <span class="card-hint" *ngIf="activePromotionsCount > 0">Voir la liste →</span>
             </div>
         </div>
 
@@ -90,14 +94,15 @@
                     <p>Aucun revenu enregistré pour {{ selectedMonthLabel }} {{ selectedYear }}.</p>
                 </div>
 
+                @if (this.annualRevenueByOwner.length > 0) {
+                <p> <strong>Somme annuelle :</strong> {{ this.annualRevenueByOwner[0].totalRevenue | number }} Ariary
+                </p>
+                }
                 <!-- Donut Chart & Product Statistics -->
                 <div *ngIf="donutTotal > 0 || productTotal > 0" class="revenue-dash-grid">
                     <!-- Boutique Revenue Donut -->
                     <div class="donut-container">
-                        @if (this.annualRevenueByOwner.length > 0) {
-                        <h3 class="subsection-title">Revenue annuel : {{ this.annualRevenueByOwner[0].totalRevenue |
-                            number }} Ar</h3>
-                        }
+                        <h3 class="subsection-title">Par boutique (MOIS)</h3>
                         <div class="donut-layout">
                             <div class="donut-wrapper">
                                 <svg viewBox="0 0 100 100" class="donut-svg">
@@ -155,6 +160,7 @@
                                 <div *ngIf="productPieSlices.length > 5" class="legend-more">
                                     + {{ productPieSlices.length - 5 }} autres produits
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -194,6 +200,88 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- ===== MODAL RUPTURE DE STOCK ===== -->
+    <div class="modal-overlay" *ngIf="showOutOfStockModal" (click)="closeModal()">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+
+            <div class="modal-header stock-header">
+                <div class="modal-title">
+                    <img src="img/svg/icon-empty-stock.svg" alt="" class="modal-icon">
+                    <h2>Produits en rupture de stock</h2>
+                </div>
+                <button class="modal-close" (click)="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="list-item" *ngFor="let product of outOfStockProducts">
+                    <img [src]="'http://localhost:5000/' + product.image_Url.replace('\\\\', '/')"
+                        [alt]="product.nom_prod" class="item-thumb" onerror="this.src='img/placeholder.png'">
+                    <div class="item-info">
+                        <span class="item-name">{{ product.nom_prod }}</span>
+                        <span class="item-meta">Prix unitaire : {{ product.prix_unitaire['$numberDecimal'] | number }}
+                            Ar</span>
+                    </div>
+                    <span class="badge badge-danger">Stock : {{ product.stock }}</span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span>{{ outOfStockProducts.length }} produit(s) concerné(s)</span>
+                <button class="btn-close-modal" (click)="closeModal()">Fermer</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== MODAL PROMOTIONS ===== -->
+    <div class="modal-overlay" *ngIf="showPromotionsModal" (click)="closeModal()">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+
+            <div class="modal-header promo-header">
+                <div class="modal-title">
+                    <img src="img/svg/icon-gift.svg" alt="" class="modal-icon">
+                    <h2>Promotions actives</h2>
+                </div>
+                <button class="modal-close" (click)="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="list-item" *ngFor="let promo of promotions">
+                    <img [src]="'http://localhost:5000/' + promo.prod_id.image_Url.replace('\\\\', '/')"
+                        [alt]="promo.prod_id.nom_prod" class="item-thumb" onerror="this.src='img/placeholder.png'">
+                    <div class="item-info">
+                        <span class="item-name">{{ promo.prod_id.nom_prod }}</span>
+                        <span class="item-meta">
+                            Code : <strong>{{ promo.code_promo }}</strong>
+                        </span>
+                        <span class="item-meta">
+                            Date limite : <strong>{{ promo.fin | date:'dd/MM/yyyy' }}</strong>
+                        </span>
+                        <span class="item-meta">
+                            Prix : {{ promo.prod_id.prix_unitaire['$numberDecimal'] | number }} Ar
+                        </span>
+                    </div>
+                    <div class="promo-badge-group">
+                        <span class="badge badge-promo">
+                            {{ promo.type_prom === 'POURCENTAGE' ? '-' + promo.montant['$numberDecimal'] + '%' :
+                            promo.montant['$numberDecimal'] + ' Ar' }}
+                        </span>
+                        <span class="badge" [class.badge-success]="promo.est_Active"
+                            [class.badge-muted]="!promo.est_Active">
+                            {{ promo.est_Active ? 'Active' : 'Inactive' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span>{{ promotions.length }} promotion(s) active(s)</span>
+                <button class="btn-close-modal" (click)="closeModal()">Fermer</button>
+            </div>
+
+        </div>
     </div>
 
 </div>
