@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BoutiqueService } from '../../services/boutique/boutique.service';
@@ -21,7 +21,7 @@ import { ChangeDetectorRef } from '@angular/core';
     templateUrl: './boutique-detail.component.html',
     styleUrls: ['./boutique-detail.component.css']
 })
-export class BoutiqueDetailComponent implements OnInit {
+export class BoutiqueDetailComponent implements OnInit, OnDestroy {
     boutique: Boutique | null = null;
     produits: Produit[] = [];
     isLoading = true;
@@ -30,6 +30,10 @@ export class BoutiqueDetailComponent implements OnInit {
     categories: Categorie[] = [];
     showReportModal = false;
     selectedProduitId: string | null = null;
+
+    // 🆕 Carousel properties
+    currentImageIndex: number = 0;
+    private carouselInterval?: any;
 
     private route = inject(ActivatedRoute);
     private boutiqueService = inject(BoutiqueService);
@@ -58,6 +62,11 @@ export class BoutiqueDetailComponent implements OnInit {
             next: (data) => {
                 this.boutique = data;
                 this.isLoading = false;
+
+                // 🆕 Démarrer le carousel si plusieurs images
+                if (this.boutique?.images && this.boutique.images.length > 1) {
+                    this.startCarousel();
+                }
             },
             error: (err) => {
                 console.error('Erreur chargement boutique:', err);
@@ -173,5 +182,51 @@ export class BoutiqueDetailComponent implements OnInit {
         this.selectedProduitId = produitId;
         this.showReportModal = !!produitId;
         this.cdr.markForCheck();
+    }
+
+    // ============================================
+    // 🆕 MÉTHODES CAROUSEL
+    // ============================================
+
+    /**
+     * Démarrer le carousel automatique
+     * Change d'image toutes les 5 secondes
+     */
+    private startCarousel(): void {
+        this.carouselInterval = setInterval(() => {
+            this.nextImage();
+        }, 5000); // 5000ms = 5 secondes
+    }
+
+    /**
+     * Passer à l'image suivante
+     */
+    private nextImage(): void {
+        if (this.boutique?.images) {
+            this.currentImageIndex = (this.currentImageIndex + 1) % this.boutique.images.length;
+        }
+    }
+
+    /**
+     * Définir une image spécifique (appelé par les indicateurs)
+     * @param index Index de l'image à afficher
+     */
+    setImage(index: number): void {
+        this.currentImageIndex = index;
+
+        // Redémarrer le timer après un clic manuel
+        if (this.carouselInterval) {
+            clearInterval(this.carouselInterval);
+            this.startCarousel();
+        }
+    }
+
+    /**
+     * Nettoyer l'interval quand le component est détruit
+     */
+    ngOnDestroy(): void {
+        if (this.carouselInterval) {
+            clearInterval(this.carouselInterval);
+        }
     }
 }

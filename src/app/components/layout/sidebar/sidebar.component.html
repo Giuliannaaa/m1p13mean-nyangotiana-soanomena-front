@@ -41,13 +41,17 @@
       </li>
       <li>
         <a routerLink="/messagerie" class="nav-link">
-        Messagerie
-        @if (unreadCount > 0) {
-          <span class="badge">{{ unreadCount }}</span>
-        }
-      </a>
+          Messagerie
+          @if (unreadCount > 0) {
+            <span class="badge">{{ unreadCount }}</span>
+          }
+        </a>
       </li>
-      
+      <li>
+        <a routerLink="/admin/signalements" routerLinkActive="active">
+          <i class="icon-users"></i> Signalements
+        </a>
+      </li>
       
       <!-- Add more admin specific links here -->
     </ul>

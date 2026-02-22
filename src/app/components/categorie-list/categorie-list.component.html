@@ -1,35 +1,229 @@
-<div class="categorie-list-container">
-  <div class="list-header">
-    <h1>Nos Catégories</h1>
-    <button *ngIf="isAdmin" routerLink="/categories/ajouter" class="btn-primary">Ajouter une catégorie</button>
+<div class="buyer-categories-elegant">
+  <!-- HEADER -->
+  <div class="categories-header-elegant">
+    <div class="header-content">
+      <h1>Catégories</h1>
+      <p>Explorez nos catégories et découvrez les boutiques associées</p>
+      <button *ngIf="isAdmin" routerLink="/categories/ajouter" class="btn-categories-primary">
+        <span class="btn-icon">+</span>
+        Ajouter une catégorie
+      </button>
+    </div>
   </div>
 
-  <div class="glass-card overflow-hidden">
-    <table class="modern-table">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Description</th>
-          <th *ngIf="isAdmin">Actions</th>
-        </tr>
-      </thead>
+  <!-- FILTERS & SEARCH -->
+  <section class="section categories-filters-section">
+    <div class="section-content">
+      <!-- Search Bar -->
+      <div class="categories-search-container">
+        <div class="search-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" class="search-icon-categories" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd" />
+          </svg>
+          <input 
+            type="text" 
+            [(ngModel)]="searchText" 
+            (keyup)="filterCategories()"
+            placeholder="Rechercher une catégorie..." 
+            class="search-input-categories"
+          />
+          <button *ngIf="searchText" (click)="searchText = ''; filterCategories()" class="btn-clear-search">✕</button>
+        </div>
+      </div>
 
-      <tbody>
-        @for (categorie of categories; track categorie._id) {
-        <tr>
-          <td class="font-bold">{{ categorie.nom_cat }}</td>
-          <td class="td-desc">{{ categorie.descriptions || 'Aucune description' }}</td>
-          <td *ngIf="isAdmin" class="actions-cell">
-            <button [routerLink]="['/categories/modifier', categorie._id]" class="btn-icon" title="Modifier">
-              <img src="/img/svg/icon-update.svg" alt="Modifier">
-            </button>
-            <button (click)="deleteCategorie(categorie._id)" class="btn-icon btn-delete" title="Supprimer">
-              <img src="/img/svg/icon-delete.svg" alt="Supprimer">
-            </button>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+      <!-- Results Counter -->
+      @if (searchText) {
+        <div class="results-indicator">
+          <span class="result-count">{{ filteredCategories.length }} résultat(s)</span>
+          <span class="active-filter-badge">Recherche: "{{ searchText }}"</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- EMPTY STATE -->
+  @if (filteredCategories.length === 0) {
+    <section class="section">
+      <div class="section-content">
+        <div class="empty-state-categories">
+          <div class="empty-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFGUlEQVR4nO2X2W+UVRiHh4RggiBeGFRiSGntlLa2QofSDpbOdC/dpttnFyktBbsoLpC2NK1mJiyJIKglSFNp0sYAJhURRVpCB5HksOQDEi64crnxQkw08S/Ax7xMR2q/Sua02CFmfskvOcmb853nmZme9LPZIokkkkj+V4lqpyaqnZNRrzEelrZzckU7xqwkYlv51N4G9lb+sLdxM7aVG3NZexs3J84WhuEZSSS0UpfYAgmv8qHLy3xbmOLyMj+hhY+EJbGFGu0HJG/hdPIWfpMHdSoWv6PY3asYCLZH4bHNUVxe5idv5ffkrXypvXnNZpRjM9dl/dG37O67CJP6lXeEBbY5jGMz14VJe6OzCZXeiCnrE+cZ+uw8SE+cZ3R0lMdsc5z0Rkxh0t64vgGV0RAQGT/LkP8sjH8THgmJsAiTTTfZG1FZGwMit04zdOs0o9+HSUIiLMJk001BHSq/LiBy53OM23P8NzE1wiJMNt0U16KKawMik5NrsKS0hqbiGlqkpTX3b68N9STJbLYtqmfVNDymMGmLeAyUx7CKeAx2lr8Mk1tmECezcoPuqbOZ1GPgm+ZcU5i0RaqrUdXVVhGjCp9RDVVVuINrwwh8ghUVLJX1Q+gz0/CYwqQtUleBqqu0itRV4KuvhLpKyusr2C/rek9ApMFg+StVuENto4cnQ+apxBQmbZEGD6rBYxXZ5KFjUzlM7sZSnr+3p5zuqbMHtdGDW4PHFCZtkeYSVHOpVaSlhIVbS/FsKcOQNpeRGZw1FRPbXEJ5qG0p4amQeUoxhUlbpK0Y1VpkFQlXWoswhUl74xuFqG0brCKdZSzeVkDltkKMey0gNzh7q4j4NwupnXWLeWHqucIiTNoi2wtQ2/OtIm8X0LW9ACZ3xwbs92b5dE+dzbA+C08+pjBpi3TlojrzpvlG8vB15cHOHNzBdUde4NbqzGVZVy7ps24hz01zrilM2iK92aiebKtIbw6+3hzozcEdXPdMiHhzWdaTS3qo9RbyRKg8PdmYwqQt4s1Ced1WEa+bLm8W/KM5gZ+WN4tuy+xBdYV+/XrdmMKkLbI7E7XHNY2Ii0W7Mqnc48KQ7nWTE5ztyiR+r4vaUOt1sjRUnj0uTGHSFnlvPWpfxqNz/e7LwBQm7Y0H1qEOvmQVGXCw8IN1eA5mYEzU9fdhmcQeyKB81nWycuq5wiJM2iJ9TtShdKtIn5OOQ06Y3MPpgX9RDjnpnjqbSfuc1utXWIRJW+TIWlR/mlWkPw1ffxp8vJby/jT2y/pwauDWGnCwvD8N90No1DTnmsKkLTKYihpMtYocTcU3mApHHbiD608mRI44WSrrUHs4gUUaPKYwaYsMp6CGU6wiww52DjtgcgfXBF6shhx0T509qEOO0K/f4RRMYdIWOb4adXy1VWTEwZJjL9J0PIUW6bFV9191jzlIklmoHUm1vkD9W4RFmGy6GUlGjSQ/OtfvSDKmMGlvPJWEOpXEHWzMs4U52Jj3RRK/CpP25jMJqDOJ8HUiveGUwca8Mwm8KyzCpP2AsXjUuXiQjq3kh3MrGQ9Hx+TsIEf8DET8ds757fzit/P6hTjG/XH8eCGOn+ay/sCZ48Lgt3PnQhxj2iKXYum4FAsXY2iwhTmXYmkUlu/s7NDefDuBBZejuXk5hj+vxOC/EsNAmOoXhssx3BCmGX0St57m8WvRHLy6gp+vRnP3WjTMZa9Gc3fi7PdvPMvCGUlEEkkkkURi+w/zF+vFNIT1zwC6AAAAAElFTkSuQmCC" alt="sorting-answers"></div>
+          <h3>Aucune catégorie trouvée</h3>
+          <p>{{ searchText ? 'Essayez une autre recherche' : 'Aucune catégorie disponible' }}</p>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- CATEGORIES GRID -->
+  @if (filteredCategories.length > 0) {
+    <section class="section categories-grid-section">
+      <div class="section-content">
+        <div class="categories-cards-grid">
+          @for (categorie of filteredCategories; track categorie._id) {
+            <div class="categorie-card-modern" (click)="selectCategory(categorie)" [class.active]="selectedCategory?._id === categorie._id">
+              <div class="categorie-card-header">
+                <div class="categorie-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFGUlEQVR4nO2X2W+UVRiHh4RggiBeGFRiSGntlLa2QofSDpbOdC/dpttnFyktBbsoLpC2NK1mJiyJIKglSFNp0sYAJhURRVpCB5HksOQDEi64crnxQkw08S/Ax7xMR2q/Sua02CFmfskvOcmb853nmZme9LPZIokkkkj+V4lqpyaqnZNRrzEelrZzckU7xqwkYlv51N4G9lb+sLdxM7aVG3NZexs3J84WhuEZSSS0UpfYAgmv8qHLy3xbmOLyMj+hhY+EJbGFGu0HJG/hdPIWfpMHdSoWv6PY3asYCLZH4bHNUVxe5idv5ffkrXypvXnNZpRjM9dl/dG37O67CJP6lXeEBbY5jGMz14VJe6OzCZXeiCnrE+cZ+uw8SE+cZ3R0lMdsc5z0Rkxh0t64vgGV0RAQGT/LkP8sjH8THgmJsAiTTTfZG1FZGwMit04zdOs0o9+HSUIiLMJk001BHSq/LiBy53OM23P8NzE1wiJMNt0U16KKawMik5NrsKS0hqbiGlqkpTX3b68N9STJbLYtqmfVNDymMGmLeAyUx7CKeAx2lr8Mk1tmECezcoPuqbOZ1GPgm+ZcU5i0RaqrUdXVVhGjCp9RDVVVuINrwwh8ghUVLJX1Q+gz0/CYwqQtUleBqqu0itRV4KuvhLpKyusr2C/rek9ApMFg+StVuENto4cnQ+apxBQmbZEGD6rBYxXZ5KFjUzlM7sZSnr+3p5zuqbMHtdGDW4PHFCZtkeYSVHOpVaSlhIVbS/FsKcOQNpeRGZw1FRPbXEJ5qG0p4amQeUoxhUlbpK0Y1VpkFQlXWoswhUl74xuFqG0brCKdZSzeVkDltkKMey0gNzh7q4j4NwupnXWLeWHqucIiTNoi2wtQ2/OtIm8X0LW9ACZ3xwbs92b5dE+dzbA+C08+pjBpi3TlojrzpvlG8vB15cHOHNzBdUde4NbqzGVZVy7ps24hz01zrilM2iK92aiebKtIbw6+3hzozcEdXPdMiHhzWdaTS3qo9RbyRKg8PdmYwqQt4s1Ced1WEa+bLm8W/KM5gZ+WN4tuy+xBdYV+/XrdmMKkLbI7E7XHNY2Ii0W7Mqnc48KQ7nWTE5ztyiR+r4vaUOt1sjRUnj0uTGHSFnlvPWpfxqNz/e7LwBQm7Y0H1qEOvmQVGXCw8IN1eA5mYEzU9fdhmcQeyKB81nWycuq5wiJM2iJ9TtShdKtIn5OOQ06Y3MPpgX9RDjnpnjqbSfuc1utXWIRJW+TIWlR/mlWkPw1ffxp8vJby/jT2y/pwauDWGnCwvD8N90No1DTnmsKkLTKYihpMtYocTcU3mApHHbiD608mRI44WSrrUHs4gUUaPKYwaYsMp6CGU6wiww52DjtgcgfXBF6shhx0T509qEOO0K/f4RRMYdIWOb4adXy1VWTEwZJjL9J0PIUW6bFV9191jzlIklmoHUm1vkD9W4RFmGy6GUlGjSQ/OtfvSDKmMGlvPJWEOpXEHWzMs4U52Jj3RRK/CpP25jMJqDOJ8HUiveGUwca8Mwm8KyzCpP2AsXjUuXiQjq3kh3MrGQ9Hx+TsIEf8DET8ds757fzit/P6hTjG/XH8eCGOn+ay/sCZ48Lgt3PnQhxj2iKXYum4FAsXY2iwhTmXYmkUlu/s7NDefDuBBZejuXk5hj+vxOC/EsNAmOoXhssx3BCmGX0St57m8WvRHLy6gp+vRnP3WjTMZa9Gc3fi7PdvPMvCGUlEEkkkkURi+w/zF+vFNIT1zwC6AAAAAElFTkSuQmCC" alt="sorting-answers"></div>
+              </div>
+
+              <div class="categorie-card-content">
+                <h3 class="categorie-name">{{ categorie.nom_cat }}</h3>
+                <p class="categorie-description">{{ categorie.descriptions || 'Pas de description' }}</p>
+              </div>
+
+              <div class="categorie-card-footer">
+                <button class="btn-categorie-view" (click)="selectCategory(categorie); $event.stopPropagation()">
+                  Voir boutiques
+                </button>
+
+                @if (isAdmin) {
+                  <button [routerLink]="['/categories/modifier', categorie._id]" class="btn-categorie-edit" (click)="$event.stopPropagation()" title="Modifier">
+                    Modifier
+                  </button>
+                  <button (click)="deleteCategorie(categorie._id); $event.stopPropagation()" class="btn-categorie-delete" title="Supprimer">
+                    Supprimer
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- BOUTIQUES GRID (When Category Selected) -->
+  @if (selectedCategory && shopsByCategory.length > 0) {
+    <section class="section boutiques-section">
+      <div class="section-content">
+        <div class="boutiques-header">
+          <h2>Boutiques - {{ selectedCategory.nom_cat }}</h2>
+          <button class="btn-close-boutiques" (click)="selectedCategory = null">✕ Fermer</button>
+        </div>
+
+        <div class="boutiques-cards-grid">
+          @for (boutique of shopsByCategory; track boutique._id) {
+            <div class="boutique-card-modern">
+              <!-- Header Card -->
+              <div class="boutique-card-header">
+                <div class="boutique-badge-status" [ngClass]="boutique.isValidated ? 'badge-active' : 'badge-pending'">
+                  {{ boutique.isValidated ? '✓ Validée' : 'En attente' }}
+                </div>
+              </div>
+
+              <!-- Content Card -->
+              <div class="boutique-card-content">
+                <div class="boutique-icon-large">
+                   @if(boutique?.images?.[0]?.url) {
+                    <img [src]="'http://localhost:5000/' + boutique?.images?.[0]?.url" [alt]="boutique?.name" class="boutique-image">
+                  } @else {
+                    <div class="boutique-placeholder"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO2abWiVZRjHHz9E0ItCRGhaSepKNF82NNPM0pm6nc45cx7d2cs5c27PdGcz8UPUKNPALMzUTFCwqHBrg5qbii9tTcO30ohAwRDqg/siREIUWR/qF9c55/HleO7zvJznHIY8f/jBdl//+8f13Ij4QU3z4sWLFy9evHjx4sU0j+sMGxlj/agYF0fG+GdUMwwG4rvEuDgqxrqxLQzVcpFHYjw8ehUXRjfBYOaxJs4/qjPC9QcYs4oDY1dBYStEu2HNCVh7GuRMMLtv9OROJpz4ZBfZSXaTszEr2a+5mQKdZ59shKdWw9o+eO3kDeRcMHMYvZvvpiMbn+wmO8q57OzaA0ysp2diAyz9ENafuBU5F0wdyV7qfbd9oR2J8wkNdLvy8ZPqKZi8gn8LG2HdEdj0za1Mrk9g5jF6qffd9r15FGTXyfX8N3UF47N+gKI6dhfVQcU78P6x25GZYMET76VzuO1btikxK1zOrqw+/plqHppey18zlsPbXbCz/3aerk1g5jJ66Rxu+zZ1w4xamB7l72lRhjt+gJkR3poVhfDrsKcvPTIXzFxGT+Vx2yc7xzsRNjj6+CKde56r4dc5NfBeO3zWmx6ZC2Y+o6fyuO3b3JZ0VfPb/Grutf0A88JUzauC8MvQeVSNdARTX7KXyeW2T3aXTnEllbYfYEEl+xZUwsbt0H1YjXQEC754L5PLbZ/sLp0Xw3TZfoCSCn4prYCOTjh8SI10BDOf0cvkctvX0ZH0LeNn2w8QCHEtsBS+6oH+g2qkI5j6kr1MLrd9snu8F+Ka7QdYvITfy0NwqB1OHUhP/5cgHcHv536VKxRimNE71pU/35GORGfxEq7afoCl5Xy9rBz2bIbve9LT/gFIR6goo0zpWky50ft8R/58H2+57uu1/QDhAMHKMqgPw5k2OL/vVs51QHMEpCOEy/gpFOKBVI+cVQa5ZPSaa+Fs5+0+OXPki6b3nW6DxqqkK0DQ9gNoGkMiQXojQWgKQ89WuNCZYP82WBMBmdUEOBsJck5+jgQYqCkjVLWQoUI0QHlNgEvxWaIT7zXL395b4XxHgv1bYU1Nwndzz4LvW/lZdjmwLenrhK4t0FKd3C9Iv3yLgwfQtKYQ99X5OV7nh3Qsf4kf9DJGCHV+zmbofRctYbjrPR8P1vn5Udnzc1oeztHH3whD6kup0n0gNJTyh+7jlO4j1rKQu42WXsRduo+VMmvwcTVOKScbfDTKLFc92UEvoUUv5Yzu48/re/pourmXdZpKQNAGeXK25+pFIGiDPDnbc+0CELRBnpzt+cp8ELRBnpzt2VoMgmr+ajElrcUMGL0MDLTOZZGDe5Z8Zns6zrq5IKjmb8xlwOiY8gKXHd2z4DPb03E2PA+C07mqZ/VevnzKbJwDgtO5qmf1Xr58yrw7GwSzuVWses3itk+ZLbNAMJtbxarXLG77lNk+EwSnc1XP6r18+ZTZOQMEp3NVz+q9fPmU2T0dBKdzVc/qvXz5lPloGghO56qe1Xv58inzaREIduep56m/f1LIgHHmmMIb/xAy29Nx2qaCYHeeep76+94pLNo7hcvGuV3kbvtUFlrd03E6p4Bgd556bubJ9Z6O88UkEOzOU8/NPLne03G6J4IV3PJki+sPcHACWMEtT7a4/gBHxoPgdG635zQ58/cWcKXvCegtSP+/r2QmmHms9pykbxyzkzteyVp2fBzcSdh+gJNj4U4i6z8RXrx48eLFixcvXrQ7K/8Di29rK6RBZYgAAAAASUVORK5CYII=" alt="shop"></div>
+                  }
+                </div>
+
+                <h3 class="boutique-name">{{ boutique.name }}</h3>
+                <p class="boutique-category">{{ getCategoryName(boutique.categoryId) }}</p>
+                <p class="boutique-description">{{ boutique.description || 'Pas de description' }}</p>
+
+                <!-- Owner Info -->
+                <div class="boutique-owner-info">
+                  <small>Propriétaire: <strong>{{ getOwnerName(boutique.ownerId) }}</strong></small>
+                </div>
+              </div>
+
+              <!-- Footer Card with Actions -->
+              <div class="boutique-card-footer">
+                <button (click)="viewBoutique(boutique._id)" class="btn-boutique-view">
+                  Voir
+                </button>
+
+                @if (isAdmin) {
+                  <button [routerLink]="['/boutiques/modifier', boutique._id]" class="btn-boutique-edit">
+                    Modifier
+                  </button>
+                  <button (click)="validateBoutique(boutique._id, boutique.isValidated)" 
+                    class="btn-boutique-validate"
+                    [title]="boutique.isValidated ? 'Désactiver' : 'Activer'">
+                    {{ boutique.isValidated ? 'Désactiver' : 'Activer' }}
+                  </button>
+                  <button (click)="deleteBoutique(boutique._id)" class="btn-boutique-delete">
+                    Supprimer
+                  </button>
+                }
+
+                <!-- Follow Button for Buyers -->
+                @if (isAcheteur) {
+                  <button 
+                    (click)="toggleSuivreBoutique(boutique._id)"
+                    [ngClass]="isBoutiqueSuivie(boutique._id) ? 'btn-boutique-following' : 'btn-boutique-follow'">
+                    {{ isBoutiqueSuivie(boutique._id) ? '✓ Suivi(e)' : '+ Suivre' }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  @if (selectedCategory && shopsByCategory.length === 0) {
+    <section class="section boutiques-section">
+      <div class="section-content">
+        <div class="boutiques-header">
+          <h2>Boutiques - {{ selectedCategory.nom_cat }}</h2>
+          <button class="btn-close-boutiques" (click)="selectedCategory = null">✕ Fermer</button>
+        </div>
+        
+        <div class="empty-state-boutiques-cat">
+          <div class="empty-icon">🏪</div>
+          <h3>Aucune boutique dans cette catégorie</h3>
+          <p>Aucune boutique n'a choisi cette catégorie pour le moment</p>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- FOOTER -->
+  <footer class="footer-elegant">
+    <div class="footer-content-elegant">
+      <div class="footer-column">
+        <h4>À propos</h4>
+        <p>SuperMarket est votre plateforme de confiance pour découvrir les meilleures boutiques et produits.</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#">Accueil</a></li>
+          <li><a href="#">Boutiques</a></li>
+          <li><a href="#">Produits</a></li>
+          <li><a href="#">Promotions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>contact@supermarket.com</p>
+        <p>+261 6XX XXX XXX</p>
+        <p>Antananarivo, Madagascar</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom-elegant">
+      <p>&copy; 2026 SuperMarket. Tous droits réservés.</p>
+      <p>Développé par <strong>Ny Angotiana and Soanomena</strong></p>
+    </div>
+  </footer>
 </div>

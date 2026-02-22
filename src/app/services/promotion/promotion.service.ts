@@ -45,7 +45,6 @@ export class PromotionService {
   }*/
 
   getPromotionActiveByProduit(prod_id: string): Observable<any> {
-    // ✅ Ceci devrait générer : http://localhost:5000/api/promotions/active/6981dfe...
     return this.http.get(`${this.apiUrl}/active/${prod_id}`);
   }
 

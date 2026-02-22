@@ -9,7 +9,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { BoutiqueDashboardComponent } from './pages/boutique-dashboard/boutique-dashboard.component';
-import { BuyerDashboardComponent } from './pages/buyer-dashboard/buyer-dashboard.component';
+import { BuyerDashboardComponent } from './components/buyer-dashboard/buyer-dashboard.component'; // ✅ CHANGE LE CHEMIN
 import { PromotionListComponent } from './components/promotion-list/promotion-list.component';
 import { PromotionAddComponent } from './components/promotion-add/promotion-add.component';
 import { PromotionEditComponent } from './components/promotion-edit/promotion-edit.component';
@@ -45,21 +45,18 @@ export const routes: Routes = [
     { path: 'buyer/dashboard', component: BuyerDashboardComponent },
 
     //CRUD categorie
-
     { path: 'categories', component: CategorieListComponent },
     { path: 'categories/ajouter', component: CategorieAddComponent },
     { path: 'categories/modifier/:id', component: CategorieEditComponent },
 
     //CRUD boutique
-
     { path: 'boutiques', component: BoutiqueListComponent },
     { path: 'boutiques/ajouter', component: BoutiqueAddComponent },
     { path: 'boutiques/modifier/:id', component: BoutiqueEditComponent },
-    { path: 'boutique/:id', component: BoutiqueDetailComponent }, // Vue détails boutique
+    { path: 'boutique/:id', component: BoutiqueDetailComponent },
 
     //CRUD produit
-
-    { path: 'produits', component: ProduitListComponent }, //Route pour produit-list
+    { path: 'produits', component: ProduitListComponent },
     { path: 'produits/ajouter', component: ProduitAddComponent },
     { path: 'produits/modifier/:id', component: ProduitEditComponent },
 
@@ -71,7 +68,6 @@ export const routes: Routes = [
     { path: 'panier', component: PanierComponent },
 
     //CRUD promotion
-
     { path: 'promotions', component: PromotionListComponent },
     { path: 'promotions/ajouter', component: PromotionAddComponent },
     { path: 'promotions/modifier/:id', component: PromotionEditComponent },
@@ -87,11 +83,12 @@ export const routes: Routes = [
     { path: 'produits/:id', component: ProduitDetailComponent },
 
     //Page de signalement
-    { path: 'admin/signalements', component: SignalementsAdminComponent }, //admin
-    { path: 'mes-signalements', component: MesSignalementsComponent }, //acheteurs
-    { path: 'signalement-boutique', component: SignalementBoutiqueComponent }, //boutique
+    { path: 'admin/signalements', component: SignalementsAdminComponent },
+    { path: 'mes-signalements', component: MesSignalementsComponent },
+    { path: 'signalement-boutique', component: SignalementBoutiqueComponent },
 
     //Messagerie
-    { path: 'messagerie', component: MessagereieComponent }
+    { path: 'messagerie', component: MessagereieComponent },
 
+    // { path: 'dashboard-buyer', component: BuyerDashboardComponent },
 ];

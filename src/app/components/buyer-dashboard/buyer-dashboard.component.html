@@ -1,0 +1,462 @@
+<div class="buyer-dashboard-elegant">
+  <!-- HERO SECTION AVEC PAYSAGE VAN GOGH FULLSCREEN - SANS BLOC -->
+  <div class="hero-section-elegant hero-van-gogh">
+    <div class="hero-content-elegant">
+      <div class="hero-text">
+        <h1 class="hero-title">SuperMarket</h1>
+        <p class="hero-subtitle">Découvrez les meilleures boutiques et produits sélectionnés</p>
+        
+        <!-- RECHERCHE AVEC RÉSULTATS -->
+        <div class="hero-search-container">
+          <div class="hero-search">
+            <input 
+              type="text" 
+              [(ngModel)]="searchQuery"
+              (input)="onSearch()"
+              (keyup.enter)="goToBoutiquesPage()"
+              placeholder="Rechercher une boutique ou un produit..." 
+              class="search-input"
+              autocomplete="off"
+            >
+            <button class="search-btn" (click)="onSearch()" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 30 30">
+                <path d="M 13 3 C 7.4889971 3 3 7.4889971 3 13 C 3 18.511003 7.4889971 23 13 23 C 15.396508 23 17.597385 22.148986 19.322266 20.736328 L 25.292969 26.707031 A 1.0001 1.0001 0 1 0 26.707031 25.292969 L 20.736328 19.322266 C 22.148986 17.597385 23 15.396508 23 13 C 23 7.4889971 18.511003 3 13 3 z M 13 5 C 17.430123 5 21 8.5698774 21 13 C 21 17.430123 17.430123 21 13 21 C 8.5698774 21 5 17.430123 5 13 C 5 8.5698774 8.5698774 5 13 5 z"></path>
+              </svg>
+            </button>
+            @if (searchQuery) {
+              <button class="clear-btn" (click)="clearSearch()" type="button">✕</button>
+            }
+          </div>
+
+          <!-- RÉSULTATS DE RECHERCHE DROPDOWN -->
+          @if (showSearchResults && (searchResults.boutiques.length > 0 || searchResults.produits.length > 0)) {
+            <div class="search-results-dropdown">
+              @if (searchResults.boutiques.length > 0) {
+                <div class="search-section">
+                  <h4>Boutiques</h4>
+                  @for (boutique of searchResults.boutiques; track boutique._id) {
+                    <div class="search-item boutique-item" (click)="viewBoutique(boutique._id)">
+                      <div class="item-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO2abWiVZRjHHz9E0ItCRGhaSepKNF82NNPM0pm6nc45cx7d2cs5c27PdGcz8UPUKNPALMzUTFCwqHBrg5qbii9tTcO30ohAwRDqg/siREIUWR/qF9c55/HleO7zvJznHIY8f/jBdl//+8f13Ij4QU3z4sWLFy9evHjx4sU0j+sMGxlj/agYF0fG+GdUMwwG4rvEuDgqxrqxLQzVcpFHYjw8ehUXRjfBYOaxJs4/qjPC9QcYs4oDY1dBYStEu2HNCVh7GuRMMLtv9OROJpz4ZBfZSXaTszEr2a+5mQKdZ59shKdWw9o+eO3kDeRcMHMYvZvvpiMbn+wmO8q57OzaA0ysp2diAyz9ENafuBU5F0wdyV7qfbd9oR2J8wkNdLvy8ZPqKZi8gn8LG2HdEdj0za1Mrk9g5jF6qffd9r15FGTXyfX8N3UF47N+gKI6dhfVQcU78P6x25GZYMET76VzuO1btikxK1zOrqw+/plqHppey18zlsPbXbCz/3aerk1g5jJ66Rxu+zZ1w4xamB7l72lRhjt+gJkR3poVhfDrsKcvPTIXzFxGT+Vx2yc7xzsRNjj6+CKde56r4dc5NfBeO3zWmx6ZC2Y+o6fyuO3b3JZ0VfPb/Grutf0A88JUzauC8MvQeVSNdARTX7KXyeW2T3aXTnEllbYfYEEl+xZUwsbt0H1YjXQEC754L5PLbZ/sLp0Xw3TZfoCSCn4prYCOTjh8SI10BDOf0cvkctvX0ZH0LeNn2w8QCHEtsBS+6oH+g2qkI5j6kr1MLrd9snu8F+Ka7QdYvITfy0NwqB1OHUhP/5cgHcHv536VKxRimNE71pU/35GORGfxEq7afoCl5Xy9rBz2bIbve9LT/gFIR6goo0zpWky50ft8R/58H2+57uu1/QDhAMHKMqgPw5k2OL/vVs51QHMEpCOEy/gpFOKBVI+cVQa5ZPSaa+Fs5+0+OXPki6b3nW6DxqqkK0DQ9gNoGkMiQXojQWgKQ89WuNCZYP82WBMBmdUEOBsJck5+jgQYqCkjVLWQoUI0QHlNgEvxWaIT7zXL395b4XxHgv1bYU1Nwndzz4LvW/lZdjmwLenrhK4t0FKd3C9Iv3yLgwfQtKYQ99X5OV7nh3Qsf4kf9DJGCHV+zmbofRctYbjrPR8P1vn5Udnzc1oeztHH3whD6kup0n0gNJTyh+7jlO4j1rKQu42WXsRduo+VMmvwcTVOKScbfDTKLFc92UEvoUUv5Yzu48/re/pourmXdZpKQNAGeXK25+pFIGiDPDnbc+0CELRBnpzt+cp8ELRBnpzt2VoMgmr+ajElrcUMGL0MDLTOZZGDe5Z8Zns6zrq5IKjmb8xlwOiY8gKXHd2z4DPb03E2PA+C07mqZ/VevnzKbJwDgtO5qmf1Xr58yrw7GwSzuVWses3itk+ZLbNAMJtbxarXLG77lNk+EwSnc1XP6r18+ZTZOQMEp3NVz+q9fPmU2T0dBKdzVc/qvXz5lPloGghO56qe1Xv58inzaREIduep56m/f1LIgHHmmMIb/xAy29Nx2qaCYHeeep76+94pLNo7hcvGuV3kbvtUFlrd03E6p4Bgd556bubJ9Z6O88UkEOzOU8/NPLne03G6J4IV3PJki+sPcHACWMEtT7a4/gBHxoPgdG635zQ58/cWcKXvCegtSP+/r2QmmHms9pykbxyzkzteyVp2fBzcSdh+gJNj4U4i6z8RXrx48eLFixcvXrQ7K/8Di29rK6RBZYgAAAAASUVORK5CYII=" alt="shop"></div>
+                      <div class="item-text">
+                        <p class="item-name">{{ boutique.name }}</p>
+                        <small>Boutique</small>
+                      </div>
+                    </div>
+                  }
+                  <button class="view-all-btn" (click)="goToBoutiquesPage()" type="button">
+                    Voir toutes les boutiques →
+                  </button>
+                </div>
+              }
+
+              @if (searchResults.produits.length > 0) {
+                <div class="search-section">
+                  <h4>Produits</h4>
+                  @for (product of searchResults.produits; track product._id) {
+                    <div class="search-item product-item" (click)="viewProduct(product._id)">
+                      <div class="item-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFQElEQVR4nO2ab0xVdRjHT2vzVb2pXombJRcu3MQSxXLeCYUpAhdNx1ALvdwL9wIXrdUqSJokDkybbU5XbZnWsrYskj8KCPgnqBf92aJavayJ9M4ybWtN56c9XA/S1XvvOb9znR473+2znec5z5/vc5zonJrmyJEjR44cOXJkVOXcOT1C7YwGvk1r4O8ZDXAzEQ9pEb5JayAs3rQbKc8Wps2sp/P+CNyKzIxwWDzeoPO5Y1Yd76fXQXotf6TXsX5GkHuMds+q5T3pLXkLnv/y+pS8CVIjtUbniodZtWy44gnxKF61VCszTKs7DJlhzrtqmWum11PPXZkhLrhrYWMvNI1cn019IDWZYf5yB7jbzA53iBx3mHPi0R1mq5ZKZYcJekLgCXHJU0OZ6f4aAtJf8Aq0DCcmv3liD9Jjdo8nRFF2DRcn+kPUaanQnCBFOUEuzqmGnBrqlWZUc0r6q9+FtlOJqdkHUis9iruCE16ruTQniE+zovkBZs8NcC43CLlBWhUNPZAb5PKCMGwfgNdPJqZ9EB4JT+y7PC9EusrO3ADbxPPcIOfnB8z9dp3UvBD3zfczllcFeVXqP1jy/LwqMyq2we7jxqhondiJ9KrsFK/iWWbIDXKL6REL/byx0A+3BRvYZfoDeNfzq3c93A4squQX0x8gv5JLBZVQbvFvVzJDOHjMHHqfld3iXWbILaabC58CwYqBqXMO9Rvn475oTyr3m25ctg4EPS5aS/HStYzp+Vjk3RPrWB5vTlevcTqPXp1r9QMozylZA8JkXMGYnotH8RpOx5vTd9Q4vUeuzrT6AZTnlFWAEC9OVh+bP95jnKHuaE+ifap3GNaqchDixcnqY/Mj3cYZ7or2JNqneodhla8GIV6crD42/3Wncb7qjPYk2qd6h2GtXQVCvDhZfWx+9PB/6dgDzRujyPPUd999Fu1JtE/1DsN6eiUI8eJk9bH5nzuijOyHlkg0N5XmOji1L1rzU8fVvGnjBn0llX8FCPHiZPWx+R8Pwp4XoerJaOxfwe8bVvCsv4xn5FlyVSth70vww4eTNZY/gPKcoA8EPQ74GNNzcSm99o/BgI+z8i6yOloT8HEx4GNP5Uru1WvkWXLyLqb2rLXzr73DsMKlIOhxTSnLQyWc1vOxyLtQMUXXmbN5sqaUvmofD8bdWYZHaqbMfNm08SR3GFakGAQtBapfimtTCRlm6jcWqf1bQMru2LQcBM3mUr7juWUgaDaX8h0vLAVBs7mU72haAoJVA1vKmda4hNcaC/lNn5mUQsabCtkuvVb3K9/RXAiCVQObC9muzzLN47Rb3a98R8tjIFg10FLAuMzZ38X3BwbACPu6GZ3YX8C45f2qd7QWgGDVQGs+4zLn2KeMnugBI/R/wqj0bM3njOX9qne0LwbBqoG2xbTrsxRos7pf+Y6dXhCsGtjiYdpOL+07vYzrM5Oxw8uZHV7apNfqfuU7di0CQbO5lO/YvRAEzeZSvmPvoyBoNpfyHW8vAEGzuZTveCcPBM3mUr7jwDwQNJtL+Y4PckHQblHp/uIRW2d6wUcPg6DdotL9xSO2zvSCQw+BkKr4ZknZR0cOCKmKb5aUfXTNBiFVsVXp84xi2UdPNheOeOCwm+kSy7OgvzcbW5U+zyjS051Bmjz3ePjT9ML+bI73Z0NfFo2aTdWfRdOVG4ZMNw9kUTrohsFM/hnIpHEwgzTNJhKvA1k0iXe5YSCDEqVBJ1xsO5kBtsal9v8bJ/W5i9JhF0Mj6VwYcYEdGE7nvHj+QvVX3pEjR44cOXKk/R/0L2PhuPYnIQbZAAAAAElFTkSuQmCC" alt="product"></div>
+                      <div class="item-text">
+                        <p class="item-name">{{ product.nom_prod }}</p>
+                        <small>{{ product.prix_unitaire | currency:'XAF' }}</small>
+                      </div>
+                    </div>
+                  }
+                  <button class="view-all-btn" (click)="goToProductsPage()" type="button">
+                    Voir tous les produits →
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          @if (showSearchResults && searchResults.boutiques.length === 0 && searchResults.produits.length === 0 && searchQuery) {
+            <div class="search-results-dropdown">
+              <div class="no-results">
+                <p>Aucun résultat pour "{{ searchQuery }}"</p>
+                <button class="view-all-btn" (click)="goToBoutiquesPage()" type="button">
+                  Voir toutes les boutiques
+                </button>
+                <button class="view-all-btn" (click)="goToProductsPage()" type="button">
+                  Voir tous les produits
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- BOUTONS D'ACTION -->
+        <div class="hero-buttons">
+          <button class="btn-hero btn-hero-primary" (click)="goToBoutiquesPage()">
+            <span class="btn-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADZElEQVR4nO2ZW0sVURiGhaKrirqqX9B1XdSdv6CLKC062onsnB3VzlaSQmXQiSKzQAoP2UHN2WlWkpUYJUXnEpOQIsy/8MSCVxg2M+Paa5vOxf5gMcNm77We95tvvd9idlZWJjKRiUzEOoApQCXwHfgLDOk6CPwBfgO/gAHgJ9AP9AG9wDfgC/AJeA+8A3qA10A38BLoBDqAp8ATIAFcA/KASenCzxbQoK5GxFfgs6A++MDe+uBeCbDLB/lMoAayHWgDHgJewEhoVAEz08l8v7I7nM3/Dd/iG8OfVTk9CZXN4DjDe3oSq1wE9OoJjCe8p3HVRcDgGNV8ywjwZjS7CBiKCbxnfp8q/AxZZRzgPeARMDUVAdXy9TjAe5pnRyrZH1D5xAHekxOZ63QbATfUUeMC7/nKqMBGQL/af5zgE5qzyUZAnzZvnOATqQjYAvzQU4gLfJtKaP6IAiRiLvDRAv6O6ZLAPQf4WuCsHC8K3tw3ALOs4H0iHgAXBfnYd+w1k94CKoAS4ChwGDgBnJcJ1EtUs4a5r9P56gxQZGwR2A5sAw4Bl/SdZq1t7i8Au8z3U4KXgEagHCgDTgKlgjwOHEuCNwAHgQPAfgEWAvuAvcAeYDew0zhJEvxWYDOwCdgI5AMbgPXAOmAtUOwi4G5M4NeYeV0E3I4J/GpXAbUxgc9zFXAzBP6ynKlH7vRcVtqokkuGPy33eqPfdfkMoR24r4SEwa80SXIRUB2S+e4A+Fa5R0NA5l9EwLf6LDUMfoWrgOshZRMG3yy/Ty6bkeCbZBhh8MtNqboIqAyp+Sh4L6DmbeDrI+CXmbVdBFwJ2bBR8ImADWsDXxMBv9RVwKUQt4mCbw1wGxv4mgj4Ja4CzoVYZWMEfFOAVdrA10bALwaOuAioCPH5MrlNEHxpgM/bwNdGwOe6Cjg1Sk3KBr4uAj7H7EUXAeWj1GFt4Osj4BcZN3QRYByoeBSOBzbwtyPgc10bWb4EpHu2sYFvCIFfqL2xyUXAPAlI92BmA98QAr9A62a7CJig5pLuqdIG/k4IfL7Wm5iyAImYrAYzLMDlSGwDf9cHn6Oy2a31pjnBJz2JOZq0QHsieRT63KpIo1guNvxKpFVvF9rVzc1fSh16QdAp0yhR7zFJyXbOfCYykYlMZI1V/AMLl2zrI6u+cAAAAABJRU5ErkJggg==" alt="shop" width="30"></span>
+            Voir les boutiques
+          </button>
+          <button class="btn-hero btn-hero-secondary" (click)="goToProductsPage()">
+            <span class="btn-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABPElEQVR4nO2YPUoEQRBGn2io6AlcNN0bGHkNUzH0EBNuaugpBBNZdyM308BzCEYaiBh8MtALjcj0dPc6Wyv1oJKp7pp69E/Q4DjOKjgCngENHI/A8UoMgBPgZQ0SCvEKnNZKnAEfoeAUOCiosWwolz3gNsz9BM4LarAFNFET18BOSaEKkZZtYBLVuArferEL3ISJX8AlddSILLkIq9LWuQP26cHTGs+DekbbYxJtSAyyFf4SuYgx5CIZjIB5dFX+Fm1uBhxiWGSecevcWxZ5D3PHHWPGYcybZZHZf1mRUWgwdUam1s/IEMhFjCEXMYZcxBhyEWPIRYwhayJNeLPKzcmSSPz4N8nImRKJG/3ZcNORM7u1uv6jwlzZwEpcBBexhayIqCBiXMQacpFNF5HxSLIw0KQS8ZDWcByHiG8/rerhHfLG6gAAAABJRU5ErkJggg==" alt="product--v1" width="30"></span>
+            Voir les produits
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG PAYSAGE VAN GOGH EN ARRIÈRE-PLAN -->
+    <svg class="hero-van-gogh-bg" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <!-- Dégradé du ciel nocturne -->
+      <defs>
+        <linearGradient id="nightSkyBg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#0a1128;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#1a237e;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#283593;stop-opacity:1" />
+        </linearGradient>
+        <filter id="starGlowBg">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      
+      <!-- Fond du ciel -->
+      <rect width="1200" height="600" fill="url(#nightSkyBg)"/>
+      
+      <!-- LUNE BRILLANTE -->
+      <g class="moon-container-bg">
+        <!-- Halo de la lune -->
+        <circle cx="900" cy="120" r="96" fill="none" stroke="#ffd700" stroke-width="3" opacity="0.3"/>
+        <circle cx="900" cy="120" r="88" fill="none" stroke="#ffed4e" stroke-width="2" opacity="0.2"/>
+        
+        <!-- La lune elle-même -->
+        <circle cx="900" cy="120" r="80" fill="#fffacd" filter="url(#starGlowBg)"/>
+        
+        <!-- Cratères lunaires -->
+        <circle cx="880" cy="95" r="6" fill="#f0e68c" opacity="0.7"/>
+        <circle cx="910" cy="115" r="5" fill="#f0e68c" opacity="0.6"/>
+        <circle cx="890" cy="135" r="4" fill="#f0e68c" opacity="0.5"/>
+        <circle cx="930" cy="130" r="3" fill="#f0e68c" opacity="0.4"/>
+        
+        <!-- Reflet brillant -->
+        <ellipse cx="870" cy="100" rx="16" ry="24" fill="white" opacity="0.4"/>
+      </g>
+      
+      <!-- ÉTOILES STYLE VAN GOGH (spirales et tourbillons) -->
+      <g class="stars-container-bg">
+        <!-- Grand tourbillon d'étoiles supérieur gauche -->
+        <g class="star-spiral-bg star-spiral-1-bg">
+          <circle cx="200" cy="80" r="5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.9"/>
+          <circle cx="240" cy="50" r="4" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.85"/>
+          <circle cx="280" cy="60" r="4.5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.88"/>
+          <circle cx="310" cy="100" r="4" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.82"/>
+          <circle cx="290" cy="130" r="4.5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.87"/>
+        </g>
+        
+        <!-- Tourbillon centre-gauche -->
+        <g class="star-spiral-bg star-spiral-2-bg">
+          <circle cx="100" cy="250" r="4" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.8"/>
+          <circle cx="80" cy="280" r="3.5" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.78"/>
+          <circle cx="110" cy="310" r="4.2" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.82"/>
+          <circle cx="150" cy="320" r="4" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.79"/>
+        </g>
+        
+        <!-- Tourbillon droite -->
+        <g class="star-spiral-bg star-spiral-3-bg">
+          <circle cx="1050" cy="280" r="4.5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.86"/>
+          <circle cx="1100" cy="250" r="4" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.83"/>
+          <circle cx="1120" cy="300" r="4" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.81"/>
+          <circle cx="1070" cy="330" r="4.2" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.84"/>
+        </g>
+        
+        <!-- Étoiles dispersées partout -->
+        <circle cx="150" cy="60" r="3" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.75"/>
+        <circle cx="400" cy="70" r="3.5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.8"/>
+        <circle cx="550" cy="50" r="3" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.78"/>
+        <circle cx="750" cy="100" r="3.5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.79"/>
+        <circle cx="50" cy="150" r="3" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.76"/>
+        <circle cx="350" cy="180" r="4" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.82"/>
+        <circle cx="650" cy="200" r="3" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.77"/>
+        <circle cx="200" cy="350" r="3.5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.8"/>
+        <circle cx="550" cy="380" r="3" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.75"/>
+        <circle cx="1000" cy="450" r="3.5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.81"/>
+        <circle cx="100" cy="480" r="3" fill="#fffacd" filter="url(#starGlowBg)" opacity="0.78"/>
+        <circle cx="600" cy="520" r="3.5" fill="#ffff99" filter="url(#starGlowBg)" opacity="0.79"/>
+      </g>
+      
+      <!-- COLLINES/MONTAGNES EN SILENCE -->
+      <g class="mountains-bg">
+        <!-- Montagne gauche -->
+        <path d="M 0 400 Q 150 280 300 360 L 300 600 L 0 600 Z" fill="#1a1a4d" opacity="0.6"/>
+        
+        <!-- Montagne centre-gauche -->
+        <path d="M 250 450 Q 400 300 550 380 L 550 600 L 250 600 Z" fill="#2d2d5f" opacity="0.7"/>
+        
+        <!-- Montagne centre -->
+        <path d="M 500 480 Q 700 360 900 420 L 900 600 L 500 600 Z" fill="#1a1a4d" opacity="0.65"/>
+        
+        <!-- Montagne centre-droite -->
+        <path d="M 850 460 Q 1000 320 1150 400 L 1150 600 L 850 600 Z" fill="#2d2d5f" opacity="0.7"/>
+        
+        <!-- Montagne droite -->
+        <path d="M 1100 430 Q 1150 280 1200 380 L 1200 600 L 1100 600 Z" fill="#1a1a4d" opacity="0.6"/>
+        
+        <!-- Contours des montagnes -->
+        <path d="M 0 400 Q 150 280 300 360" stroke="#3d3d7d" stroke-width="2" fill="none" opacity="0.4"/>
+        <path d="M 250 450 Q 400 300 550 380" stroke="#4d4d9d" stroke-width="2" fill="none" opacity="0.5"/>
+        <path d="M 500 480 Q 700 360 900 420" stroke="#3d3d7d" stroke-width="2" fill="none" opacity="0.4"/>
+        <path d="M 850 460 Q 1000 320 1150 400" stroke="#4d4d9d" stroke-width="2" fill="none" opacity="0.5"/>
+        <path d="M 1100 430 Q 1150 280 1200 380" stroke="#3d3d7d" stroke-width="2" fill="none" opacity="0.4"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- CATÉGORIES -->
+  <section class="section categories-section-elegant">
+    <div class="section-header-elegant">
+      <h2>Explorez par catégorie</h2>
+      <p>Parcourez nos collections</p>
+    </div>
+
+    @if (isLoading && categories.length === 0) {
+      <div class="loading-elegant">
+        <div class="spinner-elegant"></div>
+      </div>
+    }
+
+    @if (categories.length > 0) {
+      <div class="categories-grid-elegant">
+        @for (category of categories; track category._id) {
+          <div 
+            class="category-card-elegant"
+            (click)="openCategoryModal(category)"
+          >
+            <div class="category-number">{{ $index + 1 }}</div>
+            <h3>{{ category.nom_cat }}</h3>
+            <p>Découvrir</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- NOUVELLES BOUTIQUES -->
+  <section class="section new-boutiques-section-elegant">
+    <div class="section-header-elegant">
+      <h2>Nouvelles boutiques</h2>
+      <p>Rejoignez notre communauté</p>
+    </div>
+
+    @if (newBoutiques.length > 0) {
+      <div class="boutiques-grid-elegant">
+        @for (boutique of newBoutiques.slice(0, 6); track boutique._id) {
+          <div class="boutique-card-elegant">
+            <div class="boutique-image-elegant">
+              <div class="boutique-icon">
+                @if(boutique?.images?.[0]?.url){
+                  <img [src]="('http://localhost:5000/' + boutique?.images?.[0]?.url )" [alt]="boutique?.name"
+                    class="boutique-logo">
+                  }
+                  @else{
+                  <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="boutique?.name" class="boutique-logo">
+                }
+              </div>
+            </div>
+            <div class="boutique-info-elegant">
+              <div class="boutique-badge">Nouveau</div>
+              <h4>{{ boutique.name }}</h4>
+              <p>{{ boutique.description?.substring(0, 45) || 'Boutique exclusive' }}...</p>
+              <button 
+                (click)="viewBoutique(boutique._id)"
+                class="btn-boutique-elegant"
+              >
+                Visiter
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty-message">Aucune boutique pour le moment</p>
+    }
+  </section>
+
+  <!-- MEILLEURES VENTES -->
+  <section class="section best-sellers-section-elegant">
+    <div class="section-header-elegant">
+      <h2>Meilleures ventes</h2>
+      <p>Les articles les plus demandés</p>
+    </div>
+
+    @if (bestSellerProducts.length > 0) {
+      <div class="products-grid-elegant">
+        @for (product of bestSellerProducts.slice(0, 8); track product._id) {
+          <div class="product-card-elegant">
+            @if (product.discount && product.discount > 0) {
+              <div class="discount-badge-elegant">-{{ product.discount }}%</div>
+            }
+            <div class="product-image-elegant">
+              
+            </div>
+            <div class="product-info-elegant">
+              <h4>{{ product.nom_prod }}</h4>
+              <p class="product-price">{{ product.prix_unitaire | currency:'XAF' }}</p>
+              <button 
+                (click)="viewProduct(product._id)"
+                class="btn-product-elegant"
+              >
+                Découvrir
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty-message">Aucun produit disponible</p>
+    }
+  </section>
+
+  <!-- PROMOTIONS -->
+  <section class="section promotions-section-elegant">
+    <div class="section-header-elegant">
+      <h2>Offres spéciales</h2>
+      <p>Profitez de nos réductions</p>
+    </div>
+
+    @if (activePromotions.length > 0) {
+      <div class="promotions-grid-elegant">
+        @for (promo of activePromotions.slice(0, 6); track promo._id) {
+          <div class="promotion-card-elegant">
+            <div class="promo-tag">
+              @if (promo.type_prom === 'POURCENTAGE') {
+                {{ promo.montant }}% OFF
+              } @else {
+                {{ promo.montant }} Ar
+              }
+            </div>
+            
+            <h4>{{ promo.nom_promo }}</h4>
+            <p>{{ promo.description }}</p>
+            
+            <div class="promo-footer">
+              <small>Jusqu'au {{ formatDate(promo.date_fin) }}</small>
+              <button class="btn-arrow" (click)="getBoutiqueFromPromo(promo)">
+                →
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty-message">Aucune promotion active</p>
+    }
+  </section>
+
+  <!-- AVIS CLIENTS -->
+  <section class="section reviews-section-elegant">
+    <div class="section-header-elegant">
+      <h2>Avis clients</h2>
+      <p>Ce que disent nos clients</p>
+    </div>
+
+    @if (boutiqueReviews.length > 0) {
+      <div class="reviews-grid-elegant">
+        @for (review of boutiqueReviews; track review._id) {
+          <div class="review-card-elegant">
+            <div class="review-stars-elegant">
+              @for (star of getStarArray(review.rating); track $index) {
+                <span class="star" [class.filled]="star === 1">★</span>
+              }
+              <span class="rating-number">{{ review.rating }}/5</span>
+            </div>
+            <p class="review-text">"{{ review.comment }}"</p>
+            <div class="review-footer-elegant">
+              <strong>{{ review.acheteur_id?.firstname }}</strong>
+              <small>{{ review.boutique_id?.name }}</small>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty-message">Aucun avis disponible</p>
+    }
+  </section>
+
+  <!-- MODAL -->
+  @if (showCategoryModal && selectedCategory) {
+    <div class="modal-overlay-elegant" (click)="closeCategoryModal()">
+      <div class="modal-content-elegant" (click)="$event.stopPropagation()">
+        <button class="modal-close-elegant" (click)="closeCategoryModal()">✕</button>
+        <h2>{{ selectedCategory.nom_cat }}</h2>
+
+        @if (boutiquesByCategory.length > 0) {
+          <div class="modal-boutiques-elegant">
+            @for (boutique of boutiquesByCategory; track boutique._id) {
+              <div class="modal-item-elegant">
+                <div class="item-icon">
+                  @if(boutique?.images?.[0]?.url){
+                    <img [src]="('http://localhost:5000/' + boutique?.images?.[0]?.url )" [alt]="boutique?.name"
+                      class="boutique-logo">
+                    }
+                    @else{
+                    <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="boutique?.name" class="boutique-logo">
+                  }
+                </div>
+                <div class="item-info">
+                  <h4>{{ boutique.name }}</h4>
+                  <p>{{ boutique.description?.substring(0, 50) || 'Boutique exclusive' }}...</p>
+                </div>
+                <button 
+                  (click)="viewBoutique(boutique._id)"
+                  class="btn-modal-elegant"
+                >
+                  Visiter
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-message">Aucune boutique dans cette catégorie</p>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- FOOTER -->
+  <footer class="footer-elegant">
+    <div class="footer-content-elegant">
+      <div class="footer-column">
+        <h4>À propos</h4>
+        <p>SuperMarket est votre plateforme de confiance pour découvrir les meilleures boutiques et produits.</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#">Accueil</a></li>
+          <li><a href="#">Boutiques</a></li>
+          <li><a href="#">Produits</a></li>
+          <li><a href="#">Promotions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>contact@supermarket.com</p>
+        <p>+261 6XX XXX XXX</p>
+        <p>Antananarivo, Madagascar</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom-elegant">
+      <p>&copy; 2026 SuperMarket. Tous droits réservés.</p>
+      <p>Développé par <strong>Ny Angotiana and Soanomena</strong></p>
+    </div>
+  </footer>
+</div>

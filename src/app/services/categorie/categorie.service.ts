@@ -36,6 +36,29 @@ export class CategorieService {
         return this.http.delete(`${this.apiUrl}/${id}`);
     }
 
+    // GET boutiques par catégorie
+    getBoutiquesByCategory(categoryId: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<any>(
+        `${this.apiUrl}/category/${categoryId}`,
+        { headers: headers }
+    );
+    }
 
+    // GET valider/désactiver boutique
+    validateBoutique(boutiqueId: string, isValidated: boolean): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<any>(
+        `${this.apiUrl}/${boutiqueId}/validate`,
+        { isValidated: isValidated },
+        { headers: headers }
+    );
+    }
 
 }

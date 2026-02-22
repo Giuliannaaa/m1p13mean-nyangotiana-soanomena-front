@@ -54,4 +54,14 @@ export class AvisService {
       { headers: this.getHeaders() }
     );
   }
+
+  // Si l'endpoint /tous n'existe pas, utiliser une requête sans auth
+  getTousLesAvisPublic(): Observable<any> {
+    return this.http.get(`${this.apiUrl}`);
+  }
+
+  // Obtenir tous les avis pour le dashboard (SANS AUTH)
+  getTousLesAvis(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/tous`);
+  }
 }
