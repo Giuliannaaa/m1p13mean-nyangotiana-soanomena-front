@@ -14,13 +14,13 @@ import { AuthService } from '../../services/auth/auth.service';
 export class SignalementBoutiqueComponent implements OnInit {
   signalements: any[] = [];
   filteredSignalements: any[] = [];
-  
+
   isLoading: boolean = false;
-  
+
   // Filtres
   selectedStatus: string = '';
   searchText: string = '';
-  
+
   // Modal détail
   showModal: boolean = false;
   selectedSignalement: any = null;
@@ -36,10 +36,10 @@ export class SignalementBoutiqueComponent implements OnInit {
   // CHARGER LES SIGNALEMENTS DE LA BOUTIQUE
   loadSignalements(): void {
     this.isLoading = true;
-    
+
     this.signalementService.getMesSignalementsBoutique().subscribe({
       next: (response: any) => {
-        console.log('Signalements reçus:', response);
+        // console.log('Signalements reçus:', response);
         this.signalements = response.data || [];
         this.filteredSignalements = this.signalements;
         this.isLoading = false;
@@ -57,14 +57,14 @@ export class SignalementBoutiqueComponent implements OnInit {
     this.filteredSignalements = this.signalements.filter(sig => {
       // Filtre par statut
       const matchStatus = !this.selectedStatus || sig.statut === this.selectedStatus;
-      
+
       // Filtre par recherche (produit, acheteur)
       const searchLower = this.searchText.toLowerCase();
       const matchSearch = !this.searchText ||
         (sig.produit_id?.nom_prod?.toLowerCase().includes(searchLower)) ||
         (sig.acheteur_id?.firstname?.toLowerCase().includes(searchLower)) ||
         (sig.acheteur_id?.lastname?.toLowerCase().includes(searchLower));
-      
+
       return matchStatus && matchSearch;
     });
   }

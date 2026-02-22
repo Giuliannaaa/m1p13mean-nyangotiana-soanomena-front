@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
-import { MessageService } from '../../../services/message.service'; 
+import { MessageService } from '../../../services/message.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -13,13 +13,13 @@ import { MessageService } from '../../../services/message.service';
 })
 export class SidebarComponent implements OnInit {
     authService = inject(AuthService);
-    messageService = inject(MessageService); 
+    messageService = inject(MessageService);
 
     unreadCount: number = 0; // 
 
     ngOnInit(): void { // 
         this.loadUnreadCount();
-        
+
         // Actualiser toutes les 30 secondes
         setInterval(() => {
             this.loadUnreadCount();

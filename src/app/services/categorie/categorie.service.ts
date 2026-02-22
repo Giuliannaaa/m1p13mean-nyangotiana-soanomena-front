@@ -12,7 +12,7 @@ export class CategorieService {
     private apiUrl = `${environment.apiUrl}/categories`;//Utilisation variable d'environment
 
     getCategories(): Observable<any> {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('auth_token');
         const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`
         });

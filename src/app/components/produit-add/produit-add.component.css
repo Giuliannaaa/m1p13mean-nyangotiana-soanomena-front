@@ -16,7 +16,7 @@
     font-size: 2rem;
     font-weight: 700;
     text-align: center;
-    background: linear-gradient(to right, #fff, #a5b4fc);
+    background: #2E304E;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -62,7 +62,7 @@
     margin-top: 0;
     margin-bottom: 1rem;
     font-size: 1.1rem;
-    color: var(--text-main);
+    color: #2E304E;
 }
 
 .file-input-wrapper {
@@ -76,6 +76,7 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s;
+    background-color: #2E304E;
 }
 
 .file-input-wrapper:hover {
@@ -141,4 +142,10 @@ select.form-control {
     border-radius: 8px;
     padding: 12px 24px;
     background-size: 1.5rem;
+}
+
+input {
+    background-color: #2E304E;
+    color: #fff;
+    border-radius: 8px;
 }

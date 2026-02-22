@@ -3,14 +3,14 @@
         <h1>Gestion des Utilisateurs</h1>
     </div>
 
-    <div class="filter-bar glass-card">
+    <div class="filter-bar">
         <div class="search-box">
             <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()"
-                placeholder="Rechercher par nom, email...">
+                placeholder="Rechercher par nom, email..." id="searchTerm">
         </div>
         <div class="filter-group">
-            <label for="role-filter">Filtrer par rôle:</label>
-            <select id="role-filter" [(ngModel)]="roleFilter" (change)="applyFilter()">
+            <label for="role-filter" id="role-filter">Rôle</label>
+            <select id="role-filter" [(ngModel)]="roleFilter" (change)="applyFilter()" id="roleFilter">
                 <option value="all">Tous les rôles</option>
                 <option value="Boutique">Boutique</option>
                 <option value="Acheteur">Acheteur</option>
@@ -19,45 +19,58 @@
         </div>
     </div>
 
-    <div class="glass-card overflow-hidden">
+    <div class="user-list-card">
         <div *ngIf="isLoading" class="loading-state">
-            Chargement des utilisateurs...
+            <p>Chargement des utilisateurs en cours...</p>
         </div>
 
         <table class="modern-table" *ngIf="!isLoading">
             <thead>
                 <tr>
-                    <th>Nom</th>
-                    <th>Email</th>
+                    <th>Utilisateur</th>
                     <th>Rôle</th>
+                    <th>Statut</th>
                     <th>Date d'inscription</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @for (user of filteredUsers; track user._id) {
                 <tr>
-                    <td class="font-bold">{{ user.firstname }} {{ user.lastname }}</td>
-                    <td>{{ user.email }}</td>
+                    <td>
+                        <div class="user-name-cell">
+                            <span class="user-full-name">{{ user.firstname }} {{ user.lastname }}</span>
+                            <span class="user-email-sub">{{ user.email }}</span>
+                        </div>
+                    </td>
                     <td>
                         <span class="role-badge" [ngClass]="'role-' + user.role?.toLowerCase()">
                             {{ user.role }}
                         </span>
                     </td>
-                    <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
                     <td>
-                        <button class="action-btn" (click)="updateUserState(user._id!)">
-                            <img *ngIf="user.isActive" src="/img/svg/icon-off.svg" [alt]="'desactivate' + user._id"
-                                title="Désactiver">
-                            <img *ngIf="!user.isActive" src="/img/svg/icon-on.svg" [alt]="'activate' + user._id"
-                                title="Activer">
-                        </button>
+                        <div class="status-indicator">
+                            <span class="status-dot" [class.active]="user.isActive"
+                                [class.inactive]="!user.isActive"></span>
+                            {{ user.isActive ? 'Actif' : 'Inactif' }}
+                        </div>
+                    </td>
+                    <td>{{ user.createdAt | date:'dd MMM yyyy' }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon-action" [class.deactivate]="user.isActive"
+                                [class.activate]="!user.isActive" (click)="updateUserState(user._id!)"
+                                [title]="user.isActive ? 'Désactiver' : 'Activer'">
+                                <img *ngIf="user.isActive" src="/img/svg/icon-off.svg" alt="Désactiver">
+                                <img *ngIf="!user.isActive" src="/img/svg/icon-on.svg" alt="Activer">
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 }
-                @if (filteredUsers.length === 0) {
+                @if (filteredUsers.length === 0 && !isLoading) {
                 <tr>
-                    <td colspan="5" class="empty-state">Aucun utilisateur trouvé</td>
+                    <td colspan="5" class="empty-state">Aucun utilisateur ne correspond à votre recherche.</td>
                 </tr>
                 }
             </tbody>

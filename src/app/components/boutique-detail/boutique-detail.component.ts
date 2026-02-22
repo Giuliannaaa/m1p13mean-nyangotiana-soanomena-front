@@ -62,7 +62,7 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
             next: (data) => {
                 this.boutique = data;
                 this.isLoading = false;
-                
+
                 // 🆕 Démarrer le carousel si plusieurs images
                 if (this.boutique?.images && this.boutique.images.length > 1) {
                     this.startCarousel();
@@ -108,7 +108,8 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
         this.produitService.getProduitsByBoutique(id).subscribe({
             next: (response) => {
                 this.produits = response.data || response;
-                console.log("Produits de la boutique", this.produits);
+                // console.log("Produits de la boutique", this.produits);
+
             },
             error: (err) => {
                 console.error('Erreur chargement produits:', err);
@@ -212,7 +213,7 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
      */
     setImage(index: number): void {
         this.currentImageIndex = index;
-        
+
         // Redémarrer le timer après un clic manuel
         if (this.carouselInterval) {
             clearInterval(this.carouselInterval);

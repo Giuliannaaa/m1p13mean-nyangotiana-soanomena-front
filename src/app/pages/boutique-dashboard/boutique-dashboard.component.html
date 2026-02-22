@@ -1,0 +1,287 @@
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">
+            <span class="card-icon">
+                <img src="img/svg/icon-store.svg" alt="Tableau de Bord Boutique" class="icon-img">
+            </span>
+            Tableau de Bord Boutique
+        </h1>
+        <p class="dashboard-subtitle">Statistiques de vos boutiques</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+        <div class="spinner"></div>
+        <p>Chargement...</p>
+    </div>
+
+    <div *ngIf="error" class="error-container">
+        <span class="error-icon">⚠️</span>
+        <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="!loading && !error">
+        <!-- KPI Cards Grid -->
+        <div class="stats-grid">
+            <div class="stat-card products-card">
+                <div class="card-icon">
+                    <img src="img/svg/icon-bag.svg" alt="Produits" class="card-icon-img">
+                </div>
+                <div class="card-content">
+                    <h3>Produits Total</h3>
+                    <div class="value">{{ numberOfProducts }}</div>
+                    <p class="card-label">dans vos boutiques</p>
+                </div>
+            </div>
+
+            <div class="stat-card stock-card" [class.alert-card]="outOfStockCount > 0"
+                [class.clickable]="outOfStockCount > 0" (click)="openModal('stock')">
+                <div class="card-icon">
+                    <img src="img/svg/icon-empty-stock.svg" alt="Rupture de Stock" class="card-icon-img">
+                </div>
+                <div class="card-content">
+                    <h3>Rupture de Stock</h3>
+                    <div class="value" [class.alert-value]="outOfStockCount > 0">{{ outOfStockCount }}</div>
+                    <p class="card-label">{{ outOfStockCount > 0 ? 'produits à réapprovisionner' : 'aucun produit en
+                        rupture' }}</p>
+                </div>
+                <span class="card-hint" *ngIf="outOfStockCount > 0">Voir la liste →</span>
+            </div>
+
+            <div class="stat-card promo-card" [class.clickable]="activePromotionsCount > 0"
+                (click)="openModal('promo')">
+                <div class="card-icon">
+                    <img src="img/svg/icon-gift.svg" alt="Promotions" class="card-icon-img">
+                </div>
+                <div class="card-content">
+                    <h3>Promotions Actives</h3>
+                    <div class="value">{{ activePromotionsCount }}</div>
+                    <p class="card-label">{{ activePromotionsCount > 0 ? 'promotions en cours' : 'aucune promotion
+                        active' }}</p>
+                </div>
+                <span class="card-hint" *ngIf="activePromotionsCount > 0">Voir la liste →</span>
+            </div>
+        </div>
+
+        <div class="bottom-section">
+            <!-- ===== REVENUE DONUT CHART ===== -->
+            <div class="section-card revenue-section">
+                <div class="section-header">
+                    <span class="section-icon section-icon-revenue">
+                        <img src="img/svg/icon-gain.svg" alt="Chiffre d'Affaires" class="card-icon-img">
+                    </span>
+                    <h2>Chiffre d'Affaires par Boutique</h2>
+
+                    <!-- Filtres mois / année -->
+                    <div class="revenue-filters">
+                        <select class="filter-select" id="month-selected" [(ngModel)]="selectedMonth"
+                            (change)="onFilterChange()">
+                            <option *ngFor="let m of months" [value]="m.value">{{ m.label }}</option>
+                        </select>
+                        <select class="filter-select" id="year-selected" [(ngModel)]="selectedYear"
+                            (change)="onFilterChange()">
+                            <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Chargement -->
+                <div *ngIf="revenueLoading" class="chart-loading">
+                    <div class="spinner spinner-sm"></div>
+                </div>
+
+                <!-- Aucun revenu -->
+                <div *ngIf="!revenueLoading && donutTotal === 0" class="empty-state">
+                    <p>Aucun revenu enregistré pour {{ selectedMonthLabel }} {{ selectedYear }}.</p>
+                </div>
+
+                @if (this.annualRevenueByOwner.length > 0) {
+                <p> <strong>Somme annuelle :</strong> {{ this.annualRevenueByOwner[0].totalRevenue | number }} Ariary
+                </p>
+                }
+                <!-- Donut Chart & Product Statistics -->
+                <div *ngIf="donutTotal > 0 || productTotal > 0" class="revenue-dash-grid">
+                    <!-- Boutique Revenue Donut -->
+                    <div class="donut-container">
+                        <h3 class="subsection-title">Par boutique (MOIS)</h3>
+                        <div class="donut-layout">
+                            <div class="donut-wrapper">
+                                <svg viewBox="0 0 100 100" class="donut-svg">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#f0f4ff" stroke-width="10" />
+                                    <circle *ngFor="let slice of donutSlices" cx="50" cy="50" r="45" fill="none"
+                                        [attr.stroke]="slice.color" stroke-width="10"
+                                        [attr.stroke-dasharray]="slice.dashArray"
+                                        [attr.stroke-dashoffset]="slice.offset" stroke-linecap="round"
+                                        class="donut-slice" transform="rotate(-90 50 50)" />
+                                    <text x="50" y="44" text-anchor="middle" class="donut-center-label">Total</text>
+                                    <text x="50" y="57" text-anchor="middle" class="donut-center-value">
+                                        {{ formatRevenue(donutTotal) }}
+                                    </text>
+                                </svg>
+                            </div>
+                            <div class="donut-legend legend-narrow">
+                                <div *ngFor="let slice of donutSlices" class="legend-item">
+                                    <span class="legend-dot" [style.background]="slice.color"></span>
+                                    <div class="legend-info">
+                                        <span class="legend-name">{{ slice.label }}</span>
+                                        <span class="legend-revenue">{{ formatRevenue(slice.value) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Revenue Pie (using similar styling) -->
+                    <div class="donut-container product-revenue-container"
+                        *ngIf="donutTotal > 0 || monthlyRevenueByProduct.length > 0">
+                        <h3 class="subsection-title">Par Produit (Mois)</h3>
+                        <div class="donut-layout">
+                            <div class="donut-wrapper">
+                                <svg viewBox="0 0 100 100" class="donut-svg">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#f0f4ff" stroke-width="10" />
+                                    <circle *ngFor="let slice of productPieSlices" cx="50" cy="50" r="45" fill="none"
+                                        [attr.stroke]="slice.color" stroke-width="10"
+                                        [attr.stroke-dasharray]="slice.dashArray"
+                                        [attr.stroke-dashoffset]="slice.offset" stroke-linecap="round"
+                                        class="donut-slice" transform="rotate(-90 50 50)" />
+                                    <text x="50" y="44" text-anchor="middle" class="donut-center-label">Total</text>
+                                    <text x="50" y="57" text-anchor="middle" class="donut-center-value">
+                                        {{ formatRevenue(productTotal) }}
+                                    </text>
+                                </svg>
+                            </div>
+                            <div class="donut-legend legend-narrow">
+                                <div *ngFor="let slice of productPieSlices" class="legend-item">
+                                    <span class="legend-dot" [style.background]="slice.color"></span>
+                                    <div class="legend-info">
+                                        <span class="legend-name">{{ slice.label }}</span>
+                                        <span class="legend-revenue">{{ formatRevenue(slice.value) }}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="productPieSlices.length > 5" class="legend-more">
+                                    + {{ productPieSlices.length - 5 }} autres produits
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produits les plus vendus -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-icon">
+                        <img src="img/svg/icon-favorite.svg" alt="Produits les Plus Vendus" class="section-icon-img">
+                    </span>
+                    <h2>Produits les Plus Vendus</h2>
+                </div>
+
+                <div *ngIf="topSellingProducts.length === 0" class="empty-state">
+                    <p>Aucune vente enregistrée pour le moment.</p>
+                </div>
+
+                <div *ngIf="topSellingProducts.length > 0" class="top-products-list">
+                    <div *ngFor="let product of topSellingProducts; let i = index" class="product-item">
+                        <div class="product-rank" [class]="'rank-' + (i + 1)">{{ i + 1 }}</div>
+                        <div class="product-image-wrapper">
+                            <img [src]="product.image_url ? ('http://localhost:5000/' + product.image_url) : 'img/png/elementor-placeholder-image.png'"
+                                [alt]="product.nom_prod" class="product-thumb" />
+                        </div>
+                        <div class="product-info">
+                            <span class="product-name">{{ product.nom_prod }}</span>
+                            <span class="product-revenue">{{ product.totalRevenue | number:'1.0-0' }} Ar</span>
+                        </div>
+                        <div class="product-qty">
+                            <span class="qty-value">{{ product.totalQuantity }}</span>
+                            <span class="qty-label">vendus</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== MODAL RUPTURE DE STOCK ===== -->
+    <div class="modal-overlay" *ngIf="showOutOfStockModal" (click)="closeModal()">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+
+            <div class="modal-header stock-header">
+                <div class="modal-title">
+                    <img src="img/svg/icon-empty-stock.svg" alt="" class="modal-icon">
+                    <h2>Produits en rupture de stock</h2>
+                </div>
+                <button class="modal-close" (click)="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="list-item" *ngFor="let product of outOfStockProducts">
+                    <img [src]="'http://localhost:5000/' + product.image_Url.replace('\\\\', '/')"
+                        [alt]="product.nom_prod" class="item-thumb" onerror="this.src='img/placeholder.png'">
+                    <div class="item-info">
+                        <span class="item-name">{{ product.nom_prod }}</span>
+                        <span class="item-meta">Prix unitaire : {{ product.prix_unitaire['$numberDecimal'] | number }}
+                            Ar</span>
+                    </div>
+                    <span class="badge badge-danger">Stock : {{ product.stock }}</span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span>{{ outOfStockProducts.length }} produit(s) concerné(s)</span>
+                <button class="btn-close-modal" (click)="closeModal()">Fermer</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== MODAL PROMOTIONS ===== -->
+    <div class="modal-overlay" *ngIf="showPromotionsModal" (click)="closeModal()">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+
+            <div class="modal-header promo-header">
+                <div class="modal-title">
+                    <img src="img/svg/icon-gift.svg" alt="" class="modal-icon">
+                    <h2>Promotions actives</h2>
+                </div>
+                <button class="modal-close" (click)="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="list-item" *ngFor="let promo of promotions">
+                    <img [src]="'http://localhost:5000/' + promo.prod_id.image_Url.replace('\\\\', '/')"
+                        [alt]="promo.prod_id.nom_prod" class="item-thumb" onerror="this.src='img/placeholder.png'">
+                    <div class="item-info">
+                        <span class="item-name">{{ promo.prod_id.nom_prod }}</span>
+                        <span class="item-meta">
+                            Code : <strong>{{ promo.code_promo }}</strong>
+                        </span>
+                        <span class="item-meta">
+                            Date limite : <strong>{{ promo.fin | date:'dd/MM/yyyy' }}</strong>
+                        </span>
+                        <span class="item-meta">
+                            Prix : {{ promo.prod_id.prix_unitaire['$numberDecimal'] | number }} Ar
+                        </span>
+                    </div>
+                    <div class="promo-badge-group">
+                        <span class="badge badge-promo">
+                            {{ promo.type_prom === 'POURCENTAGE' ? '-' + promo.montant['$numberDecimal'] + '%' :
+                            promo.montant['$numberDecimal'] + ' Ar' }}
+                        </span>
+                        <span class="badge" [class.badge-success]="promo.est_Active"
+                            [class.badge-muted]="!promo.est_Active">
+                            {{ promo.est_Active ? 'Active' : 'Inactive' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span>{{ promotions.length }} promotion(s) active(s)</span>
+                <button class="btn-close-modal" (click)="closeModal()">Fermer</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>

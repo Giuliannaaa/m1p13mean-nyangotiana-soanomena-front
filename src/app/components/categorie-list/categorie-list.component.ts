@@ -67,7 +67,7 @@ export class CategorieListComponent implements OnInit {
       next: (response: any) => {
         const allBoutiques = Array.isArray(response) ? response : (response.data || []);
         // Filtrer les boutiques qui ont cette catégorie
-        this.shopsByCategory = allBoutiques.filter((boutique: any) => 
+        this.shopsByCategory = allBoutiques.filter((boutique: any) =>
           boutique.categoryId === categoryId || boutique.categoryId?._id === categoryId
         );
         this.cdr.markForCheck();

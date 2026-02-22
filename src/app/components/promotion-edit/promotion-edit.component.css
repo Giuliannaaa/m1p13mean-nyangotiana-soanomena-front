@@ -16,7 +16,7 @@
     font-size: 2rem;
     font-weight: 700;
     text-align: center;
-    background: linear-gradient(to right, #fff, #fbbf24);
+    background: #2E304E;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -47,11 +47,11 @@
 }
 
 .checkbox-label {
-    flex-direction: row !important;
+    flex-direction: row;
     align-items: center;
-    gap: 10px !important;
+    gap: 10px;
     cursor: pointer;
-    color: var(--text-main) !important;
+    color: var(--text-main);
 }
 
 .form-actions {
@@ -78,7 +78,7 @@
 
 select.form-control,
 input.form-control {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: #2E304E;
     border: 1px solid var(--glass-border);
     color: #fff;
     border-radius: 8px;
@@ -97,4 +97,32 @@ input.form-control:focus,
 select.form-control:focus {
     outline: none;
     border-color: #fbbf24;
+}
+
+
+select.form-control {
+    color: #fff;
+    border-radius: 8px;
+}
+
+select.form-control:focus {
+    outline: none;
+    border-color: #a5b4fc;
+    color: #fff;
+    border-radius: 8px;
+}
+
+select.form-control option:checked {
+    color: #fff;
+    padding: auto;
+    border-radius: 8px;
+}
+
+select.form-control {
+    color: #fff;
+    border-radius: 8px;
+}
+
+select.form-control option {
+    color: #fff;
 }
