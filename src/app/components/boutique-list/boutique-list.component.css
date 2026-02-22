@@ -1,263 +1,720 @@
-.boutique-list-container {
-    padding: 1rem;
+/* ============================================
+   BOUTIQUES LIST - INTERFACE ÉLÉGANTE
+   ============================================ */
+
+.buyer-boutiques-elegant {
+  background: #ffffff;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #222;
 }
 
-.list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
+/* ============================================
+   HEADER SECTION
+   ============================================ */
+
+.boutiques-header-elegant {
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 50%, #f0f0f0 100%);
+  padding: 60px 20px;
+  border-bottom: 1px solid #e8e8e8;
+  position: relative;
+  overflow: hidden;
 }
 
-.list-header h1 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
+.boutiques-header-elegant::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: -15%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(100, 200, 150, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatBgHeader 15s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.overflow-hidden {
-    overflow: hidden;
+.boutiques-header-elegant::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(100, 150, 200, 0.07) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatBgHeader 20s ease-in-out infinite reverse;
+  pointer-events: none;
 }
 
-.modern-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
+@keyframes floatBgHeader {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-30px) translateX(20px);
+  }
 }
 
-.modern-table th {
-    padding: 1.25rem 1rem;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--glass-border);
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
-.modern-table td {
-    padding: 1.25rem 1rem;
-    border-bottom: 1px solid var(--glass-border);
-    vertical-align: middle;
+.boutiques-header-elegant h1 {
+  font-size: 48px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+  color: #222;
 }
 
-.modern-table tr:last-child td {
-    border-bottom: none;
+.boutiques-header-elegant p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+  font-weight: 300;
 }
 
-.modern-table tr:hover {
-    background: rgba(255, 255, 255, 0.02);
+.btn-boutiques-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.font-bold {
-    font-weight: 600;
-}
-
-.td-desc {
-    max-width: 300px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: var(--text-muted);
-}
-
-.badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.badge-success {
-    background: rgba(34, 197, 94, 0.1);
-    color: #4ade80;
-}
-
-.badge-danger {
-    background: rgba(239, 68, 68, 0.1);
-    color: #f87171;
-}
-
-.actions-cell {
-    display: flex;
-    gap: 0.5rem;
+.btn-boutiques-primary:hover {
+  background: #000;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .btn-icon {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    color: var(--text-main);
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
+  font-size: 18px;
 }
 
-.btn-icon:hover {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
+/* ============================================
+   FILTERS SECTION
+   ============================================ */
+
+.boutiques-filters-section {
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+  padding: 40px 20px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.btn-delete:hover {
-    background: #ef4444;
-    border-color: #ef4444;
+.section-content {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.btn-view:hover {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
+.boutiques-search-container {
+  margin-bottom: 30px;
 }
 
-/* --- SEARCH & FILTERS --- */
-.filters-container {
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.filters-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-    justify-content: space-between;
+.search-icon-boutiques {
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  color: #999;
+  pointer-events: none;
 }
 
-.search-group {
-    position: relative;
-    width: 100%;
+.search-input-boutiques {
+  width: 100%;
+  padding: 14px 20px 14px 50px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  color: #222;
 }
 
-.search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    color: var(--text-muted);
-    pointer-events: none;
+.search-input-boutiques::placeholder {
+  color: #999;
 }
 
-.search-input {
-    padding: 0.75rem 1rem 0.75rem 3rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    color: white;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-    width: 100%;
-    box-sizing: border-box;
+.search-input-boutiques:focus {
+  border-color: #222;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.search-input:focus {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+.btn-clear-search {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 8px;
 }
 
-.filters-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+.btn-clear-search:hover {
+  color: #222;
 }
 
-.filter-select {
-    padding: 0.75rem 2.5rem 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    color: white;
-    font-size: 0.9rem;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 16px;
-    min-width: 160px;
-    transition: all 0.2s;
+/* ============================================
+   FILTERS WRAPPER
+   ============================================ */
+
+.boutiques-filters-wrapper {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.filter-select:hover,
-.filter-select:focus {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary-color);
-    outline: none;
+.filter-select-boutiques {
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #222;
+  outline: none;
+  min-width: 180px;
 }
 
-.filter-select option {
-    background: #1e293b;
-    color: white;
+.filter-select-boutiques:hover,
+.filter-select-boutiques:focus {
+  border-color: #222;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.btn-icon-reset {
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
+.filter-select-boutiques option {
+  background: white;
+  color: #222;
 }
 
-.btn-icon-reset:hover {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: #ef4444;
-    color: #ef4444;
+.btn-reset-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #666;
 }
 
-.btn-icon-reset svg {
-    width: 20px;
-    height: 20px;
+.btn-reset-filters:hover {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+  color: #ef4444;
 }
 
-.results-bar {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--glass-border);
-    font-size: 0.9rem;
-    color: var(--text-muted);
+.btn-reset-filters svg {
+  width: 16px;
+  height: 16px;
 }
 
-.active-filter-tag {
-    background: rgba(99, 102, 241, 0.2);
-    color: #818cf8;
-    padding: 0.25rem 0.75rem;
-    border-radius: 99px;
-    font-size: 0.8rem;
-    font-weight: 500;
+/* ============================================
+   RESULTS INDICATOR
+   ============================================ */
+
+.results-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid #e8e8e8;
+  font-size: 13px;
 }
+
+.result-count {
+  color: #666;
+  font-weight: 500;
+}
+
+.active-filter-badge {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4f46e5;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.empty-state-boutiques {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.empty-state-boutiques h3 {
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.empty-state-boutiques p {
+  font-size: 14px;
+  color: #999;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   BOUTIQUES GRID
+   ============================================ */
+
+.boutiques-grid-section {
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 50%, #f0f0f0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.boutiques-grid-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(100, 149, 237, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.boutiques-grid-section::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(70, 130, 180, 0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.boutiques-cards-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+/* ============================================
+   BOUTIQUE CARD MODERN
+   ============================================ */
+
+.boutique-card-modern {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.boutique-card-modern:hover {
+  border-color: #999;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-6px);
+}
+
+.boutique-card-header {
+  padding: 16px;
+  background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+  border-bottom: 1px solid #e8e8e8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.boutique-badge-status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-active {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.badge-pending {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.boutique-card-content {
+  padding: 30px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.boutique-icon-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  border: 2px solid #e8e8e8;
+  overflow: hidden;
+}
+
+.boutique-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.boutique-placeholder {
+  font-size: 48px;
+}
+
+.boutique-name {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  text-align: center;
+  color: #222;
+}
+
+.boutique-category {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.boutique-description {
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.boutique-owner-info {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.boutique-owner-info strong {
+  color: #222;
+}
+
+.boutique-card-footer {
+  padding: 16px 20px;
+  background: #f9f9f9;
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ============================================
+   BOUTIQUE ACTION BUTTONS
+   ============================================ */
+
+.btn-boutique-view,
+.btn-boutique-edit,
+.btn-boutique-validate,
+.btn-boutique-delete,
+.btn-boutique-follow,
+.btn-boutique-following {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-boutique-view {
+  background: #222;
+  color: white;
+  flex: 1;
+  min-width: 80px;
+}
+
+.btn-boutique-view:hover {
+  background: #000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-boutique-edit {
+  background: white;
+  color: #222;
+  border: 1px solid #ddd;
+}
+
+.btn-boutique-edit:hover {
+  border-color: #222;
+  background: #f5f5f5;
+}
+
+.btn-boutique-validate {
+  background: white;
+  color: #222;
+  border: 1px solid #ddd;
+}
+
+.btn-boutique-validate:hover {
+  border-color: #4f46e5;
+  color: #4f46e5;
+  background: rgba(79, 70, 229, 0.05);
+}
+
+.btn-boutique-delete {
+  background: white;
+  color: #222;
+  border: 1px solid #ddd;
+}
+
+.btn-boutique-delete:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.btn-boutique-follow {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  flex: 1;
+  min-width: 80px;
+}
+
+.btn-boutique-follow:hover {
+  background: #4338ca;
+}
+
+.btn-boutique-following {
+  background: #22c55e;
+  color: white;
+  border: none;
+  flex: 1;
+  min-width: 80px;
+}
+
+.btn-boutique-following:hover {
+  background: #16a34a;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer-elegant {
+  background: #f9f9f9;
+  border-top: 1px solid #e8e8e8;
+  padding: 60px 20px 30px;
+}
+
+.footer-content-elegant {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-column h4 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.footer-column p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.footer-column ul {
+  list-style: none;
+}
+
+.footer-column ul li {
+  margin-bottom: 8px;
+}
+
+.footer-column a {
+  color: #666;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+
+.footer-column a:hover {
+  color: #222;
+}
+
+.footer-bottom-elegant {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #e8e8e8;
+  color: #999;
+  font-size: 12px;
+}
+
+.footer-bottom-elegant p {
+  margin: 5px 0;
+}
+
+.footer-bottom-elegant strong {
+  color: #222;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
 
 @media (max-width: 768px) {
-    .filters-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
+  .boutiques-header-elegant h1 {
+    font-size: 32px;
+  }
 
-    .filters-actions {
-        flex-direction: column;
-    }
+  .boutiques-filters-wrapper {
+    flex-direction: column;
+  }
 
-    .filter-select {
-        width: 100%;
-        background-position: right 1rem center;
-    }
+  .filter-select-boutiques {
+    width: 100%;
+  }
 
-    .btn-icon-reset {
-        width: 100%;
-    }
+  .btn-reset-filters {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .boutiques-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .footer-content-elegant {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .boutiques-grid-section::before,
+  .boutiques-grid-section::after,
+  .boutiques-header-elegant::before,
+  .boutiques-header-elegant::after {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .boutiques-header-elegant {
+    padding: 40px 20px;
+  }
+
+  .boutiques-header-elegant h1 {
+    font-size: 24px;
+  }
+
+  .boutiques-header-elegant p {
+    font-size: 14px;
+  }
+
+  .search-input-boutiques {
+    font-size: 13px;
+  }
+
+  .boutiques-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .boutique-card-footer {
+    flex-direction: column;
+  }
+
+  .btn-boutique-view,
+  .btn-boutique-follow,
+  .btn-boutique-following {
+    width: 100%;
+  }
+
+  .filter-select-boutiques {
+    font-size: 12px;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .boutique-card-modern,
+  .btn-boutique-view,
+  .btn-boutique-edit,
+  .btn-boutique-delete,
+  .btn-boutique-follow,
+  .btn-boutique-following {
+    transition: none;
+  }
+
+  .boutiques-header-elegant::before,
+  .boutiques-header-elegant::after {
+    animation: none;
+  }
 }

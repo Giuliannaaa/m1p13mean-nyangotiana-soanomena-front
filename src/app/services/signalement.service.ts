@@ -92,6 +92,7 @@ export class SignalementService {
   }
 
   // Obtenir les signalements reçus par la boutique (Boutique)
+  // Le backend récupère l'ID de la boutique du user connecté
   getMesSignalementsBoutique(): Observable<any> {
     return this.http.get(
       `${this.apiUrl}/boutique/mes-signalements`,
