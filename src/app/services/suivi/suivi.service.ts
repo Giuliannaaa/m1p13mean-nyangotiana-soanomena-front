@@ -39,7 +39,7 @@ export class SuiviService {
             ids = response.data.map((suivi: any) => {
               // Si boutique_id est un objet (peuplé), prendre son _id
               if (typeof suivi.boutique_id === 'object' && suivi.boutique_id?._id) {
-                console.log('🔑 boutique_id est un objet, ID:', suivi.boutique_id._id);
+                // console.log('🔑 boutique_id est un objet, ID:', suivi.boutique_id._id);
                 return suivi.boutique_id._id;
               }
               // Sinon, prendre directement la valeur

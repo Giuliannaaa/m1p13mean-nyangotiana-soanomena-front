@@ -99,7 +99,7 @@ export class BoutiqueDetailComponent implements OnInit {
         this.produitService.getProduitsByBoutique(id).subscribe({
             next: (response) => {
                 this.produits = response.data || response;
-                console.log("Produits de la boutique", this.produits);
+                // console.log("Produits de la boutique", this.produits);
 
             },
             error: (err) => {

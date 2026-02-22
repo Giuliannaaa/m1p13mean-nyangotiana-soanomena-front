@@ -308,7 +308,6 @@
 }
 
 .top-store-item:hover {
-    transform: translateX(4px);
     border-color: #fbbf24;
 }
 
