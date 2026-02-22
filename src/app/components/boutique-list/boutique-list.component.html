@@ -1,146 +1,202 @@
-<div class="boutique-list-container">
-    <div class="list-header">
-        <h1 *ngIf="isAdmin">Nos Boutiques</h1>
-        <h1 *ngIf="isBoutique">Vos Boutiques</h1>
-        <h1 *ngIf="isAcheteur">Boutiques</h1>
-        <button *ngIf="isAdmin" routerLink="/boutiques/ajouter" class="btn-primary">Ajouter une boutique</button>
+<div class="buyer-boutiques-elegant">
+  <!-- HEADER -->
+  <div class="boutiques-header-elegant">
+    <div class="header-content">
+      <h1>Boutiques</h1>
+      <p>Découvrez et explorez nos boutiques partenaires</p>
+      <button *ngIf="isAdmin" routerLink="/boutiques/ajouter" class="btn-boutiques-primary">
+        <span class="btn-icon">+</span>
+        Ajouter une boutique
+      </button>
     </div>
+  </div>
 
-    <!-- SEARCH & FILTERS -->
-    <div class="glass-card filters-container">
-        <div class="filters-header">
-            <div class="search-group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                        clip-rule="evenodd" />
-                </svg>
-                <input type="text" [(ngModel)]="searchText" (keyup)="filterBoutiques()"
-                    placeholder="Rechercher une boutique par nom..." class="search-input" id="search-input" />
-            </div>
+  <!-- FILTERS & SEARCH -->
+  <section class="section boutiques-filters-section">
+    <div class="section-content">
+      <!-- Search Bar -->
+      <div class="boutiques-search-container">
+        <div class="search-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" class="search-icon-boutiques" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd" />
+          </svg>
+          <input 
+            type="text" 
+            [(ngModel)]="searchText" 
+            (keyup)="filterBoutiques()"
+            placeholder="Rechercher une boutique par nom..." 
+            class="search-input-boutiques"
+          />
+          <button *ngIf="searchText" (click)="searchText" class="btn-clear-search">✕</button>
+        </div>
+      </div>
 
-            <div class="filters-actions">
-                <select [(ngModel)]="filtre_special" (change)="filterBoutiques()" class="filter-select">
-                    <option value="tous">Tout voir</option>
-                    <option value="nouveau">Nouveautés</option>
-                    <option value="populaire">Populaires</option>
-                    <option value="featured">En vedette</option>
-                    <option value="top-rated">Mieux notées</option>
-                </select>
+      <!-- Filters -->
+      <div class="boutiques-filters-wrapper">
+        <select [(ngModel)]="filtre_special" (change)="filterBoutiques()" class="filter-select-boutiques">
+          <option value="tous">Tous les filtres</option>
+          <option value="nouveau">Nouveautés</option>
+          <option value="populaire">Populaires</option>
+          <option value="featured">En vedette</option>
+          <option value="top-rated">Mieux notées</option>
+        </select>
 
-                <select [(ngModel)]="categorie_selectionnee" (change)="filterBoutiques()" class="filter-select">
-                    <option value="">Toutes catégories</option>
-                    <option *ngFor="let categorie of categories" [value]="categorie._id">
-                        {{ categorie.nom_cat }}
-                    </option>
-                </select>
+        <select [(ngModel)]="categorie_selectionnee" (change)="filterBoutiques()" class="filter-select-boutiques">
+          <option value="">Toutes catégories</option>
+          <option *ngFor="let categorie of categories" [value]="categorie._id">
+            {{ categorie.nom_cat }}
+          </option>
+        </select>
 
-                <button (click)="resetFilter()" class="btn-icon-reset" title="Réinitialiser">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
+        <button (click)="resetFilter()" class="btn-reset-filters" title="Réinitialiser les filtres">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Réinitialiser
+        </button>
+      </div>
+
+      <!-- Results Counter -->
+      @if (searchText || isFiltering || isLoadingSpecial) {
+        <div class="results-indicator">
+          <span class="result-count">{{ filteredBoutiques.length }} résultat(s)</span>
+          @if (searchText) {
+            <span class="active-filter-badge">Recherche: "{{ searchText }}"</span>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- EMPTY STATE -->
+  @if (filteredBoutiques.length === 0) {
+    <section class="section">
+      <div class="section-content">
+        <div class="empty-state-boutiques">
+          <div class="empty-icon">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO2abWiVZRjHHz9E0ItCRGhaSepKNF82NNPM0pm6nc45cx7d2cs5c27PdGcz8UPUKNPALMzUTFCwqHBrg5qbii9tTcO30ohAwRDqg/siREIUWR/qF9c55/HleO7zvJznHIY8f/jBdl//+8f13Ij4QU3z4sWLFy9evHjx4sU0j+sMGxlj/agYF0fG+GdUMwwG4rvEuDgqxrqxLQzVcpFHYjw8ehUXRjfBYOaxJs4/qjPC9QcYs4oDY1dBYStEu2HNCVh7GuRMMLtv9OROJpz4ZBfZSXaTszEr2a+5mQKdZ59shKdWw9o+eO3kDeRcMHMYvZvvpiMbn+wmO8q57OzaA0ysp2diAyz9ENafuBU5F0wdyV7qfbd9oR2J8wkNdLvy8ZPqKZi8gn8LG2HdEdj0za1Mrk9g5jF6qffd9r15FGTXyfX8N3UF47N+gKI6dhfVQcU78P6x25GZYMET76VzuO1btikxK1zOrqw+/plqHppey18zlsPbXbCz/3aerk1g5jJ66Rxu+zZ1w4xamB7l72lRhjt+gJkR3poVhfDrsKcvPTIXzFxGT+Vx2yc7xzsRNjj6+CKde56r4dc5NfBeO3zWmx6ZC2Y+o6fyuO3b3JZ0VfPb/Grutf0A88JUzauC8MvQeVSNdARTX7KXyeW2T3aXTnEllbYfYEEl+xZUwsbt0H1YjXQEC754L5PLbZ/sLp0Xw3TZfoCSCn4prYCOTjh8SI10BDOf0cvkctvX0ZH0LeNn2w8QCHEtsBS+6oH+g2qkI5j6kr1MLrd9snu8F+Ka7QdYvITfy0NwqB1OHUhP/5cgHcHv536VKxRimNE71pU/35GORGfxEq7afoCl5Xy9rBz2bIbve9LT/gFIR6goo0zpWky50ft8R/58H2+57uu1/QDhAMHKMqgPw5k2OL/vVs51QHMEpCOEy/gpFOKBVI+cVQa5ZPSaa+Fs5+0+OXPki6b3nW6DxqqkK0DQ9gNoGkMiQXojQWgKQ89WuNCZYP82WBMBmdUEOBsJck5+jgQYqCkjVLWQoUI0QHlNgEvxWaIT7zXL395b4XxHgv1bYU1Nwndzz4LvW/lZdjmwLenrhK4t0FKd3C9Iv3yLgwfQtKYQ99X5OV7nh3Qsf4kf9DJGCHV+zmbofRctYbjrPR8P1vn5Udnzc1oeztHH3whD6kup0n0gNJTyh+7jlO4j1rKQu42WXsRduo+VMmvwcTVOKScbfDTKLFc92UEvoUUv5Yzu48/re/pourmXdZpKQNAGeXK25+pFIGiDPDnbc+0CELRBnpzt+cp8ELRBnpzt2VoMgmr+ajElrcUMGL0MDLTOZZGDe5Z8Zns6zrq5IKjmb8xlwOiY8gKXHd2z4DPb03E2PA+C07mqZ/VevnzKbJwDgtO5qmf1Xr58yrw7GwSzuVWses3itk+ZLbNAMJtbxarXLG77lNk+EwSnc1XP6r18+ZTZOQMEp3NVz+q9fPmU2T0dBKdzVc/qvXz5lPloGghO56qe1Xv58inzaREIduep56m/f1LIgHHmmMIb/xAy29Nx2qaCYHeeep76+94pLNo7hcvGuV3kbvtUFlrd03E6p4Bgd556bubJ9Z6O88UkEOzOU8/NPLne03G6J4IV3PJki+sPcHACWMEtT7a4/gBHxoPgdG635zQ58/cWcKXvCegtSP+/r2QmmHms9pykbxyzkzteyVp2fBzcSdh+gJNj4U4i6z8RXrx48eLFixcvXrQ7K/8Di29rK6RBZYgAAAAASUVORK5CYII=" alt="shop">
+          </div>
+          <h3>Aucune boutique trouvée</h3>
+          <p>
+            {{ isFiltering || searchText ? 'Essayez de modifier vos critères de recherche' : 'Aucune boutique disponible pour le moment' }}
+          </p>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- BOUTIQUES GRID -->
+  @if (filteredBoutiques.length > 0) {
+    <section class="section boutiques-grid-section">
+      <div class="section-content">
+        <div class="boutiques-cards-grid">
+          @for (boutique of filteredBoutiques; track boutique._id) {
+            <div class="boutique-card-modern">
+              <!-- Header Card -->
+              <div class="boutique-card-header">
+                <div class="boutique-badge-status" [ngClass]="boutique.isValidated ? 'badge-active' : 'badge-pending'">
+                  {{ boutique.isValidated ? '✓ Validée' : 'En attente' }}
+                </div>
+              </div>
+
+              <!-- Content Card -->
+              <div class="boutique-card-content">
+                <div class="boutique-icon-large">
+                  @if(boutique?.images?.[0]?.url) {
+                    <img [src]="'http://localhost:5000/' + boutique?.images?.[0]?.url" [alt]="boutique?.name" class="boutique-image">
+                  } @else {
+                    <div class="boutique-placeholder"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO2abWiVZRjHHz9E0ItCRGhaSepKNF82NNPM0pm6nc45cx7d2cs5c27PdGcz8UPUKNPALMzUTFCwqHBrg5qbii9tTcO30ohAwRDqg/siREIUWR/qF9c55/HleO7zvJznHIY8f/jBdl//+8f13Ij4QU3z4sWLFy9evHjx4sU0j+sMGxlj/agYF0fG+GdUMwwG4rvEuDgqxrqxLQzVcpFHYjw8ehUXRjfBYOaxJs4/qjPC9QcYs4oDY1dBYStEu2HNCVh7GuRMMLtv9OROJpz4ZBfZSXaTszEr2a+5mQKdZ59shKdWw9o+eO3kDeRcMHMYvZvvpiMbn+wmO8q57OzaA0ysp2diAyz9ENafuBU5F0wdyV7qfbd9oR2J8wkNdLvy8ZPqKZi8gn8LG2HdEdj0za1Mrk9g5jF6qffd9r15FGTXyfX8N3UF47N+gKI6dhfVQcU78P6x25GZYMET76VzuO1btikxK1zOrqw+/plqHppey18zlsPbXbCz/3aerk1g5jJ66Rxu+zZ1w4xamB7l72lRhjt+gJkR3poVhfDrsKcvPTIXzFxGT+Vx2yc7xzsRNjj6+CKde56r4dc5NfBeO3zWmx6ZC2Y+o6fyuO3b3JZ0VfPb/Grutf0A88JUzauC8MvQeVSNdARTX7KXyeW2T3aXTnEllbYfYEEl+xZUwsbt0H1YjXQEC754L5PLbZ/sLp0Xw3TZfoCSCn4prYCOTjh8SI10BDOf0cvkctvX0ZH0LeNn2w8QCHEtsBS+6oH+g2qkI5j6kr1MLrd9snu8F+Ka7QdYvITfy0NwqB1OHUhP/5cgHcHv536VKxRimNE71pU/35GORGfxEq7afoCl5Xy9rBz2bIbve9LT/gFIR6goo0zpWky50ft8R/58H2+57uu1/QDhAMHKMqgPw5k2OL/vVs51QHMEpCOEy/gpFOKBVI+cVQa5ZPSaa+Fs5+0+OXPki6b3nW6DxqqkK0DQ9gNoGkMiQXojQWgKQ89WuNCZYP82WBMBmdUEOBsJck5+jgQYqCkjVLWQoUI0QHlNgEvxWaIT7zXL395b4XxHgv1bYU1Nwndzz4LvW/lZdjmwLenrhK4t0FKd3C9Iv3yLgwfQtKYQ99X5OV7nh3Qsf4kf9DJGCHV+zmbofRctYbjrPR8P1vn5Udnzc1oeztHH3whD6kup0n0gNJTyh+7jlO4j1rKQu42WXsRduo+VMmvwcTVOKScbfDTKLFc92UEvoUUv5Yzu48/re/pourmXdZpKQNAGeXK25+pFIGiDPDnbc+0CELRBnpzt+cp8ELRBnpzt2VoMgmr+ajElrcUMGL0MDLTOZZGDe5Z8Zns6zrq5IKjmb8xlwOiY8gKXHd2z4DPb03E2PA+C07mqZ/VevnzKbJwDgtO5qmf1Xr58yrw7GwSzuVWses3itk+ZLbNAMJtbxarXLG77lNk+EwSnc1XP6r18+ZTZOQMEp3NVz+q9fPmU2T0dBKdzVc/qvXz5lPloGghO56qe1Xv58inzaREIduep56m/f1LIgHHmmMIb/xAy29Nx2qaCYHeeep76+94pLNo7hcvGuV3kbvtUFlrd03E6p4Bgd556bubJ9Z6O88UkEOzOU8/NPLne03G6J4IV3PJki+sPcHACWMEtT7a4/gBHxoPgdG635zQ58/cWcKXvCegtSP+/r2QmmHms9pykbxyzkzteyVp2fBzcSdh+gJNj4U4i6z8RXrx48eLFixcvXrQ7K/8Di29rK6RBZYgAAAAASUVORK5CYII=" alt="shop"></div>
+                  }
+                </div>
+
+                <h3 class="boutique-name">{{ boutique.name }}</h3>
+                <p class="boutique-category">{{ getCategoryName(boutique.categoryId) }}</p>
+                <p class="boutique-description">{{ boutique.description || 'Pas de description' }}</p>
+
+                <!-- Owner Info -->
+                <div class="boutique-owner-info">
+                  <small>Propriétaire: <strong>{{ getOwnerName(boutique.ownerId) }}</strong></small>
+                </div>
+              </div>
+
+              <!-- Footer Card with Actions -->
+              <div class="boutique-card-footer">
+                <button (click)="viewBoutique(boutique._id)" class="btn-boutique-view">
+                  Voir
                 </button>
-            </div>
-        </div>
 
-        <!-- Active Filter Indicator -->
-        <div class="results-bar" *ngIf="searchText || isFiltering || isLoadingSpecial">
-            <span class="result-count">
-                {{ filteredBoutiques.length }} résultat(s)
-            </span>
-            <span class="active-filter-tag" *ngIf="searchText">
-                Recherche: "{{ searchText }}"
-            </span>
-        </div>
-    </div>
-
-    <!-- Message si aucune boutique -->
-    <div *ngIf="filteredBoutiques.length === 0" style="text-align: center; padding: 40px;">
-        <p style="font-size: 16px; color: #666;">
-            {{ isFiltering || searchText ? 'Aucune boutique correspondant à votre recherche' : 'Aucune boutique
-            disponible' }}
-        </p>
-    </div>
-
-    <!-- Tableau des boutiques -->
-    <div class="glass-card overflow-hidden" *ngIf="filteredBoutiques.length > 0">
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Catégorie</th>
-                    <th>Propriétaire</th>
-                    <th>Description</th>
-                    <th>Statut</th>
-                    <th *ngIf="isAdmin || isAcheteur">Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @for (boutique of filteredBoutiques; track boutique._id) {
-                <tr>
-                    <td class="font-bold">
-                        <a [routerLink]="['/boutiques', boutique._id]" style="color: #007bff; text-decoration: none;">
-                            {{ boutique.name }}
-                        </a>
-                    </td>
-                    <td>{{ getCategoryName(boutique.categoryId) }}</td>
-                    <td>{{ getOwnerName(boutique.ownerId) }}</td>
-                    <td class="td-desc">{{ boutique.description || 'Pas de description' }}</td>
-                    <td>
-                        <span class="badge" [ngClass]="boutique.isValidated ? 'badge-success' : 'badge-danger'">
-                            {{ boutique.isValidated ? 'Validée' : 'En attente' }}
-                        </span>
-                    </td>
-                    <td class="actions-cell">
-                        <button (click)="viewBoutique(boutique._id)" class="btn-icon btn-view" title="Voir">
-                            <img src="/img/svg/icon-eye.svg" alt="Voir">
-                        </button>
-                        <button [routerLink]="['/boutiques/modifier', boutique._id]" class="btn-icon" title="Modifier"
-                            *ngIf="isAdmin">
-                            <img src="/img/svg/icon-update.svg" alt="Modifier">
-                        </button>
-                        <button (click)="deleteBoutique(boutique._id)" class="btn-icon btn-delete" title="Supprimer"
-                            *ngIf="isAdmin">
-                            <img src="/img/svg/icon-delete.svg" alt="Supprimer">
-                        </button>
-                        <button (click)="validateBoutique(boutique._id, boutique.isValidated)" class="btn-icon"
-                            *ngIf="isAdmin" [title]="boutique.isValidated ? 'Désactiver' : 'Activer'">
-                            @if (boutique.isValidated) {
-                            <img src="/img/svg/icon-on.svg" alt="Désactiver">
-                            } @else {
-                            <img src="/img/svg/icon-off.svg" alt="Activer">
-                            }
-                        </button>
-
-                        <!-- Bouton Suivre pour les acheteurs -->
-                        @if (isAcheteur) {
-                        <button (click)="toggleSuivreBoutique(boutique._id)"
-                            [style.background-color]="isBoutiqueSuivie(boutique._id) ? '#28a745' : '#007bff'"
-                            [title]="isBoutiqueSuivie(boutique._id) ? 'Arrêter de suivre' : 'Suivre cette boutique'"
-                            style="
-                                padding: 4px 12px;
-                                color: white;
-                                border: none;
-                                border-radius: 4px;
-                                font-size: 12px;
-                                cursor: pointer;
-                                font-weight: bold;
-                                transition: background-color 0.3s;
-                                white-space: nowrap;
-                            ">
-                            {{ isBoutiqueSuivie(boutique._id) ? 'Suivi(e)' : '+ Suivre' }}
-                        </button>
-                        }
-                    </td>
-                </tr>
-                } @empty {
-                <tr>
-                    <td colspan="6" class="text-center p-4">Aucune boutique disponible.</td>
-                </tr>
+                @if (isAdmin) {
+                  <button [routerLink]="['/boutiques/modifier', boutique._id]" class="btn-boutique-edit">
+                    Modifier
+                  </button>
+                  <button (click)="validateBoutique(boutique._id, boutique.isValidated)" 
+                    class="btn-boutique-validate"
+                    [title]="boutique.isValidated ? 'Désactiver' : 'Activer'">
+                    {{ boutique.isValidated ? 'Désactiver' : 'Activer' }}
+                  </button>
+                  <button (click)="deleteBoutique(boutique._id)" class="btn-boutique-delete">
+                    Supprimer
+                  </button>
                 }
-            </tbody>
-        </table>
+
+                <!-- Follow Button for Buyers -->
+                @if (isAcheteur) {
+                  <button 
+                    (click)="toggleSuivreBoutique(boutique._id)"
+                    [ngClass]="isBoutiqueSuivie(boutique._id) ? 'btn-boutique-following' : 'btn-boutique-follow'">
+                    {{ isBoutiqueSuivie(boutique._id) ? '✓ Suivi(e)' : '+ Suivre' }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- FOOTER -->
+  <footer class="footer-elegant">
+    <div class="footer-content-elegant">
+      <div class="footer-column">
+        <h4>À propos</h4>
+        <p>SuperMarket est votre plateforme de confiance pour découvrir les meilleures boutiques et produits.</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#">Accueil</a></li>
+          <li><a href="#">Boutiques</a></li>
+          <li><a href="#">Produits</a></li>
+          <li><a href="#">Promotions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>contact@supermarket.com</p>
+        <p>+261 6XX XXX XXX</p>
+        <p>Antananarivo, Madagascar</p>
+      </div>
     </div>
+
+    <div class="footer-bottom-elegant">
+      <p>&copy; 2026 SuperMarket. Tous droits réservés.</p>
+      <p>Développé par <strong>Ny Angotiana and Soanomena</strong></p>
+    </div>
+  </footer>
 </div>

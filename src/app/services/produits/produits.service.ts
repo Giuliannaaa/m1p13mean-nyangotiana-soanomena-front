@@ -13,7 +13,7 @@ export class ProduitService {
 
   constructor(private http: HttpClient) { }
 
-  // ✅ Récupérer les headers avec le token
+  // Récupérer les headers avec le token
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('auth_token');
     return new HttpHeaders({
@@ -41,31 +41,31 @@ export class ProduitService {
     );
   }
 
-  // Filtres avancés
+  // Filtres avancés - CORRIGÉ (enlever /filter/)
   getNewProduits(): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}/filter/new`,
+      `${this.baseUrl}/nouveau`,
       { headers: this.getHeaders() }
     );
   }
 
   getPopularProduits(): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}/filter/popular`,
+      `${this.baseUrl}/populaire`,
       { headers: this.getHeaders() }
     );
   }
 
   getBestSellerProduits(): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}/filter/bestseller`,
+      `${this.baseUrl}/best-sellers`,
       { headers: this.getHeaders() }
     );
   }
 
   getPromotedProduits(): Observable<ApiResponse<Produit[]>> {
     return this.http.get<ApiResponse<Produit[]>>(
-      `${this.baseUrl}/filter/promoted`,
+      `${this.baseUrl}/promo`,
       { headers: this.getHeaders() }
     );
   }

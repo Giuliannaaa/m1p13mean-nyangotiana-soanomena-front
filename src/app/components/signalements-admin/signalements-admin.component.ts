@@ -52,7 +52,7 @@ export class SignalementsAdminComponent implements OnInit {
     this.isLoading = true;
     this.signalementService.getTousSignalements().subscribe({
       next: (response: any) => {
-        console.log('Signalements reçus:', response);
+        // console.log('Signalements reçus:', response);
         this.signalements = response.data || [];
         this.filteredSignalements = this.signalements;
         this.isLoading = false;

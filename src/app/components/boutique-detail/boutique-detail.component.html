@@ -1,158 +1,221 @@
-<a routerLink="/boutiques" routerLinkActive="active" class="return-link">
-  <img src="/img/svg/icon-arrow.svg" alt="Retour" class="w-5 h-5">
-  Retour aux boutiques
-</a>
-<div class="boutique-detail-container" *ngIf="!isLoading; else loading">
-  <div class="side-layout-wrapper">
-    <!-- Section Produits (Gauche - Scrollable) -->
-    <div class="products-side">
-      <div class="products-section">
-
-        <!-- Galerie Photos -->
-        <div class="boutique-gallery-section" *ngIf="boutique?.images && boutique!.images!.length > 1">
-          <div class="gallery-scroll-container">
-            <ng-container *ngFor="let img of boutique?.images; let i = index">
-              <div class="gallery-item" *ngIf="i > 0">
-                <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + i">
-              </div>
-            </ng-container>
-          </div>
-        </div>
-
-        <h2 class="section-title">
-          Collections de la Boutique
-        </h2>
-
-        <div class="product-grid" *ngIf="produits.length > 0; else noProducts">
-          <div *ngFor="let produit of produits; let i = index" class="glass-product-card"
-            [style.animation-delay]="(i * 0.1) + 's'">
-            <div class="product-image-wrapper">
-              @if(produit.image_Url){
-              <img [src]="('http://localhost:5000/' + produit.image_Url)" [alt]="produit.nom_prod">
-              }
-              @else{
-              <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="produit.nom_prod">
-              }
-              <div class="product-badges">
-                <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
-                <span *ngIf="produit.isPromoted" class="badge-promo">Promotion</span>
-              </div>
-
-              <!-- Bouton Signalement sur la carte -->
-              <button *ngIf="isAcheteur" class="report-btn-card" (click)="toggleReportModal(produit._id)"
-                title="Signaler un problème">
-                <img src="img/svg/icon-alert.svg" alt="" width="32px" height="32px">
-              </button>
-            </div>
-
-            <div class="product-info">
-              <h3 class="product-name">{{ produit.nom_prod }}</h3>
-              <span class="product-price">{{ getProductPrice(produit) | currency:'MGA ':'code':'1.0-0'
-                }}</span>
-
-              <div class="buttons-container mt-auto">
-                <button (click)="addToPanier(produit)" class="btn-pill btn-pill-light" title="Ajouter au panier">
-                  <img src="/img/svg/icon-cart-add.svg" alt=""> Ajouter
-                </button>
-                <button [routerLink]="['/achats/ajouter', produit._id]" class="btn-pill btn-pill-dark">
-                  Acheter
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <ng-template #noProducts>
-          <div class="no-products-card">
-            <div class="empty-state-icon">
-              <img src="/img/svg/icon-bag.svg" alt="no-products-card" width="32px" height="32px">
-
-            </div>
-            <h3>Aucun produit pour le moment</h3>
-            <p>Bientôt de nouveaux articles dans cette boutique...</p>
-          </div>
-        </ng-template>
-
-        <!-- Composant de notation (Exposé à tous pour voir les avis, restriction d'envoi à l'intérieur) -->
-        <div *ngIf="boutique" class="rating-section-wrapper">
-          <app-note-boutique [boutiqueId]="boutique._id"></app-note-boutique>
-        </div>
-      </div>
+<!-- HEADER NAV -->
+<header class="boutique-nav-header">
+  <div class="nav-inner">
+    <a routerLink="/boutiques" class="nav-back-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </a>
+    <h1 class="nav-title">{{ boutique?.name }}</h1>
+    <div class="nav-icons">
+      <button class="icon-btn-nav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </button>
     </div>
+  </div>
+</header>
 
-    <!-- Section Boutique (Droite - Fixe/Sticky) -->
-    <div class="boutique-side">
-      <div class="glass-header text-white p-8 rounded-[30px] relative">
-        <div class="header-overlay"></div>
-        <div class="relative boutique-detail">
-          <div class="boutique-logo-container">
-            @if(boutique?.images?.[0]?.url){
-            <img [src]="('http://localhost:5000/' + boutique?.images?.[0]?.url )" [alt]="boutique?.name"
-              class="boutique-logo">
-            }
-            @else{
-            <img [src]="'/img/png/elementor-placeholder-image.png'" [alt]="boutique?.name" class="boutique-logo">
+<!-- MAIN CONTENT -->
+<main class="boutique-main-container" *ngIf="!isLoading; else loading">
+  <!-- HERO BANNER WITH CAROUSEL -->
+  <section class="boutique-hero-section">
+    @if (boutique?.images && boutique!.images!.length > 0) {
+      <div class="hero-banner">
+        <!-- Carousel d'images en background -->
+        @for (img of boutique?.images; track $index) {
+          <img 
+            [src]="'http://localhost:5000/' + img.url" 
+            [alt]="boutique?.name" 
+            class="hero-img carousel-image"
+            [class.active]="$index === currentImageIndex"
+          >
+        }
+        <div class="hero-overlay"></div>
+        
+        <!-- Indicateurs de carousel (optionnel) -->
+        @if (boutique!.images!.length > 1) {
+          <div class="carousel-indicators">
+            @for (img of boutique?.images; track $index) {
+              <span 
+                class="indicator"
+                [class.active]="$index === currentImageIndex"
+                (click)="setImage($index)"
+              ></span>
             }
           </div>
-
-          <div class="text-center">
-            <h1 class="boutique-name">{{ boutique?.name }}</h1>
-            <div class="mb-4">
-              <span class="badge-category">{{ getCategoryName(boutique?.categoryId) }}</span>
-            </div>
-
-            <p class="description-text">
-              {{ boutique?.description || 'Cette boutique n\'a pas encore de description.' }}
-            </p>
-
-            <div class="detail-rating-followers-container">
-              <div class="stat-item">
-                <img src="/img/svg/icon-star.svg" alt="Rating" class="w-5 h-5">
-                <span>{{ (boutique?.rating || 0) | number:'1.1-1' }} / 5</span>
-              </div>
-              <div class="stat-item">
-                <img src="/img/svg/icon-followers.svg" alt="Followers" class="w-5 h-5">
-                <span>{{ boutique?.followers || 0 }} Abonnés</span>
-              </div>
-            </div>
-
-            <button *ngIf="isAcheteur" (click)="toggleSuivi()" [ngClass]="isSuivie ? 'btn-following' : 'btn-follow'">
-              {{ isSuivie ? '✓ Suivi(e)' : '+ Suivre la Boutique' }}
+        }
+      </div>
+    }
+    
+    <div class="hero-content">
+      <div class="boutique-hero-info">
+        <div class="boutique-logo-hero">
+          @if(boutique?.images?.[0]?.url) {
+            <img [src]="'http://localhost:5000/' + boutique?.images?.[0]?.url" [alt]="boutique?.name">
+          } @else {
+            <img src="/img/png/elementor-placeholder-image.png" [alt]="boutique?.name">
+          }
+        </div>
+        
+        <div class="boutique-header-details">
+          <h2 class="boutique-hero-title">{{ boutique?.name }}</h2>
+          
+          <div class="boutique-meta-hero">
+            <span class="rating-hero">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="12 2 15.09 10.26 23.77 10.35 17.16 16.26 19.31 24.04 12 18.09 4.69 24.04 6.84 16.26 0.22 10.35 8.91 10.26 12 2"></polygon>
+              </svg>
+              {{ (boutique?.rating || 0) | number:'1.1-1' }}
+            </span>
+            <span class="category-badge-hero">{{ getCategoryName(boutique?.categoryId) }}</span>
+          </div>
+          
+          <p class="boutique-desc-hero">{{ boutique?.description }}</p>
+          
+          @if (isAcheteur) {
+            <button 
+              (click)="toggleSuivi()" 
+              [ngClass]="isSuivie ? 'btn-following-hero' : 'btn-follow-hero'"
+              class="btn-hero-main">
+              {{ isSuivie ? '✓ Suivi' : '+ Suivre' }}
             </button>
-          </div>
-          <!-- Informations légales -->
-          @if (boutique?.legal) {
-          <div class="" style="margin-bottom: 14px;">
-            <h3>Informations légales</h3>
-            <div style="display: flex; flex-direction: column; gap: 20px;">
-              <div>
-                <strong>NIF :</strong> {{ boutique?.legal?.nif || 'N/A' }}
-              </div>
-              <div>
-                <strong>STAT :</strong> {{ boutique?.legal?.stat || 'N/A' }}
-              </div>
-              <div style="grid-column: 1 / -1;">
-                <strong>Patente :</strong> {{ boutique?.legal?.rent || 'N/A' }}
-              </div>
-            </div>
-          </div>
           }
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Modal de Signalement -->
-  <div class="modal-overlay" *ngIf="showReportModal" (click)="toggleReportModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <button class="btn-close-modal" (click)="toggleReportModal()">&times;</button>
+  <!-- PRODUCTS & SIDEBAR LAYOUT -->
+  <section class="products-layout-section">
+    <div class="products-layout-container">
+      <!-- SIDEBAR FILTERS -->
+      <aside class="sidebar-filters">
+        <div class="filter-section">
+          <h3 class="filter-title">Catégorie</h3>
+          <div class="categories-list">
+            <div class="category-filter active">
+              <span class="dot"></span>
+              <span>Tous les produits</span>
+              <span class="count">{{ produits.length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GALLERY -->
+        @if (boutique?.images && boutique!.images!.length > 1) {
+          <div class="gallery-mobile-section">
+            <h3 class="filter-title">Galerie</h3>
+            <div class="gallery-scroll-mobile">
+              @for (img of boutique?.images; track $index) {
+                @if ($index > 0) {
+                  <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + $index" loading="lazy">
+                }
+              }
+            </div>
+          </div>
+        }
+      </aside>
+
+      <!-- PRODUCTS GRID -->
+      <div class="products-main">
+        @if (produits.length > 0) {
+          <div class="products-grid-modern">
+            @for (produit of produits; track produit._id; let i = $index) {
+              <div class="product-card-modern" [style.animation-delay]="(i * 80) + 'ms'">
+                <div class="product-image-modern">
+                  @if(produit.image_Url) {
+                    <img [src]="'http://localhost:5000/' + produit.image_Url" [alt]="produit.nom_prod">
+                  } @else {
+                    <img src="/img/png/elementor-placeholder-image.png" [alt]="produit.nom_prod">
+                  }
+                  <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
+                  <span *ngIf="produit.isPromoted" class="badge-sale">Promotion</span>
+                  <span *ngIf="produit.isNew && produit.isPromoted" class="badge-spec">Nouveau et Promotion</span>
+                  
+                  
+                  @if (isAcheteur) {
+                    <button class="btn-report-product" (click)="toggleReportModal(produit._id)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                      </svg>
+                    </button>
+                  }
+                </div>
+                
+                <div class="product-content-modern">
+                  <h4 class="product-name-modern">{{ produit.nom_prod }}</h4>
+
+                  <p class="product-price-modern">{{ getProductPrice(produit) | currency:'MGA ':'code':'1.0-0' }}</p>
+                  
+                  <div class="product-actions-modern">
+                    <button (click)="addToPanier(produit)" class="btn-add-chart">Ajouter au panier</button>
+                    <button [routerLink]="['/achats/ajouter', produit._id]" class="btn-buy-now">Acheter</button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-products">
+            <div class="empty-icon"></div>
+            <h3>Aucun produit</h3>
+            <p>Bientôt de nouveaux articles...</p>
+          </div>
+        }
+
+        <!-- REVIEWS -->
+        @if (boutique) {
+          <div class="reviews-modern">
+            <app-note-boutique [boutiqueId]="boutique._id"></app-note-boutique>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGAL INFO SECTION -->
+  @if (boutique?.legal) {
+    <section class="legal-section">
+      <div class="legal-container">
+        <h2>Informations légales</h2>
+        <div class="legal-grid">
+          <div class="legal-item">
+            <span class="legal-label">NIF</span>
+            <span class="legal-value">{{ boutique?.legal?.nif || 'N/A' }}</span>
+          </div>
+          <div class="legal-item">
+            <span class="legal-label">STAT</span>
+            <span class="legal-value">{{ boutique?.legal?.stat || 'N/A' }}</span>
+          </div>
+          <div class="legal-item">
+            <span class="legal-label">Patente</span>
+            <span class="legal-value">{{ boutique?.legal?.rent || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+</main>
+
+<!-- LOADING STATE -->
+<ng-template #loading>
+  <div class="loading-modern">
+    <div class="spinner-modern"></div>
+    <p>Chargement...</p>
+  </div>
+</ng-template>
+
+<!-- MODAL -->
+@if (showReportModal) {
+  <div class="modal-overlay-modern" (click)="toggleReportModal()">
+    <div class="modal-dialog-modern" (click)="$event.stopPropagation()">
+      <button class="modal-close-modern" (click)="toggleReportModal()">✕</button>
       <app-signaler-produit [produitId]="selectedProduitId!"></app-signaler-produit>
     </div>
   </div>
-</div>
-
-<ng-template #loading>
-  <div class="flex items-center justify-center min-h-[500px]">
-    <div class="loader"></div>
-  </div>
-</ng-template>
+}

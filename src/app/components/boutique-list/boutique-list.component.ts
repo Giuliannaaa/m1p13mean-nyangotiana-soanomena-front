@@ -55,14 +55,14 @@ export class BoutiqueListComponent implements OnInit {
 
         // SI C'EST UN ACHETEUR : ÉCOUTER LES CHANGEMENTS
         if (this.isAcheteur) {
-            console.log('Écoute des boutiques suivies...');
-            
+            // console.log('Écoute des boutiques suivies...');
+
             this.suiviService.getBoutiquesSuivies().subscribe(ids => {
-            this.boutiquesSuivies = ids;
-            console.log('Boutiques suivies mises à jour:', ids);
-            this.cdr.markForCheck();
+                this.boutiquesSuivies = ids;
+                // console.log('Boutiques suivies mises à jour:', ids);
+                this.cdr.markForCheck();
             });
-            
+
             // Le service charge automatiquement les suivis dans le constructor
         }
     }
@@ -135,7 +135,7 @@ export class BoutiqueListComponent implements OnInit {
     // CHARGER LES BOUTIQUES SPÉCIALES
     loadSpecialBoutiques(): void {
         this.isLoadingSpecial = true;
-        console.log('Filtre spécial boutique:', this.filtre_special);
+        // console.log('Filtre spécial boutique:', this.filtre_special);
 
         let request$;
 
@@ -159,7 +159,7 @@ export class BoutiqueListComponent implements OnInit {
 
         request$.subscribe({
             next: (response: any) => {
-                console.log('Boutiques spéciales reçues:', response);
+                // console.log('Boutiques spéciales reçues:', response);
                 this.boutiques = response.data || response;
                 this.filterBoutiques(); // Appliquer les autres filtres
                 this.isLoadingSpecial = false;
@@ -199,7 +199,7 @@ export class BoutiqueListComponent implements OnInit {
         });
 
         this.isFiltering = this.categorie_selectionnee !== '' || this.searchText !== '';
-        console.log('Boutiques filtrées:', this.filteredBoutiques.length);
+        // console.log('Boutiques filtrées:', this.filteredBoutiques.length);
         this.cdr.markForCheck();
     }
 

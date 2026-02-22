@@ -35,7 +35,7 @@ export class SuiviService {
     this.http.get<any>(`${this.apiUrl}/mes-suivis`, { headers: this.getHeaders() })
       .subscribe({
         next: (response) => {
-          console.log('Réponse mes-suivis:', response);
+          // console.log('Réponse mes-suivis:', response);
 
           // Gérer différents formats de réponse
           let ids: string[] = [];
