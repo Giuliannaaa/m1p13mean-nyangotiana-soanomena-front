@@ -285,9 +285,9 @@
             </div>
 
             <div class="modal-body">
-                <div class="user-list">
-                    <div class="user-card" *ngFor="let promo of dashboardData?.activePromotionsData">
-                        <img [src]="'http://localhost:5000/' + promo.prod_id?.image_Url" [alt]="promo.prod_id.nom_prod"
+                <div class="promo-list">
+                    <div class="promo-card" *ngFor="let promo of dashboardData?.activePromotionsData">
+                        <img [src]="'http://localhost:5000/' + promo.prod_id.image_Url" [alt]="promo.prod_id.nom_prod"
                             class="item-thumb" onerror="this.src='img/placeholder.png'">
                         <div class="item-info">
                             <span class="item-name">{{ promo.prod_id.nom_prod }}</span>
@@ -297,8 +297,8 @@
                             <span class="item-meta">
                                 Date limite : <strong>{{ promo.fin | date:'dd/MM/yyyy' }}</strong>
                             </span>
-                            <span class="item-meta">
-                                Prix : {{ promo.prod_id.prix_unitaire['$numberDecimal'] | number }} Ar
+                            <span class="item-meta item-price">
+                                Prix : <strong>{{ promo.prod_id.prix_unitaire['$numberDecimal'] | number }} Ar</strong>
                             </span>
                         </div>
                         <div class="promo-badge-group">
