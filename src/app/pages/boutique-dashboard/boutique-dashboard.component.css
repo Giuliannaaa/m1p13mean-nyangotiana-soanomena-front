@@ -114,7 +114,7 @@
 }
 
 .alert-value {
-    color: #ef4444 !important;
+    color: #ef4444;
 }
 
 .revenue-card {
@@ -580,7 +580,7 @@
 }
 
 .legend-narrow {
-    max-height: 180px !important;
+    max-height: 180px;
 }
 
 .legend-more {
