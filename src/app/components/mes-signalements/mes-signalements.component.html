@@ -1,276 +1,195 @@
 <div class="mes-signalements-container">
+  <!-- HEADER -->
   <div class="page-header">
-    <h1>Mes Signalements</h1>
-    <p style="margin: 10px 0 0 0;">{{ filteredSignalements.length }} signalement(s)</p>
+    <div class="header-content">
+      <h1>Mes Signalements</h1>
+      <p>Suivi de tous vos signalements et des réponses des administrateurs</p>
+    </div>
+    <div class="header-badge">
+      {{ filteredSignalements.length }} signalement(s)
+    </div>
   </div>
 
-  <!-- Chargement -->
+  <!-- LOADING -->
   @if (isLoading) {
-  <div style="text-align: center; padding: 40px;">
-    <p style="font-size: 16px; color: #007bff;">Chargement de vos signalements...</p>
-  </div>
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement de vos signalements...</p>
+    </div>
   }
 
-  <!-- Filtres -->
+  <!-- FILTERS -->
   @if (!isLoading && signalements.length > 0) {
-  <div class="filters-section">
-    <h3>Filtrer mes signalements</h3>
+    <div class="filters-section">
+      <div class="filters-grid">
+        <!-- Filtre Statut -->
+        <div class="filter-group">
+          <label for="filtreStatut">Statut</label>
+          <select id="filtreStatut" [(ngModel)]="filtreStatut" (change)="filterSignalements()" class="filter-select">
+            <option value="">-- Tous les statuts --</option>
+            <option value="signale">Signalé</option>
+            <option value="en_cours">En cours</option>
+            <option value="resolu">Résolu</option>
+            <option value="rejete">Rejeté</option>
+          </select>
+        </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-      <!-- Filtre Statut -->
-      <div>
-        <label style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px;">Statut</label>
-        <select [(ngModel)]="filtreStatut" (change)="filterSignalements()"
-          style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
-          <option value="">-- Tous les statuts --</option>
-          <option value="signale">Signalé</option>
-          <option value="en_cours">En cours</option>
-          <option value="resolu">Résolu</option>
-          <option value="rejete">Rejeté</option>
-        </select>
-      </div>
+        <!-- Recherche -->
+        <div class="filter-group">
+          <label for="searchText">Recherche</label>
+          <input type="text" id="searchText" [(ngModel)]="searchText" (keyup)="filterSignalements()" 
+            placeholder="Produit, boutique..." class="filter-input" />
+        </div>
 
-      <!-- Recherche -->
-      <div>
-        <label style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px;"
-          for="searchText">Recherche</label>
-        <input type="text" [(ngModel)]="searchText" (keyup)="filterSignalements()" placeholder="Produit, boutique..."
-          style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;"
-          id="searchText" />
-      </div>
-
-      <!-- Bouton Réinitialiser -->
-      <div style="display: flex; align-items: flex-end;">
-        <button (click)="resetFilters()" style="
-              width: 100%;
-              padding: 8px;
-              background-color: #6c757d;
-              color: white;
-              border: none;
-              border-radius: 4px;
-              cursor: pointer;
-              font-weight: bold;
-              font-size: 14px;
-              box-sizing: border-box;
-            ">
-          Réinitialiser
-        </button>
-      </div>
-    </div>
-  </div>
-  }
-
-  <!-- Affichage en cartes -->
-  @if (!isLoading && filteredSignalements.length > 0) {
-  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
-    @for (signalement of filteredSignalements; track signalement._id) {
-    <div class="signalement-card" (click)="openModal(signalement)">
-      <!-- Statut badge -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <span style="
-                display: inline-block;
-                padding: 4px 12px;
-                border-radius: 12px;
-                font-size: 12px;
-                font-weight: bold;
-              " [style.background-color]="getStatutBadgeColor(signalement.statut)">
-          {{ getStatutIcon(signalement.statut) }} {{ getStatutLabel(signalement.statut) }}
-        </span>
-        <span style="font-size: 12px; color: #999;">
-          {{ signalement.createdAt | date: 'dd/MM/yyyy' }}
-        </span>
-      </div>
-
-      <!-- Produit -->
-      <div style="margin-bottom: 10px;">
-        <p style="margin: 0; font-size: 12px; color: #999;">Produit</p>
-        <p style="margin: 5px 0; font-weight: bold; font-size: 16px; color: #333;">
-          {{ signalement.produit_id?.nom_prod || 'Produit supprimé' }}
-        </p>
-      </div>
-
-      <!-- Boutique -->
-      <div style="margin-bottom: 10px;">
-        <p style="margin: 0; font-size: 12px; color: #999;">Boutique</p>
-        <p style="margin: 5px 0; font-size: 14px; color: #333;">
-          {{ signalement.boutique_id?.name || 'Boutique supprimée' }}
-        </p>
-      </div>
-
-      <!-- Raison -->
-      <div style="margin-bottom: 10px;">
-        <p style="margin: 0; font-size: 12px; color: #999;">Raison du signalement</p>
-        <p style="margin: 5px 0; font-size: 14px; color: #333;">
-          {{ getRaisonLabel(signalement.raison) }}
-        </p>
-      </div>
-
-      <!-- Réponse admin -->
-      @if (signalement.reponse_admin) {
-      <div style="
-              margin-top: 15px;
-              padding: 12px;
-              background-color: #e7f3ff;
-              border-left: 4px solid #007bff;
-              border-radius: 4px;
-            ">
-        <p style="margin: 0; font-size: 12px; color: #004085; font-weight: bold;">
-          Réponse de l'admin
-        </p>
-        <p style="margin: 8px 0 0 0; font-size: 13px; color: #004085;">
-          {{ signalement.reponse_admin.substring(0, 100) }}...
-        </p>
-      </div>
-      }
-
-      <!-- Bouton voir détail -->
-      <button style="
-              width: 100%;
-              margin-top: 15px;
-              padding: 10px;
-              background-color: #007bff;
-              color: white;
-              border: none;
-              border-radius: 4px;
-              cursor: pointer;
-              font-weight: bold;
-              font-size: 14px;
-            ">
-        Voir les détails
-      </button>
-    </div>
-    }
-  </div>
-  }
-
-  <!-- Message si aucun signalement -->
-  @if (!isLoading && signalements.length === 0) {
-  <div style="
-      text-align: center;
-      padding: 60px 20px;
-      border-radius: 8px;
-      border: 2px dashed #dee2e6;
-    ">
-    <p style="font-size: 18px; color: #999; margin: 0;">
-      Vous n'avez pas encore signalé de produits
-    </p>
-  </div>
-  }
-
-  <!-- Modal de détail -->
-  @if (showModal && selectedSignalement) {
-  <div style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    ">
-    <div style="
-        background: white;
-        border-radius: 8px;
-        padding: 30px;
-        max-width: 600px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      ">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0; color: #333;">Détail du signalement</h2>
-        <button (click)="closeModal()" style="
-              background: none;
-              border: none;
-              font-size: 24px;
-              cursor: pointer;
-            ">
-          ✕
-        </button>
-      </div>
-
-      <!-- Statut -->
-      <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h4 style="margin: 0; color: #666;">Statut</h4>
-          <span style="
-                display: inline-block;
-                padding: 6px 15px;
-                border-radius: 12px;
-                font-size: 14px;
-                font-weight: bold;
-                color: white;
-              " [style.background-color]="getStatutBadgeColor(selectedSignalement.statut)">
-            {{ getStatutIcon(selectedSignalement.statut) }} {{ getStatutLabel(selectedSignalement.statut) }}
-          </span>
+        <!-- Bouton Réinitialiser -->
+        <div class="filter-group">
+          <button (click)="resetFilters()" class="btn-reset">
+            Réinitialiser
+          </button>
         </div>
       </div>
+    </div>
+  }
 
-      <!-- Infos produit -->
-      <div style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 4px;">
-        <h4 style="margin: 0 0 10px 0; color: #666;">Produit</h4>
-        <p style="margin: 5px 0; color: #333;">
-          <strong>Nom:</strong> {{ selectedSignalement.produit_id?.nom_prod || 'Produit supprimé' }}
-        </p>
-        <p style="margin: 5px 0; color: #333;">
-          <strong>Boutique:</strong> {{ selectedSignalement.boutique_id?.name || 'Boutique supprimée' }}
-        </p>
-      </div>
+  <!-- EMPTY STATE -->
+  @if (!isLoading && signalements.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon"></div>
+      <h3>Aucun signalement</h3>
+      <p>Vous n'avez pas encore signalé de produits. Si vous trouvez un problème avec un produit, n'hésitez pas à le signaler.</p>
+    </div>
+  }
 
-      <!-- Raison et description -->
-      <div style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 4px;">
-        <h4 style="margin: 0 0 10px 0; color: #666;">Mon signalement</h4>
-        <p style="margin: 5px 0; color: #333;">
-          <strong>Raison:</strong> {{ getRaisonLabel(selectedSignalement.raison) }}
-        </p>
-        <p style="margin: 5px 0; color: #333;">
-          <strong>Description:</strong>
-        </p>
-        <p
-          style="margin: 10px 0; padding: 10px; background-color: #313131; border-radius: 4px; font-style: italic; border-left: 4px solid #007bff; color: white;">
-          "{{ selectedSignalement.description }}"
-        </p>
-        <p style="margin: 5px 0; font-size: 12px; color: #999;">
-          <strong>Signalé le:</strong> {{ selectedSignalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-        </p>
-      </div>
+  <!-- SIGNALEMENTS CARDS -->
+  @if (!isLoading && filteredSignalements.length > 0) {
+    <div class="signalements-grid">
+      @for (signalement of filteredSignalements; track signalement._id) {
+        <div class="signalement-card" (click)="openModal(signalement)">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="header-left">
+              <span class="status-badge" [style.background-color]="getStatutBadgeColor(signalement.statut)">
+                {{ getStatutIcon(signalement.statut) }} {{ getStatutLabel(signalement.statut) }}
+              </span>
+            </div>
+            <div class="header-right">
+              <span class="date">{{ signalement.createdAt | date: 'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
 
-      <!-- Réponse de l'admin -->
-      @if (selectedSignalement.reponse_admin) {
-      <div style="margin-bottom: 20px; padding: 15px; border-radius: 4px; border-left: 4px solid #007bff;">
-        <h4 style="margin: 0 0 10px 0; color: #004085;">💬 Réponse de l'administrateur</h4>
-        <p style="margin: 0; color: #004085; line-height: 1.6;">
-          {{ selectedSignalement.reponse_admin }}
-        </p>
-      </div>
-      } @else {
-      <div
-        style="margin-bottom: 20px; padding: 15px; border-radius: 4px; border-left: 4px solid #ffc107; background-color: rgb(255, 238, 90);">
-        <p style="margin: 0; color: #856404;">
-          Votre signalement est en attente de traitement par les administrateurs.
-        </p>
-      </div>
+          <!-- Card Body -->
+          <div class="card-body">
+            <!-- Produit -->
+            <div class="info-block">
+              <label class="label">Produit</label>
+              <p class="product-name">{{ signalement.produit_id?.nom_prod || 'Produit supprimé' }}</p>
+            </div>
+
+            <!-- Boutique -->
+            <div class="info-block">
+              <label class="label">Boutique</label>
+              <p class="text">{{ signalement.boutique_id?.name || 'Boutique supprimée' }}</p>
+            </div>
+
+            <!-- Raison -->
+            <div class="info-block">
+              <label class="label">Raison</label>
+              <p class="text">{{ getRaisonLabel(signalement.raison) }}</p>
+            </div>
+
+            <!-- Admin Response Preview -->
+            @if (signalement.reponse_admin) {
+              <div class="admin-response-preview">
+                <div class="response-label">Réponse admin</div>
+                <p class="response-text">{{ signalement.reponse_admin.substring(0, 80) }}...</p>
+              </div>
+            } @else {
+              <div class="pending-badge">
+                En attente de traitement
+              </div>
+            }
+          </div>
+
+          <!-- Card Footer -->
+          <div class="card-footer">
+            <button class="btn-details">
+              Voir les détails →
+            </button>
+          </div>
+        </div>
       }
+    </div>
+  }
 
-      <!-- Bouton fermer -->
-      <div style="display: flex; gap: 10px; justify-content: flex-end;">
-        <button (click)="closeModal()" style="
-              padding: 10px 20px;
-              background-color: #007bff;
-              color: white;
-              border: none;
-              border-radius: 4px;
-              cursor: pointer;
-              font-weight: bold;
-            ">
-          Fermer
-        </button>
+  <!-- NO RESULTS AFTER FILTER -->
+  @if (!isLoading && filteredSignalements.length === 0 && signalements.length > 0) {
+    <div class="no-results">
+      <p>Aucun signalement ne correspond à votre recherche</p>
+    </div>
+  }
+
+  <!-- MODAL DETAIL -->
+  @if (showModal && selectedSignalement) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h2>Détail du signalement</h2>
+          <button class="modal-close" (click)="closeModal()">✕</button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <!-- Status -->
+          <div class="modal-section">
+            <h4>Statut</h4>
+            <span class="status-badge-large" [style.background-color]="getStatutBadgeColor(selectedSignalement.statut)">
+              {{ getStatutIcon(selectedSignalement.statut) }} {{ getStatutLabel(selectedSignalement.statut) }}
+            </span>
+          </div>
+
+          <!-- Product Info -->
+          <div class="modal-section">
+            <h4>Produit</h4>
+            <div class="section-content">
+              <p><strong>Nom:</strong> {{ selectedSignalement.produit_id?.nom_prod || '❌ Produit supprimé' }}</p>
+              <p><strong>Boutique:</strong> {{ selectedSignalement.boutique_id?.name || '❌ Boutique supprimée' }}</p>
+            </div>
+          </div>
+
+          <!-- Complaint Details -->
+          <div class="modal-section">
+            <h4>Votre signalement</h4>
+            <div class="section-content">
+              <p><strong>Raison:</strong> {{ getRaisonLabel(selectedSignalement.raison) }}</p>
+              <p><strong>Description:</strong></p>
+              <div class="description-box">
+                "{{ selectedSignalement.description }}"
+              </div>
+              <p class="date-text"><strong>Signalé le:</strong> {{ selectedSignalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+            </div>
+          </div>
+
+          <!-- Admin Response -->
+          @if (selectedSignalement.reponse_admin) {
+            <div class="modal-section admin-response-section">
+              <h4>Réponse de l'administrateur</h4>
+              <div class="response-content">
+                {{ selectedSignalement.reponse_admin }}
+              </div>
+            </div>
+          } @else {
+            <div class="modal-section pending-section">
+              <p>Votre signalement est en attente de traitement par les administrateurs.</p>
+            </div>
+          }
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button (click)="closeModal()" class="btn-close">Fermer</button>
+        </div>
       </div>
     </div>
-  </div>
   }
 </div>

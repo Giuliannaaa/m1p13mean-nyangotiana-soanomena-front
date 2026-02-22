@@ -1,220 +1,265 @@
-<div class="produit-list-container">
-    <div class="list-header">
-        <h1>Nos Produits</h1>
-        <button *ngIf="isAdmin" routerLink="/produits/ajouter" class="btn-primary">Ajouter un produit</button>
-        @if (isAcheteur) {
-        <a routerLink="/mes-signalements" class="btn-primary">Mes signalements</a>
-        }
+<div class="buyer-produits-elegant">
+  <!-- HEADER -->
+  <div class="produits-header-elegant">
+    <div class="header-content">
+      <h1>Nos Produits</h1>
+      <p>Découvrez et explorez les meilleurs produits de nos boutiques</p>
+      <button *ngIf="isAdmin" routerLink="/produits/ajouter" class="btn-produits-primary">
+        <span class="btn-icon">+</span>
+        Ajouter un produit
+      </button>
     </div>
-    <!-- FILTER SECTION (Unified) -->
-    <div class="glass-card filters-container">
-        <!-- Search Bar -->
-        <div class="filters-header">
-            <div class="search-group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                        clip-rule="evenodd" />
-                </svg>
-                <input type="text" [(ngModel)]="searchText" (keyup)="filterProduits()" class="search-input"
-                    id="search-input" placeholder="Rechercher un produit (nom, description, boutique)..." />
-            </div>
-            <p *ngIf="searchText" style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">
-                Résultats pour: <strong class="text-white">"{{ searchText }}"</strong>
-            </p>
+  </div>
+
+  <!-- FILTERS & SEARCH -->
+  <section class="section produits-filters-section">
+    <div class="section-content">
+      <!-- Search Bar -->
+      <div class="produits-search-container">
+        <div class="search-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" class="search-icon-produits" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd" />
+          </svg>
+          <input 
+            type="text" 
+            [(ngModel)]="searchText" 
+            (keyup)="filterProduits()"
+            placeholder="Rechercher un produit par nom, description ou boutique..." 
+            class="search-input-produits"
+          />
+          <button *ngIf="searchText" (click)="searchText = ''; filterProduits()" class="btn-clear-search">✕</button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="produits-filters-wrapper">
+        <select [(ngModel)]="filtre_special" (change)="filterProduits()" class="filter-select-produits">
+          <option value="">Tous les filtres</option>
+          <option value="tous">Tous les produits</option>
+          <option value="nouveau">Nouveautés</option>
+          <option value="populaire">Populaires</option>
+          <option value="promo">En promotion</option>
+          <option value="bestseller">Best-sellers</option>
+        </select>
+
+        <select [(ngModel)]="boutique_selectionnee" (change)="filterProduits()" class="filter-select-produits">
+          <option value="">Toutes les boutiques</option>
+          <option *ngFor="let boutique of boutiques" [value]="boutique._id || ''">
+            {{ boutique.name }}
+          </option>
+        </select>
+
+        <!-- PRICE FILTER -->
+        <div class="price-filter-wrapper">
+          <div class="price-display-mini">
+            Prix: {{ prix_min | number:'1.0-0' }} - {{ prix_max | number:'1.0-0' }} Ar
+          </div>
+          <div class="price-sliders-mini">
+            <input type="range" [(ngModel)]="prix_min" (change)="filterProduits()" [min]="0" [max]="prix_max_range" class="slider-mini" />
+            <input type="range" [(ngModel)]="prix_max" (change)="filterProduits()" [min]="0" [max]="prix_max_range" class="slider-mini" />
+          </div>
         </div>
 
-        <!-- Advanced Filters Grid -->
-        <div class="filters-actions">
-            <!-- Category Filter -->
-            <div class="filter-group">
-                <label for="category-filter">Catégorie</label>
-                <select id="category-filter" [(ngModel)]="filtre_special" (change)="filterProduits()"
-                    class="filter-select">
-                    <option value="">Toutes les catégories</option>
-                    <option value="tous">Tous les produits</option>
-                    <option value="nouveau">Nouveaux produits</option>
-                    <option value="populaire">Produits populaires</option>
-                    <option value="promo">Produits en promotion</option>
-                    <option value="bestseller">Best-sellers</option>
-                </select>
-            </div>
+        <button (click)="resetFilter()" class="btn-reset-filters" title="Réinitialiser les filtres">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Réinitialiser
+        </button>
+      </div>
 
-            <!-- Shop Filter -->
-            <div class="filter-group">
-                <label for="boutique-filter">Boutique</label>
-                <select id="boutique-filter" [(ngModel)]="boutique_selectionnee" (change)="filterProduits()"
-                    class="filter-select">
-                    <option value="">Toutes les boutiques</option>
-                    <option *ngFor="let boutique of boutiques" [value]="boutique._id || ''">
-                        {{ boutique.name }}
-                    </option>
-                </select>
-            </div>
+      <!-- Results Counter -->
+      @if (searchText || isFiltering || isLoadingSpecial) {
+        <div class="results-indicator">
+          <span class="result-count">{{ filteredProduits.length }} résultat(s)</span>
+          @if (searchText) {
+            <span class="active-filter-badge">Recherche: "{{ searchText }}"</span>
+          }
+        </div>
+      }
+    </div>
+  </section>
 
-            <!-- Price Filter -->
-            <div class="filter-group">
-                <label>Prix : <span style="color: #fbbf24;">{{ prix_min | number:'1.0-0' }} Ar - {{ prix_max |
-                        number:'1.0-0' }} Ar</span></label>
-                <div class="price-range-container">
-                    <div class="range-inputs">
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <span style="font-size: 0.8rem; color: var(--text-muted); width: 30px;">Min</span>
-                            <input type="range" [(ngModel)]="prix_min" (change)="filterProduits()" [min]="0"
-                                [max]="prix_max_range" class="modern-range" />
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <span style="font-size: 0.8rem; color: var(--text-muted); width: 30px;">Max</span>
-                            <input type="range" [(ngModel)]="prix_max" (change)="filterProduits()" [min]="0"
-                                [max]="prix_max_range" class="modern-range" />
-                        </div>
+  <!-- EMPTY STATE -->
+  @if (filteredProduits.length === 0) {
+    <section class="section">
+      <div class="section-content">
+        <div class="empty-state-produits">
+          <div class="empty-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFQElEQVR4nO2ab0xVdRjHT2vzVb2pXombJRcu3MQSxXLeCYUpAhdNx1ALvdwL9wIXrdUqSJokDkybbU5XbZnWsrYskj8KCPgnqBf92aJavayJ9M4ybWtN56c9XA/S1XvvOb9znR473+2znec5z5/vc5zonJrmyJEjR44cOXJkVOXcOT1C7YwGvk1r4O8ZDXAzEQ9pEb5JayAs3rQbKc8Wps2sp/P+CNyKzIxwWDzeoPO5Y1Yd76fXQXotf6TXsX5GkHuMds+q5T3pLXkLnv/y+pS8CVIjtUbniodZtWy44gnxKF61VCszTKs7DJlhzrtqmWum11PPXZkhLrhrYWMvNI1cn019IDWZYf5yB7jbzA53iBx3mHPi0R1mq5ZKZYcJekLgCXHJU0OZ6f4aAtJf8Aq0DCcmv3liD9Jjdo8nRFF2DRcn+kPUaanQnCBFOUEuzqmGnBrqlWZUc0r6q9+FtlOJqdkHUis9iruCE16ruTQniE+zovkBZs8NcC43CLlBWhUNPZAb5PKCMGwfgNdPJqZ9EB4JT+y7PC9EusrO3ADbxPPcIOfnB8z9dp3UvBD3zfczllcFeVXqP1jy/LwqMyq2we7jxqhondiJ9KrsFK/iWWbIDXKL6REL/byx0A+3BRvYZfoDeNfzq3c93A4squQX0x8gv5JLBZVQbvFvVzJDOHjMHHqfld3iXWbILaabC58CwYqBqXMO9Rvn475oTyr3m25ctg4EPS5aS/HStYzp+Vjk3RPrWB5vTlevcTqPXp1r9QMozylZA8JkXMGYnotH8RpOx5vTd9Q4vUeuzrT6AZTnlFWAEC9OVh+bP95jnKHuaE+ifap3GNaqchDixcnqY/Mj3cYZ7or2JNqneodhla8GIV6crD42/3Wncb7qjPYk2qd6h2GtXQVCvDhZfWx+9PB/6dgDzRujyPPUd999Fu1JtE/1DsN6eiUI8eJk9bH5nzuijOyHlkg0N5XmOji1L1rzU8fVvGnjBn0llX8FCPHiZPWx+R8Pwp4XoerJaOxfwe8bVvCsv4xn5FlyVSth70vww4eTNZY/gPKcoA8EPQ74GNNzcSm99o/BgI+z8i6yOloT8HEx4GNP5Uru1WvkWXLyLqb2rLXzr73DsMKlIOhxTSnLQyWc1vOxyLtQMUXXmbN5sqaUvmofD8bdWYZHaqbMfNm08SR3GFakGAQtBapfimtTCRlm6jcWqf1bQMru2LQcBM3mUr7juWUgaDaX8h0vLAVBs7mU72haAoJVA1vKmda4hNcaC/lNn5mUQsabCtkuvVb3K9/RXAiCVQObC9muzzLN47Rb3a98R8tjIFg10FLAuMzZ38X3BwbACPu6GZ3YX8C45f2qd7QWgGDVQGs+4zLn2KeMnugBI/R/wqj0bM3njOX9qne0LwbBqoG2xbTrsxRos7pf+Y6dXhCsGtjiYdpOL+07vYzrM5Oxw8uZHV7apNfqfuU7di0CQbO5lO/YvRAEzeZSvmPvoyBoNpfyHW8vAEGzuZTveCcPBM3mUr7jwDwQNJtL+Y4PckHQblHp/uIRW2d6wUcPg6DdotL9xSO2zvSCQw+BkKr4ZknZR0cOCKmKb5aUfXTNBiFVsVXp84xi2UdPNheOeOCwm+kSy7OgvzcbW5U+zyjS051Bmjz3ePjT9ML+bI73Z0NfFo2aTdWfRdOVG4ZMNw9kUTrohsFM/hnIpHEwgzTNJhKvA1k0iXe5YSCDEqVBJ1xsO5kBtsal9v8bJ/W5i9JhF0Mj6VwYcYEdGE7nvHj+QvVX3pEjR44cOXKk/R/0L2PhuPYnIQbZAAAAAElFTkSuQmCC" alt="product"></div>
+          <h3>Aucun produit trouvé</h3>
+          <p>
+            {{ isFiltering || searchText ? 'Essayez de modifier vos critères de recherche' : 'Aucun produit disponible pour le moment' }}
+          </p>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- PRODUITS GRID -->
+  @if (filteredProduits.length > 0) {
+    <section class="section produits-grid-section">
+      <div class="section-content">
+        <div class="produits-cards-grid">
+          @for (produit of filteredProduits; track produit._id) {
+            <div class="produit-card-modern">
+              <!-- Header Card -->
+              <div class="produit-card-header">
+                <div class="produit-badge-status">
+                  <span class="badge-stock" [ngClass]="produit.stock_etat ? 'badge-available' : 'badge-unavailable'">
+                    {{ produit.stock_etat ? '✓ Disponible' : 'Rupture' }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Content Card -->
+              <div class="produit-card-content">
+                <div class="produit-image-box">
+                  @if(produit.image_Url) {
+                    <img [src]="'http://localhost:5000/' + produit.image_Url" [alt]="produit.nom_prod" class="produit-image">
+                  } @else {
+                    <div class="produit-placeholder">
+                      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO2abWiVZRjHHz9E0ItCRGhaSepKNF82NNPM0pm6nc45cx7d2cs5c27PdGcz8UPUKNPALMzUTFCwqHBrg5qbii9tTcO30ohAwRDqg/siREIUWR/qF9c55/HleO7zvJznHIY8f/jBdl//+8f13Ij4QU3z4sWLFy9evHjx4sU0j+sMGxlj/agYF0fG+GdUMwwG4rvEuDgqxrqxLQzVcpFHYjw8ehUXRjfBYOaxJs4/qjPC9QcYs4oDY1dBYStEu2HNCVh7GuRMMLtv9OROJpz4ZBfZSXaTszEr2a+5mQKdZ59shKdWw9o+eO3kDeRcMHMYvZvvpiMbn+wmO8q57OzaA0ysp2diAyz9ENafuBU5F0wdyV7qfbd9oR2J8wkNdLvy8ZPqKZi8gn8LG2HdEdj0za1Mrk9g5jF6qffd9r15FGTXyfX8N3UF47N+gKI6dhfVQcU78P6x25GZYMET76VzuO1btikxK1zOrqw+/plqHppey18zlsPbXbCz/3aerk1g5jJ66Rxu+zZ1w4xamB7l72lRhjt+gJkR3poVhfDrsKcvPTIXzFxGT+Vx2yc7xzsRNjj6+CKde56r4dc5NfBeO3zWmx6ZC2Y+o6fyuO3b3JZ0VfPb/Grutf0A88JUzauC8MvQeVSNdARTX7KXyeW2T3aXTnEllbYfYEEl+xZUwsbt0H1YjXQEC754L5PLbZ/sLp0Xw3TZfoCSCn4prYCOTjh8SI10BDOf0cvkctvX0ZH0LeNn2w8QCHEtsBS+6oH+g2qkI5j6kr1MLrd9snu8F+Ka7QdYvITfy0NwqB1OHUhP/5cgHcHv536VKxRimNE71pU/35GORGfxEq7afoCl5Xy9rBz2bIbve9LT/gFIR6goo0zpWky50ft8R/58H2+57uu1/QDhAMHKMqgPw5k2OL/vVs51QHMEpCOEy/gpFOKBVI+cVQa5ZPSaa+Fs5+0+OXPki6b3nW6DxqqkK0DQ9gNoGkMiQXojQWgKQ89WuNCZYP82WBMBmdUEOBsJck5+jgQYqCkjVLWQoUI0QHlNgEvxWaIT7zXL395b4XxHgv1bYU1Nwndzz4LvW/lZdjmwLenrhK4t0FKd3C9Iv3yLgwfQtKYQ99X5OV7nh3Qsf4kf9DJGCHV+zmbofRctYbjrPR8P1vn5Udnzc1oeztHH3whD6kup0n0gNJTyh+7jlO4j1rKQu42WXsRduo+VMmvwcTVOKScbfDTKLFc92UEvoUUv5Yzu48/re/pourmXdZpKQNAGeXK25+pFIGiDPDnbc+0CELRBnpzt+cp8ELRBnpzt2VoMgmr+ajElrcUMGL0MDLTOZZGDe5Z8Zns6zrq5IKjmb8xlwOiY8gKXHd2z4DPb03E2PA+C07mqZ/VevnzKbJwDgtO5qmf1Xr58yrw7GwSzuVWses3itk+ZLbNAMJtbxarXLG77lNk+EwSnc1XP6r18+ZTZOQMEp3NVz+q9fPmU2T0dBKdzVc/qvXz5lPloGghO56qe1Xv58inzaREIduep56m/f1LIgHHmmMIb/xAy29Nx2qaCYHeeep76+94pLNo7hcvGuV3kbvtUFlrd03E6p4Bgd556bubJ9Z6O88UkEOzOU8/NPLne03G6J4IV3PJki+sPcHACWMEtT7a4/gBHxoPgdG635zQ58/cWcKXvCegtSP+/r2QmmHms9pykbxyzkzteyVp2fBzcSdh+gJNj4U4i6z8RXrx48eLFixcvXrQ7K/8Di29rK6RBZYgAAAAASUVORK5CYII=" alt="product">
                     </div>
+                  }
                 </div>
-            </div>
-        </div>
 
-        <!-- Action Footer -->
-        <div class="filter-actions">
-            <button (click)="resetFilter()" class="btn-icon-reset">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-            </button>
+                <h3 class="produit-name">{{ produit.nom_prod }}</h3>
+                <p class="produit-shop">{{ produit.store_id?.name || 'Boutique inconnue' }}</p>
+                <p class="produit-description">{{ produit.descriptions || 'Pas de description' }}</p>
 
-            <div class="results-count">
-                <span *ngIf="!isLoadingSpecial">
-                    {{ filteredProduits.length }} produit(s) trouvé(s)
-                </span>
-                <span *ngIf="isLoadingSpecial">Chargement...</span>
-            </div>
-        </div>
-    </div>
+                <!-- Badges -->
+                <div class="produit-badges-section">
+                  @for (badge of getProductBadges(produit); track badge.text) {
+                    <span class="produit-badge" [style.background-color]="badge.color" [style.color]="badge.color === '#ffc107' ? 'black' : 'white'">
+                      {{ badge.text }}
+                    </span>
+                  }
+                </div>
 
-    <!-- No Results State -->
-    <div *ngIf="filteredProduits.length === 0" class="no-results">
-        <p>
-            {{ isFiltering || searchText ? 'Aucun produit ne correspond à vos critères de recherche.' : 'Aucun produit
-            disponible pour le moment.' }}
-        </p>
-    </div>
+                <!-- Price Info -->
+                <div class="produit-price-info">
+                  <span class="produit-price">{{ produit.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar</span>
+                </div>
+              </div>
 
-    <!-- Tableau des produits -->
-    <div class="glass-card overflow-hidden" *ngIf="filteredProduits.length > 0">
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Nom</th>
-                    <th>Boutique</th>
-                    <th>Description</th>
-                    <th>Prix</th>
-                    <th>Stock</th>
-                    <th>Type</th>
-                    <th>Livraison</th>
-                    <th *ngIf="isAdmin || isAcheteur || isBoutique">Actions</th>
-                </tr>
-            </thead>
+              <!-- Footer Card with Actions -->
+              <div class="produit-card-footer">
+                <button (click)="goToBuyProduct(produit._id)" class="btn-produit-view">
+                  Voir
+                </button>
 
-            <tbody>
-                @for (produit of filteredProduits; track produit._id) {
-                <tr>
-                    <td class="td-image" style="position: relative;">
-                        <img [src]="produit.image_Url ? ('http://localhost:5000/' + produit.image_Url) : 'img/png/elementor-placeholder-image.png'"
-                            alt="{{ produit.nom_prod }}" class="product-thumb" />
-
-                        <!-- AFFICHER PLUSIEURS BADGES -->
-                        <div
-                            style="position: absolute; top: 5px; right: 5px; display: flex; flex-direction: column; gap: 3px;">
-                            @for (badge of getProductBadges(produit); track badge.text) {
-                            <span style="
-                                    background-color: {{ badge.color }}; 
-                                    color: {{ badge.color === '#ffc107' ? 'black' : 'white' }}; 
-                                    padding: 2px 6px; 
-                                    border-radius: 3px; 
-                                    font-size: 10px; 
-                                    font-weight: bold;
-                                    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-                                    white-space: nowrap;
-                                ">
-                                {{ badge.text }}
-                            </span>
-                            }
-                        </div>
-                    </td>
-                    <td class="font-bold">
-                        <a [routerLink]="['/produits', produit._id]" style="color: #007bff; text-decoration: none;">
-                            {{ produit.nom_prod }}
-                        </a>
-                    </td>
-                    <td>{{ produit.store_id?.name || 'Boutique inconnue' }}</td>
-                    <td class="td-desc">{{ produit.descriptions }}</td>
-                    <td class="price-cell">
-                        {{ produit.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar
-                    </td>
-                    <td>
-                        <span class="badge" [ngClass]="produit.stock_etat ? 'badge-success' : 'badge-danger'">
-                            {{ produit.stock_etat ? 'Disponible' : 'Rupture' }}
-                        </span>
-                    </td>
-                    <td>{{ produit.type_produit }}</td>
-                    <td>{{ produit.livraison?.disponibilite ? 'Oui' : 'Non' }}</td>
-                    <td *ngIf="isAdmin" class="actions-cell">
-                        <button [routerLink]="['/produits/modifier', produit._id]" class="btn-icon" title="Modifier">
-                            <img src="/img/svg/icon-update.svg" alt="Modifier">
-                        </button>
-                        <button (click)="deleteProduit(produit._id)" class="btn-icon btn-delete" title="Supprimer">
-                            <img src="/img/svg/icon-delete.svg" alt="Supprimer">
-                        </button>
-                    </td>
-                    <td *ngIf="isAcheteur">
-                        <button (click)="addToPanier(produit)" class="btn-icon-buy" title="Ajouter au Panier">
-                            <img src="/img/svg/icon-cart.svg" alt="Ajouter au Panier">
-                        </button>
-                    </td>
-                    <td *ngIf="isBoutique">
-                        <button (click)="openPriceModal(produit)" class="btn-icon" title="Modifier le prix">
-                            <img src="/img/svg/icon-update.svg" alt="Modifier le prix">
-                        </button>
-                    </td>
-                </tr>
+                @if (isAdmin) {
+                  <button [routerLink]="['/produits/modifier', produit._id]" class="btn-produit-edit">
+                    Modifier
+                  </button>
+                  <button (click)="deleteProduit(produit._id)" class="btn-produit-delete">
+                    Supprimer
+                  </button>
                 }
-            </tbody>
-        </table>
+
+                <!-- Add to Cart for Buyers -->
+                @if (isAcheteur) {
+                  <button 
+                    (click)="addToPanier(produit)"
+                    class="btn-produit-cart">
+                    Ajouter
+                  </button>
+                }
+
+                <!-- Edit Price for Shop Owners -->
+                @if (isBoutique) {
+                  <button (click)="openPriceModal(produit)" class="btn-produit-price">
+                    Modifier prix
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- FOOTER -->
+  <footer class="footer-elegant">
+    <div class="footer-content-elegant">
+      <div class="footer-column">
+        <h4>À propos</h4>
+        <p>SuperMarket est votre plateforme de confiance pour découvrir les meilleures boutiques et produits.</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#">Accueil</a></li>
+          <li><a href="#">Boutiques</a></li>
+          <li><a href="#">Produits</a></li>
+          <li><a href="#">Promotions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>contact@supermarket.com</p>
+        <p>+261 6XX XXX XXX</p>
+        <p>Antananarivo, Madagascar</p>
+      </div>
     </div>
+
+    <div class="footer-bottom-elegant">
+      <p>&copy; 2026 SuperMarket. Tous droits réservés.</p>
+      <p>Développé par <strong>Ny Angotiana and Soanomena</strong></p>
+    </div>
+  </footer>
 </div>
 
-<!-- Modal de modification de prix -->
+<!-- PRICE MODAL -->
 <div class="price-modal-overlay" *ngIf="showPriceModal" (click)="closePriceModal()">
-    <div class="price-modal-content glass-card" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h2>Modifier le prix</h2>
-            <button class="btn-close" (click)="closePriceModal()">&times;</button>
-        </div>
-
-        <div class="modal-body" *ngIf="selectedProduct">
-            <div class="product-info-brief">
-                <img [src]="selectedProduct.image_Url ? ('http://localhost:5000/' + selectedProduct.image_Url) : 'img/png/elementor-placeholder-image.png'"
-                    alt="Product" class="modal-product-thumb">
-                <div class="product-text">
-                    <h3>{{ selectedProduct.nom_prod }}</h3>
-                    <p class="current-price">Prix actuel: <span>{{ selectedProduct.prix_unitaire.$numberDecimal |
-                            number:'1.0-0' }} Ar</span></p>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="new-price">Nouveau prix (Ar)</label>
-                <input type="number" id="new-price" [(ngModel)]="updatedPrice" class="form-control"
-                    placeholder="Entrez le nouveau prix">
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn-primary" (click)="updatePrixProduit()">Confirmer</button>
-            <button class="btn-secondary" (click)="closePriceModal()">Annuler</button>
-        </div>
+  <div class="price-modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Modifier le prix</h2>
+      <button class="btn-close" (click)="closePriceModal()">&times;</button>
     </div>
-</div>
 
-<script src=""></script>
+    <div class="modal-body" *ngIf="selectedProduct">
+      <div class="product-info-brief">
+        <img 
+          [src]="selectedProduct.image_Url ? ('http://localhost:5000/' + selectedProduct.image_Url) : 'img/png/elementor-placeholder-image.png'"
+          alt="Product" 
+          class="modal-product-thumb">
+        <div class="product-text">
+          <h3>{{ selectedProduct.nom_prod }}</h3>
+          <p class="current-price">Prix actuel: <span>{{ selectedProduct.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar</span></p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="new-price">Nouveau prix (Ar)</label>
+        <input 
+          type="number" 
+          id="new-price" 
+          [(ngModel)]="updatedPrice" 
+          class="form-control"
+          placeholder="Entrez le nouveau prix">
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-primary" (click)="updatePrixProduit()">Confirmer</button>
+      <button class="btn-secondary" (click)="closePriceModal()">Annuler</button>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Produit } from '../../models/produit.model';
 import { Router } from "@angular/router";
 import { PanierService } from '../../services/panier/panier.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -57,6 +58,7 @@ export class ProduitListComponent implements OnInit {
   authService = inject(AuthService);
   private boutiqueService = inject(BoutiqueService);
   private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
 
   isAdmin = false;
   isBoutique = false;
@@ -73,14 +75,22 @@ export class ProduitListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const role = this.authService.getRole();
-    this.isAdmin = role === 'Admin';
-    this.isBoutique = role === 'Boutique';
-    this.isAcheteur = role === 'Acheteur';
+  const role = this.authService.getRole();
+  this.isAdmin = role === 'Admin';
+  this.isBoutique = role === 'Boutique';
+  this.isAcheteur = role === 'Acheteur';
 
-    this.loadProduits();
-    this.loadBoutiques();
-  }
+  // RÉCUPÉRER LE PARAMÈTRE DE RECHERCHE DE L'URL
+  this.route.queryParams.subscribe(params => {
+    if (params['search']) {
+      this.searchText = params['search'];
+      console.log('Recherche depuis dashboard:', this.searchText);
+    }
+  });
+
+  this.loadProduits();
+  this.loadBoutiques();
+}
 
   loadProduits(): void {
     this.produitService.getProduits().subscribe({

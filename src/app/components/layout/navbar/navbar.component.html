@@ -1,32 +1,123 @@
 <nav class="navbar">
-    <div class="navbar-brand">
-        <a routerLink="/" class="logo">SupermarketApp</a>
+  <!-- BRAND -->
+  <div class="navbar-brand">
+    <a routerLink="/" class="logo">
+      <span class="logo-icon"></span>
+      <span class="logo-text">SuperMarket</span>
+    </a>
+  </div>
+
+  <!-- HAMBURGER MENU (Mobile) -->
+  <button class="hamburger" (click)="toggleMenu()" [class.active]="menuOpen" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- LINKS -->
+  <div class="navbar-links" [class.open]="menuOpen">
+    <!-- Mobile User Header -->
+    <div class="mobile-user-header">
+      <div class="mobile-user-avatar">{{ getUserInitials() }}</div>
+      <div class="mobile-user-info">
+        <p class="mobile-user-name">{{ userFirstname }} {{ userLastname }}</p>
+        <p class="mobile-user-email">{{ userEmail }}</p>
+      </div>
     </div>
-    <div class="navbar-links">
-        <ul>
-            <li><a [routerLink]="dashboardLink" routerLinkActive="active">Dashboard</a></li>
-            <li><a routerLink="/produits" routerLinkActive="active">Produits</a></li>
-            <li><a routerLink="/categories" routerLinkActive="active">Catégories</a></li>
-            <li><a routerLink="/boutiques" routerLinkActive="active">Boutiques</a></li>
-            @if (userRole === 'Admin' || userRole === 'Boutique' || userRole === 'Acheteur') {
-            <li>
-                <a routerLink="/messagerie" class="nav-link" routerLinkActive="active">
-                    Messagerie
-                    @if (unreadCount > 0) {
-                    <span class="badge">{{ unreadCount }}</span>
-                    }
-                </a>
-            </li>
+
+    <ul>
+      <li>
+        <a [routerLink]="dashboardLink" routerLinkActive="active" (click)="closeMenu()">
+          Accueil
+        </a>
+      </li>
+      <li>
+        <a routerLink="/produits" routerLinkActive="active" (click)="closeMenu()">
+          Produits
+        </a>
+      </li>
+      <li>
+        <a routerLink="/categories" routerLinkActive="active" (click)="closeMenu()">
+          Catégories
+        </a>
+      </li>
+      <li>
+        <a routerLink="/boutiques" routerLinkActive="active" (click)="closeMenu()">
+          Boutiques
+        </a>
+      </li>
+
+      <!-- BOUTIQUE ONLY -->
+      @if (userRole === 'Boutique') {
+        <li class="nav-divider"></li>
+        <li>
+          <a routerLink="/messagerie" routerLinkActive="active" (click)="closeMenu()" class="nav-badge-link">
+            Messagerie
+            @if (unreadCount > 0) {
+              <span class="badge">{{ unreadCount }}</span>
             }
-            <li>
-                <a routerLink="/signalement-boutique" class="nav-link">
-                Signalements
-                </a>
-            </li>
-            <li><a routerLink="/achats" routerLinkActive="active">Mes achats</a></li>
-        </ul>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/signalement-boutique" routerLinkActive="active" (click)="closeMenu()">
+            Signalements
+          </a>
+        </li>
+      }
+
+      <!-- ACHETEUR ONLY -->
+      @if (userRole === 'Acheteur') {
+        <li class="nav-divider"></li>
+        <li>
+          <a routerLink="/mes-signalements" routerLinkActive="active" (click)="closeMenu()">
+            Mes signalements
+          </a>
+        </li>
+        <li>
+          <a routerLink="/achats" routerLinkActive="active" (click)="closeMenu()">
+            Mes achats
+          </a>
+        </li>
+      }
+    </ul>
+
+    <!-- Mobile Logout Button -->
+    <div class="mobile-logout-section">
+      <button (click)="logout()" class="mobile-logout-btn">
+        Déconnexion
+      </button>
     </div>
-    <div class="navbar-actions">
-        <button (click)="logout()" class="btn-logout-navbar">Logout</button>
+  </div>
+
+  <!-- ACTIONS - USER MENU (Desktop only) -->
+  <div class="navbar-actions">
+    <div class="user-menu">
+      <button class="btn-user-profile" (click)="toggleUserMenu()" [class.active]="userMenuOpen" [title]="userFirstname">
+        <span class="user-avatar">{{ getUserInitials() }}</span>
+        <span class="user-greeting">Bonjour, {{ userFirstname }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="dropdown-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <!-- Dropdown Menu -->
+      @if (userMenuOpen) {
+        <div class="user-dropdown" (click)="closeUserMenu()">
+          <div class="dropdown-header">
+            <div class="header-avatar">{{ getUserInitials() }}</div>
+            <div class="header-info">
+              <p class="header-name">{{ userFirstname }} {{ userLastname }}</p>
+              <p class="header-email">{{ userEmail }}</p>
+            </div>
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          <button (click)="logout()" class="dropdown-logout">
+            Déconnexion
+          </button>
+        </div>
+      }
     </div>
+  </div>
 </nav>

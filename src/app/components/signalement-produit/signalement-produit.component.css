@@ -11,7 +11,6 @@
     border: 1px solid rgba(239, 68, 68, 0.15);
     border-radius: 20px;
     padding: 1.5rem;
-    color: white;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     width: 100%;
@@ -25,7 +24,8 @@
     font-size: 1.3rem;
     font-weight: 700;
     margin: 0 0 0.25rem 0;
-    color: #ff6b6b;
+    color: #dc2626;
+    /*color: #ff6b6b;*/
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -33,7 +33,7 @@
 
 .section-subtitle {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: #dc262696;
     margin: 0;
 }
 
@@ -164,7 +164,7 @@
 }
 
 .summary-item .label {
-    color: rgba(255, 255, 255, 0.5);
+    color: #dc2626;
 }
 
 .status-badge {
@@ -174,15 +174,15 @@
 
 .success-notice {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: #ef4444;
     font-style: italic;
     margin-bottom: 1.5rem;
 }
 
 .btn-pill-outline-white {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    border: 1px solid #dc2626;
+    color: #dc2626;
     font-size: 0.85rem;
     padding: 0.6rem 1.25rem;
 }

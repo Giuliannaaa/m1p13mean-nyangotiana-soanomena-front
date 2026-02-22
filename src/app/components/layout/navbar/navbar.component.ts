@@ -1,49 +1,97 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
-import { MessageService } from "../../../services/message.service";
+import { MessageService } from '../../../services/message.service';
 
 @Component({
-    selector: 'app-navbar',
-    standalone: true,
-    imports: [CommonModule, RouterLink, RouterLinkActive],
-    templateUrl: './navbar.component.html',
-    styleUrl: './navbar.component.css'
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit{
-    authService = inject(AuthService);
+export class NavbarComponent implements OnInit {
+  private authService = inject(AuthService);
+  private messageService = inject(MessageService);
+  private router = inject(Router);
 
-    get dashboardLink(): string {
-        const role = this.authService.getRole();
-        if (role === 'Boutique') return '/boutique/dashboard';
-        return '/buyer/dashboard';
+  userRole: string = '';
+  unreadCount: number = 0;
+  menuOpen: boolean = false;
+  userMenuOpen: boolean = false;
+
+  // User Info
+  userFirstname: string = '';
+  userLastname: string = '';
+  userEmail: string = '';
+
+  get dashboardLink(): string {
+    const role = this.authService.getRole();
+    if (role === 'Admin') return '/admin/dashboard';
+    if (role === 'Boutique') return '/boutique/dashboard';
+    return '/buyer/dashboard';
+  }
+
+  ngOnInit(): void {
+    this.userRole = this.authService.getRole() || '';
+    this.loadUserInfo();
+    this.loadUnreadCount();
+    
+    // Actualiser toutes les 30 secondes
+    setInterval(() => {
+      this.loadUnreadCount();
+    }, 30000);
+  }
+
+  loadUserInfo(): void {
+    // Récupérer les infos de l'utilisateur depuis le service d'authentification
+    // ou depuis localStorage si elles sont sauvegardées
+    const user = this.authService.getCurrentUser();
+    
+    if (user) {
+      this.userFirstname = user.firstname || user.firstName || 'Utilisateur';
+      this.userLastname = user.lastname || user.lastName || '';
+      this.userEmail = user.email || '';
     }
+  }
 
-    messageService = inject(MessageService);
+  loadUnreadCount(): void {
+    this.messageService.getUnreadCount().subscribe({
+      next: (response: any) => {
+        this.unreadCount = response.unreadCount || 0;
+      },
+      error: (err) => {
+        console.error('Erreur chargement unreadCount:', err);
+      }
+    });
+  }
 
-    userRole: string = '';
-    unreadCount: number = 0;
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
 
-    ngOnInit(): void {
-        this.userRole = this.authService.getRole() || '';
-        this.loadUnreadCount();
-        
-        // Actualiser toutes les 30 secondes
-        setInterval(() => {
-        this.loadUnreadCount();
-        }, 30000);
-    }
+  closeMenu(): void {
+    this.menuOpen = false;
+  }
 
-    loadUnreadCount(): void {
-        this.messageService.getUnreadCount().subscribe({
-        next: (response: any) => {
-            this.unreadCount = response.unreadCount || 0;
-        }
-        });
-    }
+  toggleUserMenu(): void {
+    this.userMenuOpen = !this.userMenuOpen;
+  }
 
-    logout() {
-        this.authService.logout();
-    }
+  closeUserMenu(): void {
+    this.userMenuOpen = false;
+  }
+
+  getUserInitials(): string {
+    const first = this.userFirstname.charAt(0).toUpperCase();
+    const last = this.userLastname.charAt(0).toUpperCase();
+    return first + last || 'U';
+  }
+
+  logout(): void {
+    this.userMenuOpen = false;
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }

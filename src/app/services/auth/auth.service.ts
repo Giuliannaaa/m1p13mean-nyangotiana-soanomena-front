@@ -78,6 +78,28 @@ export class AuthService {
         }
     }
 
+    /**
+     * Récupère les informations de l'utilisateur connecté depuis le token JWT
+     * @returns Objet utilisateur avec id, firstname, lastname, email, role
+     */
+    getCurrentUser(): any {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return {
+                id: payload.id || null,
+                firstname: payload.firstname || payload.firstName || '',
+                lastname: payload.lastname || payload.lastName || '',
+                email: payload.email || '',
+                role: payload.role || null
+            };
+        } catch (e) {
+            console.error('Erreur parsing token:', e);
+            return null;
+        }
+    }
+
     redirectBasedOnRole(role: string): void {
         switch (role) {
             case 'Admin':
@@ -92,5 +114,4 @@ export class AuthService {
                 break;
         }
     }
-
 }
