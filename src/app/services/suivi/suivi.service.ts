@@ -30,10 +30,10 @@ export class SuiviService {
     this.http.get<any>(`${this.apiUrl}/mes-suivis`, { headers: this.getHeaders() })
       .subscribe({
         next: (response) => {
-          console.log('Réponse mes-suivis:', response);
-          
+          // console.log('Réponse mes-suivis:', response);
+
           let ids: string[] = [];
-          
+
           if (response.data && Array.isArray(response.data)) {
             // CORRECTION : Extraire correctement l'ID de boutique
             ids = response.data.map((suivi: any) => {
@@ -47,8 +47,8 @@ export class SuiviService {
               return suivi.boutique_id;
             });
           }
-          
-          console.log('IDs des boutiques suivies chargées:', ids);
+
+          // console.log('IDs des boutiques suivies chargées:', ids);
           this.boutiquesSuivies$.next(ids);
         },
         error: (err) => {
@@ -73,7 +73,7 @@ export class SuiviService {
   // Suivre une boutique ET METTRE À JOUR LE SUBJECT
   suivreBoutique(boutiqueId: string): Observable<Suivi> {
     console.log('Appel API: Suivre boutique', boutiqueId);
-    
+
     return this.http.post<Suivi>(
       `${this.apiUrl}/suivre`,
       { boutique_id: boutiqueId },
@@ -81,11 +81,11 @@ export class SuiviService {
     ).pipe(
       tap((response) => {
         console.log('Réponse API Suivre:', response);
-        
+
         // AJOUTER À LA LISTE DES SUIVIS
         const currentIds = this.boutiquesSuivies$.value;
         console.log('AVANT l\'ajout:', currentIds);
-        
+
         if (!currentIds.includes(boutiqueId)) {
           const newIds = [...currentIds, boutiqueId];
           console.log('APRÈS l\'ajout:', newIds);
@@ -100,18 +100,18 @@ export class SuiviService {
   // Arrêter de suivre une boutique ET METTRE À JOUR LE SUBJECT
   arreterSuivreBoutique(boutiqueId: string): Observable<any> {
     console.log('Appel API: Arrêter de suivre boutique', boutiqueId);
-    
+
     return this.http.delete(
       `${this.apiUrl}/arreter-suivi/${boutiqueId}`,
       { headers: this.getHeaders() }
     ).pipe(
       tap((response) => {
         console.log('Réponse API Arrêter:', response);
-        
+
         // ENLEVER DE LA LISTE DES SUIVIS
         const currentIds = this.boutiquesSuivies$.value;
         console.log('AVANT la suppression:', currentIds);
-        
+
         const newIds = currentIds.filter(id => id !== boutiqueId);
         console.log('APRÈS la suppression:', newIds);
         this.boutiquesSuivies$.next(newIds);

@@ -20,8 +20,7 @@ export class AdminDashboardService {
   }
 
   getAdminDashboardData(): Observable<AdminDashboard> {
-    console.log(this.http.get<AdminDashboard>(`${this.apiUrl}/data`, { headers: this.getHeaders() }));
-
+    // console.log(this.http.get<AdminDashboard>(`${this.apiUrl}/data`, { headers: this.getHeaders() }));
     return this.http.get<AdminDashboard>(`${this.apiUrl}/data`, { headers: this.getHeaders() });
   }
 

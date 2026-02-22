@@ -18,7 +18,6 @@ export class CategorieListComponent implements OnInit {
 
   constructor(
     private categorieService: CategorieService,
-    private router: Router,
     private cdr: ChangeDetectorRef,
     private authService: AuthService
   ) { }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminDashboardService } from '../../services/adminDashboard/admin-dashboard.service';
 import { forkJoin } from 'rxjs';
 import { BoutiqueDashboardService } from '../../services/boutiqueDashboard/boutique-dashboard.service';
 

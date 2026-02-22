@@ -87,7 +87,7 @@
             </div>
 
             <!-- Active Promotions Card -->
-            <div class="stat-card active-promotions">
+            <div class="stat-card active-promotions" (click)="openModal('promo')">
                 <div class="card-header">
                     <div class="icon-wrapper promotions-icon">
                         <span class="card-icon">
@@ -113,7 +113,7 @@
             </div>
 
             <!-- Inactive Boutique Users Card -->
-            <div class="stat-card inactive-users">
+            <div class="stat-card inactive-users" (click)="openModal('inactifUser')">
                 <div class="card-header">
                     <div class="icon-wrapper inactive-icon">
                         <span class="card-icon">
@@ -124,7 +124,7 @@
                 </div>
                 <div class="card-body">
                     <h2 class="stat-number">{{ dashboardData.inactiveBoutiqueUsers }}</h2>
-                    <p class="stat-label">Utilisateurs Boutique Inactifs</p>
+                    <p class="stat-label">Utilisateurs boutique inactifs</p>
                     <div class="stat-footer">
                         <span class="alert-label">Nécessite attention</span>
                     </div>
@@ -212,5 +212,121 @@
 
         </div>
 
+    </div>
+
+    <!-- ===== MODAL PROPRIÉTAIRE DE BOUTIQUE INACTIFS ===== -->
+    <div class="modal-overlay" *ngIf="showInactiveStoresModal" (click)="closeModal()">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+
+            <div class="modal-header">
+                <div class="modal-title-wrapper">
+                    <div class="title-icon-wrapper danger">
+                        <img src="img/svg/icon-alert-2.svg" alt="" class="modal-icon">
+                    </div>
+                    <div>
+                        <h2>Comptes non validés</h2>
+                        <p class="modal-subtitle">Ces comptes nécessitent une action administrative</p>
+                    </div>
+                </div>
+                <button class="modal-close" (click)="closeModal()">
+                    <span class="close-icon">✕</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="user-list">
+                    <div class="user-card" *ngFor="let user of dashboardData?.inactiveBoutiqueUsersData">
+                        <div class="user-avatar">
+                            <img src="img/svg/icon-inactif-user.svg" alt="">
+                        </div>
+                        <div class="user-details">
+                            <span class="user-full-name">{{ user.lastname }} {{ user.firstname }}</span>
+                            <span class="user-email-text">{{ user.email }}</span>
+                        </div>
+                        <div class="status-indicator">
+                            <span class="dot danger"></span>
+                            Inactif
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!dashboardData?.inactiveBoutiqueUsersData?.length" class="empty-modal-state">
+                    <p>Aucun utilisateur inactif trouvé.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="modal-summary">
+                    <strong>{{ dashboardData?.inactiveBoutiqueUsersData?.length || 0 }}</strong> utilisateur(s)
+                    concerné(s)
+                </div>
+                <button class="btn-primary-modal" (click)="closeModal()">Fermer</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== MODAL PROMOTIONS ===== -->
+    <div class="modal-overlay" *ngIf="showActivePromoModal" (click)="closeModal()">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+
+            <div class="modal-header">
+                <div class="modal-title-wrapper">
+                    <div class="title-icon-wrapper danger">
+                        <img src="img/svg/icon-gift.svg" alt="" class="modal-icon">
+                    </div>
+                    <div>
+                        <h2>Promotions</h2>
+                    </div>
+                </div>
+                <button class="modal-close" (click)="closeModal()">
+                    <span class="close-icon">✕</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="user-list">
+                    <div class="user-card" *ngFor="let promo of dashboardData?.activePromotionsData">
+                        <img [src]="'http://localhost:5000/' + promo.prod_id?.image_Url" [alt]="promo.prod_id.nom_prod"
+                            class="item-thumb" onerror="this.src='img/placeholder.png'">
+                        <div class="item-info">
+                            <span class="item-name">{{ promo.prod_id.nom_prod }}</span>
+                            <span class="item-meta">
+                                Code : <strong>{{ promo.code_promo }}</strong>
+                            </span>
+                            <span class="item-meta">
+                                Date limite : <strong>{{ promo.fin | date:'dd/MM/yyyy' }}</strong>
+                            </span>
+                            <span class="item-meta">
+                                Prix : {{ promo.prod_id.prix_unitaire['$numberDecimal'] | number }} Ar
+                            </span>
+                        </div>
+                        <div class="promo-badge-group">
+                            <span class="badge badge-promo">
+                                {{ promo.type_prom === 'POURCENTAGE' ? '-' + promo.montant['$numberDecimal'] + '%' :
+                                promo.montant['$numberDecimal'] + ' Ar' }}
+                            </span>
+                            <span class="badge" [class.badge-success]="promo.est_Active"
+                                [class.badge-muted]="!promo.est_Active">
+                                {{ promo.est_Active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!dashboardData?.activePromotionsData?.length" class="empty-modal-state">
+                    <p>Aucune promotion active trouvée.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="modal-summary">
+                    <strong>{{ dashboardData?.activePromotionsData?.length || 0 }}</strong> promotion(s)
+                    concerné(s)
+                </div>
+                <button class="btn-primary-modal" (click)="closeModal()">Fermer</button>
+            </div>
+
+        </div>
     </div>
 </div>

@@ -15,6 +15,7 @@ import { BoutiqueDashboardService } from '../../services/boutiqueDashboard/bouti
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
+
 export class AdminDashboardComponent implements OnInit {
   @ViewChild('revenueCanvas')
   set canvas(element: ElementRef<HTMLCanvasElement>) {
@@ -55,6 +56,10 @@ export class AdminDashboardComponent implements OnInit {
   ];
 
   private chart: Chart | null = null;
+
+  // Propriétés modales
+  showInactiveStoresModal = false;
+  showActivePromoModal = false;
 
   constructor(private adminDashboardService: AdminDashboardService, private boutiqueDashboardService: BoutiqueDashboardService) { }
 
@@ -186,7 +191,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   onFilterSubmit(): void {
-    console.log('Filter submitted:', this.selectedYear, this.selectedMonth);
+    // console.log('Filter submitted:', this.selectedYear, this.selectedMonth);
     this.loadRevenueData();
   }
 
@@ -216,6 +221,7 @@ export class AdminDashboardComponent implements OnInit {
     this.adminDashboardService.getAdminDashboardData().subscribe({
       next: (response) => {
         if (response.success) {
+          console.log('Dashboard data:', response.data);
           this.dashboardData = response.data;
         } else {
           this.error = 'Échec du chargement des données';
@@ -244,4 +250,19 @@ export class AdminDashboardComponent implements OnInit {
 
     return Math.round((storesRate + buyersRate + promotionsRate) / 3);
   }
+
+  // Méthodes modal
+  openModal(type: 'inactifUser' | 'promo') {
+    if (type === 'inactifUser' && this.dashboardData!.inactiveBoutiqueUsers > 0) {
+      this.showInactiveStoresModal = true;
+    } else if (type === 'promo' && this.dashboardData!.activePromotions > 0) {
+      this.showActivePromoModal = true;
+    }
+  }
+
+  closeModal() {
+    this.showInactiveStoresModal = false;
+    this.showActivePromoModal = false;
+  }
+
 }
