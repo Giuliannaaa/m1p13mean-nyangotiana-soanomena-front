@@ -49,9 +49,12 @@
 }
 
 @keyframes floatBgHeader {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px);
   }
+
   50% {
     transform: translateY(-30px) translateX(20px);
   }
@@ -561,6 +564,27 @@
   color: #222;
 }
 
+.price-promo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.old-price {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+.promo-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ef4444;
+  /* Rouge pour attirer l'attention */
+}
+
 .produit-card-footer {
   padding: 16px 20px;
   background: #f9f9f9;
@@ -682,6 +706,7 @@
     opacity: 0;
     transform: translateY(40px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -998,6 +1023,7 @@
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
+
   .produit-card-modern,
   .btn-produit-view,
   .btn-produit-edit,

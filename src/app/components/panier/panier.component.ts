@@ -17,7 +17,7 @@ export class PanierComponent implements OnInit {
 
     panier: any = null;
     isLoading = true;
-    errorMessage = '';
+    avecLivraison = false;
 
     ngOnInit(): void {
         this.loadPanier();
@@ -32,7 +32,7 @@ export class PanierComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Error loading cart', err);
-                this.errorMessage = 'Impossible de charger le panier.';
+                // this.errorMessage = 'Impossible de charger le panier.';
                 this.isLoading = false;
             }
         });
@@ -84,12 +84,11 @@ export class PanierComponent implements OnInit {
 
         if (!confirm('Voulez-vous valider votre panier et passer à la commande ?')) return;
 
-        this.panierService.validatePanier().subscribe({
+        this.panierService.validatePanier(this.avecLivraison).subscribe({
             next: (res) => {
                 alert('Commande validée avec succès ! Vous pouvez retrouver vos commandes dans la section Achats.');
                 this.panier = { items: [], total: 0 };
-                // Optional: redirect to purchases
-                // this.router.navigate(['/achats']); 
+                this.router.navigate(['/achats']);
             },
             error: (err) => {
                 console.error('Error validating cart', err);

@@ -1,8 +1,11 @@
 :host {
     display: block;
-    margin-top: 2rem;
+    margin-top: 0.75rem;
 }
 
+* {
+    color: #333;
+}
 
 .glass-container {
     backdrop-filter: blur(10px);
@@ -15,20 +18,16 @@
     width: 100%;
 }
 
-.note-header {
-    margin-bottom: 0.35rem;
-}
 
 .section-title {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
-    -webkit-background-clip: text;
-    background-clip: text;
+    color: #dc2626;
 }
 
 .section-subtitle {
     font-size: 0.9rem;
+    color: #333;
 }
 
 .rating-input-section {
@@ -98,6 +97,7 @@
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
+    color: #333;
 }
 
 .textarea-wrapper {
@@ -168,6 +168,10 @@
     cursor: not-allowed;
 }
 
+.btn-content {
+    color: #fff;
+}
+
 .spinner-small {
     width: 16px;
     height: 16px;
@@ -217,15 +221,13 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sub-section-title {
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-}
-
 .reviews-scroll-area {
     max-height: 400px;
     overflow-y: auto;
     padding-right: 0.5rem;
+    border: 1px solid #4f46e5;
+    border-radius: 15px;
+    background-color: rgba(255, 0, 212, 0.03);
 }
 
 .reviews-scroll-area::-webkit-scrollbar {
@@ -273,6 +275,7 @@
     justify-content: center;
     font-weight: 700;
     font-size: 1.1rem;
+    color: #fff;
 }
 
 .reviewer-meta {
