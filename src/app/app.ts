@@ -44,14 +44,23 @@ export class App {
     return this.authService.getRole() === 'Acheteur' && this.showHeader;
   }
 
+  ngOnInit() {
+    this.loadCart();
+
+    // Subscribe to cart updates from other components
+    this.panierService.cartUpdate$.subscribe(() => {
+      this.loadCart();
+    });
+  }
+
   logout() {
     this.authService.logout();
   }
 
   // Cart Modal Logic
   openCartModal() {
-    this.isCartModalOpen = true;
     this.loadCart();
+    this.isCartModalOpen = true;
   }
 
   closeCartModal() {
