@@ -1,14 +1,16 @@
 <div class="signalements-boutique-container">
+
+  <!-- HEADER -->
   <div class="page-header">
     <h1>Signalements reçus</h1>
     <p class="subtitle">Consultez les signalements contre vos produits</p>
   </div>
 
   <!-- FILTRES -->
-  <div class="filters-card glass-card">
+  <div class="filters-card">
     <div class="filters-row">
       <div class="filter-group">
-        <label>Filtrer par statut:</label>
+        <label>Statut</label>
         <select [(ngModel)]="selectedStatus" (change)="filterSignalements()" class="filter-select">
           <option value="">Tous les statuts</option>
           <option value="signale">Signalé</option>
@@ -19,10 +21,10 @@
       </div>
 
       <div class="filter-group">
-        <label>Rechercher:</label>
-        <input 
-          type="text" 
-          [(ngModel)]="searchText" 
+        <label>Recherche</label>
+        <input
+          type="text"
+          [(ngModel)]="searchText"
           (keyup)="filterSignalements()"
           placeholder="Nom du produit ou acheteur..."
           class="filter-input"
@@ -31,25 +33,27 @@
     </div>
   </div>
 
-  <!-- CONTENU PRINCIPAL -->
+  <!-- CHARGEMENT -->
   @if (isLoading) {
     <div class="loading-container">
       <p>Chargement...</p>
     </div>
   }
 
+  <!-- ÉTAT VIDE -->
   @if (!isLoading && filteredSignalements.length === 0) {
     <div class="empty-state">
-      <img src="/img/svg/icon-check-circle.svg" alt="Aucun signalement" class="empty-icon">
       <h3>Aucun signalement</h3>
-      <p>Vous n'avez aucun signalement en ce moment. Continuez comme ça!</p>
+      <p>Vous n'avez aucun signalement pour le moment.</p>
     </div>
   }
 
+  <!-- LISTE -->
   @if (!isLoading && filteredSignalements.length > 0) {
     <div class="signalements-list">
       @for (signalement of filteredSignalements; track signalement._id) {
-        <div class="signalement-card glass-card">
+        <div class="signalement-card">
+
           <div class="card-header">
             <div class="product-info">
               <h4 class="product-name">{{ signalement.produit_id?.nom_prod || 'Produit inconnu' }}</h4>
@@ -57,7 +61,6 @@
                 Signalé par <strong>{{ signalement.acheteur_id?.firstname }} {{ signalement.acheteur_id?.lastname }}</strong>
               </p>
             </div>
-
             <div class="status-badge" [style.background-color]="getStatutColor(signalement.statut)">
               {{ getStatutLabel(signalement.statut) }}
             </div>
@@ -65,26 +68,24 @@
 
           <div class="card-body">
             <div class="reason-section">
-              <span class="label">Raison:</span>
+              <span class="label">Raison</span>
               <span class="reason-tag">{{ getRaisonLabel(signalement.raison) }}</span>
             </div>
 
             <div class="description-section">
-              <span class="label">Description:</span>
+              <span class="label">Description</span>
               <p class="description-text">{{ signalement.description }}</p>
             </div>
 
             <div class="date-section">
-              <span class="label">Date:</span>
+              <span class="label">Date</span>
               <span class="date-text">{{ formatDate(signalement.createdAt) }}</span>
             </div>
 
             @if (signalement.reponse_admin) {
               <div class="admin-response-section">
-                <span class="label">Réponse de l'admin:</span>
-                <div class="admin-response-box">
-                  {{ signalement.reponse_admin }}
-                </div>
+                <span class="label">Réponse de l'administrateur</span>
+                <div class="admin-response-box">{{ signalement.reponse_admin }}</div>
               </div>
             }
           </div>
@@ -103,56 +104,55 @@
   @if (showModal && selectedSignalement) {
     <div class="modal-overlay" (click)="closeModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
+
         <div class="modal-header">
-          <h3>Détails du signalement</h3>
+          <h3>Détail du signalement</h3>
           <button class="btn-close" (click)="closeModal()">✕</button>
         </div>
 
         <div class="modal-body">
           <div class="info-group">
-            <label>Produit:</label>
+            <label>Produit</label>
             <p>{{ selectedSignalement.produit_id?.nom_prod || 'Inconnu' }}</p>
           </div>
 
           <div class="info-group">
-            <label>Acheteur:</label>
+            <label>Acheteur</label>
             <p>{{ selectedSignalement.acheteur_id?.firstname }} {{ selectedSignalement.acheteur_id?.lastname }}</p>
-            <p style="font-size: 12px; color: #999;">{{ selectedSignalement.acheteur_id?.email }}</p>
+            <p style="font-size: 12px; color: #bbb; margin-top: 4px;">{{ selectedSignalement.acheteur_id?.email }}</p>
           </div>
 
           <div class="info-group">
-            <label>Raison:</label>
+            <label>Raison</label>
             <p>{{ getRaisonLabel(selectedSignalement.raison) }}</p>
           </div>
 
           <div class="info-group">
-            <label>Description:</label>
+            <label>Description</label>
             <p>{{ selectedSignalement.description }}</p>
           </div>
 
           <div class="info-group">
-            <label>Statut:</label>
+            <label>Statut</label>
             <div class="status-badge-large" [style.background-color]="getStatutColor(selectedSignalement.statut)">
               {{ getStatutLabel(selectedSignalement.statut) }}
             </div>
           </div>
 
           <div class="info-group">
-            <label>Date de signalement:</label>
+            <label>Date de signalement</label>
             <p>{{ formatDate(selectedSignalement.createdAt) }}</p>
           </div>
 
           @if (selectedSignalement.reponse_admin) {
             <div class="info-group admin-response">
-              <label>Réponse de l'administrateur:</label>
-              <div class="admin-response-box-large">
-                {{ selectedSignalement.reponse_admin }}
-              </div>
+              <label>Réponse de l'administrateur</label>
+              <div class="admin-response-box-large">{{ selectedSignalement.reponse_admin }}</div>
             </div>
           }
 
           <div class="info-box note">
-            <p><strong>Note:</strong> Seul l'administrateur peut modifier le statut du signalement et vous répondre.</p>
+            <p><strong>Note :</strong> Seul l'administrateur peut modifier le statut et vous répondre.</p>
           </div>
         </div>
 
@@ -162,5 +162,5 @@
       </div>
     </div>
   }
-</div>
 
+</div>

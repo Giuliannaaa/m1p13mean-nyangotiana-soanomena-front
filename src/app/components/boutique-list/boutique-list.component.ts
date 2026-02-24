@@ -163,6 +163,7 @@ export class BoutiqueListComponent implements OnInit {
                 this.boutiques = response.data || response;
                 this.filterBoutiques(); // Appliquer les autres filtres
                 this.isLoadingSpecial = false;
+                this.currentPage = 1;
                 this.cdr.markForCheck();
             },
             error: (err) => {
@@ -210,6 +211,7 @@ export class BoutiqueListComponent implements OnInit {
         this.searchText = '';
         this.loadBoutiques();
         this.isFiltering = false;
+        this.currentPage = 1;
         this.cdr.markForCheck();
     }
 
@@ -281,4 +283,28 @@ export class BoutiqueListComponent implements OnInit {
     viewBoutique(boutiqueId: string) {
         this.router.navigate(['/boutique', boutiqueId]);
     }
-}
+
+    // Pagination
+    currentPage: number = 1;
+    itemsPerPage: number = 12;
+
+        get totalPages(): number {
+            return Math.ceil(this.filteredBoutiques.length / this.itemsPerPage);
+        }
+
+        get paginatedBoutiques(): any[] {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+            return this.filteredBoutiques.slice(start, start + this.itemsPerPage);
+        }
+
+        get pages(): number[] {
+            return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+        }
+
+        goToPage(page: number): void {
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }   
+    }

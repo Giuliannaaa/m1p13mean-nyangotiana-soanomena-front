@@ -2,8 +2,9 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChang
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 
-import { provideHttpClient } from "@angular/common/http";
+import { provideHttpClient, withInterceptors } from "@angular/common/http";
 import { Chart, registerables } from 'chart.js';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 Chart.register(...registerables);
 
@@ -11,7 +12,9 @@ export const appConfig: ApplicationConfig = {
     providers: [
         provideBrowserGlobalErrorListeners(),
         provideRouter(routes),
-        provideHttpClient(),
+        provideHttpClient(
+      withInterceptors([authInterceptor]) // ← ajouter ici
+    ),
         provideZoneChangeDetection({ eventCoalescing: true })
     ]
 };

@@ -21,9 +21,11 @@ export class UserListComponent implements OnInit {
     roleFilter: string = 'all';
     isLoading: boolean = true;
     errorMessage: string = '';
+    boutiqueUsers: any[] = [];
 
     ngOnInit(): void {
         this.loadUsers();
+        this.loadUserDocuments();
     }
 
     loadUsers(): void {
@@ -68,5 +70,37 @@ export class UserListComponent implements OnInit {
                 console.error('Erreur lors de la mise à jour de l\'état de l\'utilisateur:', err);
             }
         });
+    }
+
+    loadUserDocuments(): void {
+    this.userService.getUserDocuments().subscribe({
+        next: (response) => {
+        console.log('Documents reçus:', response);
+        this.boutiqueUsers = response.data;
+        },
+        error: (err) => console.error('Erreur documents:', err)
+    });
+    }
+
+    getDocumentUrl(filePath: string): string {
+    return `http://localhost:5000/${filePath.replace('./', '')}`;
+    }
+
+    isPdf(filePath: string): boolean {
+    return filePath.toLowerCase().endsWith('.pdf');
+    }
+
+    // Aperçu modal
+    previewUrl: string = '';
+    previewVisible: boolean = false;
+
+    openPreview(url: string): void {
+    this.previewUrl = url;
+    this.previewVisible = true;
+    }
+
+    closePreview(): void {
+    this.previewUrl = '';
+    this.previewVisible = false;
     }
 }
