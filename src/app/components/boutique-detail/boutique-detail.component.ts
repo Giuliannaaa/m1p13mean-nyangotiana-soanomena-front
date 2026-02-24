@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { BoutiqueService } from '../../services/boutique/boutique.service';
 import { ProduitService } from '../../services/produits/produits.service';
 import { Boutique } from '../../models/boutique.model';
@@ -44,6 +45,10 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
     private categorieService = inject(CategorieService);
     private cdr = inject(ChangeDetectorRef);
 
+    // cart
+    cartData: any = null;
+    private cartSubscription?: Subscription;
+
     ngOnInit(): void {
         this.isAcheteur = this.authService.getRole() === 'Acheteur';
         this.loadCategories();
@@ -55,6 +60,21 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
                 this.checkSuivi(id);
             }
         }
+        this.loadCart();
+
+        this.cartSubscription = this.panierService.cartUpdate$.subscribe(() => {
+            this.loadCart();
+        });
+    }
+
+    loadCart() {
+        if (!this.isAcheteur) return;
+        this.panierService.getPanier().subscribe({
+            next: (res) => {
+                this.cartData = res.data;
+            },
+            error: (err) => console.error('Error loading cart', err)
+        });
     }
 
     loadBoutique(id: string): void {
@@ -163,6 +183,7 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
         this.panierService.addToPanier(produit._id!, 1).subscribe({
             next: () => {
                 alert('Produit ajouté au panier !');
+                this.panierService.notifyCartUpdate();
             },
             error: (err) => {
                 console.error(err);
@@ -171,11 +192,18 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    getProductPrice(produit: Produit): number {
+    getOriginalPrice(produit: Produit): number {
         if (produit.prix_unitaire?.$numberDecimal) {
             return parseFloat(produit.prix_unitaire.$numberDecimal);
         }
         return typeof produit.prix_unitaire === 'number' ? produit.prix_unitaire : 0;
+    }
+
+    getProductPrice(produit: Produit): number {
+        if (produit.isPromoted && produit.prix_promo) {
+            return produit.prix_promo;
+        }
+        return this.getOriginalPrice(produit);
     }
 
     toggleReportModal(produitId: string | null = null): void {
@@ -228,5 +256,6 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
         if (this.carouselInterval) {
             clearInterval(this.carouselInterval);
         }
+        this.cartSubscription?.unsubscribe();
     }
 }

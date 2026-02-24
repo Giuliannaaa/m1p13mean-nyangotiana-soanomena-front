@@ -114,6 +114,27 @@ body,
   height: 18px;
 }
 
+.icon-btn-nav {
+  position: relative;
+}
+
+.nav-cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
 /* ============================================
    HERO SECTION WITH CAROUSEL
    ============================================ */
@@ -581,6 +602,18 @@ body,
   color: #1a1a1a;
   line-height: 1.4;
   min-height: 30px;
+}
+
+.product-price-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.price-original {
+  font-size: 13px;
+  color: #999;
+  text-decoration: line-through;
 }
 
 .product-price-modern {

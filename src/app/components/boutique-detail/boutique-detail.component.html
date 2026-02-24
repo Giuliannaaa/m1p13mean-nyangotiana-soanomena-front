@@ -2,14 +2,27 @@
 <header class="boutique-nav-header">
   <div class="nav-inner">
     <a routerLink="/boutiques" class="nav-back-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
       </svg>
     </a>
     <h1 class="nav-title">{{ boutique?.name }}</h1>
     <div class="nav-icons">
+      <button class="icon-btn-nav" routerLink="/panier">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span *ngIf="isAcheteur && cartData?.items?.length > 0" class="nav-cart-badge">
+          {{ cartData.items.length }}
+        </span>
+      </button>
       <button class="icon-btn-nav">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
         </svg>
@@ -23,65 +36,57 @@
   <!-- HERO BANNER WITH CAROUSEL -->
   <section class="boutique-hero-section">
     @if (boutique?.images && boutique!.images!.length > 0) {
-      <div class="hero-banner">
-        <!-- Carousel d'images en background -->
+    <div class="hero-banner">
+      <!-- Carousel d'images en background -->
+      @for (img of boutique?.images; track $index) {
+      <img [src]="'http://localhost:5000/' + img.url" [alt]="boutique?.name" class="hero-img carousel-image"
+        [class.active]="$index === currentImageIndex">
+      }
+      <div class="hero-overlay"></div>
+
+      <!-- Indicateurs de carousel (optionnel) -->
+      @if (boutique!.images!.length > 1) {
+      <div class="carousel-indicators">
         @for (img of boutique?.images; track $index) {
-          <img 
-            [src]="'http://localhost:5000/' + img.url" 
-            [alt]="boutique?.name" 
-            class="hero-img carousel-image"
-            [class.active]="$index === currentImageIndex"
-          >
-        }
-        <div class="hero-overlay"></div>
-        
-        <!-- Indicateurs de carousel (optionnel) -->
-        @if (boutique!.images!.length > 1) {
-          <div class="carousel-indicators">
-            @for (img of boutique?.images; track $index) {
-              <span 
-                class="indicator"
-                [class.active]="$index === currentImageIndex"
-                (click)="setImage($index)"
-              ></span>
-            }
-          </div>
+        <span class="indicator" [class.active]="$index === currentImageIndex" (click)="setImage($index)"></span>
         }
       </div>
+      }
+    </div>
     }
-    
+
     <div class="hero-content">
       <div class="boutique-hero-info">
         <div class="boutique-logo-hero">
           @if(boutique?.images?.[0]?.url) {
-            <img [src]="'http://localhost:5000/' + boutique?.images?.[0]?.url" [alt]="boutique?.name">
+          <img [src]="'http://localhost:5000/' + boutique?.images?.[0]?.url" [alt]="boutique?.name">
           } @else {
-            <img src="/img/png/elementor-placeholder-image.png" [alt]="boutique?.name">
+          <img src="/img/png/elementor-placeholder-image.png" [alt]="boutique?.name">
           }
         </div>
-        
+
         <div class="boutique-header-details">
           <h2 class="boutique-hero-title">{{ boutique?.name }}</h2>
           <p><strong>{{ boutique?.followers }}</strong> Followers </p>
           <div class="boutique-meta-hero">
             <span class="rating-hero">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="12 2 15.09 10.26 23.77 10.35 17.16 16.26 19.31 24.04 12 18.09 4.69 24.04 6.84 16.26 0.22 10.35 8.91 10.26 12 2"></polygon>
+                <polygon
+                  points="12 2 15.09 10.26 23.77 10.35 17.16 16.26 19.31 24.04 12 18.09 4.69 24.04 6.84 16.26 0.22 10.35 8.91 10.26 12 2">
+                </polygon>
               </svg>
               {{ (boutique?.rating || 0) | number:'1.1-1' }}
             </span>
             <span class="category-badge-hero">{{ getCategoryName(boutique?.categoryId) }}</span>
           </div>
-          
+
           <p class="boutique-desc-hero">{{ boutique?.description }}</p>
-          
+
           @if (isAcheteur) {
-            <button 
-              (click)="toggleSuivi()" 
-              [ngClass]="isSuivie ? 'btn-following-hero' : 'btn-follow-hero'"
-              class="btn-hero-main">
-              {{ isSuivie ? '✓ Suivi' : '+ Suivre' }}
-            </button>
+          <button (click)="toggleSuivi()" [ngClass]="isSuivie ? 'btn-following-hero' : 'btn-follow-hero'"
+            class="btn-hero-main">
+            {{ isSuivie ? '✓ Suivi' : '+ Suivre' }}
+          </button>
           }
         </div>
       </div>
@@ -106,73 +111,79 @@
 
         <!-- GALLERY -->
         @if (boutique?.images && boutique!.images!.length > 1) {
-          <div class="gallery-mobile-section">
-            <h3 class="filter-title">Galerie</h3>
-            <div class="gallery-scroll-mobile">
-              @for (img of boutique?.images; track $index) {
-                @if ($index > 0) {
-                  <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + $index" loading="lazy">
-                }
-              }
-            </div>
+        <div class="gallery-mobile-section">
+          <h3 class="filter-title">Galerie</h3>
+          <div class="gallery-scroll-mobile">
+            @for (img of boutique?.images; track $index) {
+            @if ($index > 0) {
+            <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + $index" loading="lazy">
+            }
+            }
           </div>
+        </div>
         }
       </aside>
 
       <!-- PRODUCTS GRID -->
       <div class="products-main">
         @if (produits.length > 0) {
-          <div class="products-grid-modern">
-            @for (produit of produits; track produit._id; let i = $index) {
-              <div class="product-card-modern" [style.animation-delay]="(i * 80) + 'ms'">
-                <div class="product-image-modern">
-                  @if(produit.image_Url) {
-                    <img [src]="'http://localhost:5000/' + produit.image_Url" [alt]="produit.nom_prod">
-                  } @else {
-                    <img src="/img/png/elementor-placeholder-image.png" [alt]="produit.nom_prod">
-                  }
-                  <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
-                  <span *ngIf="produit.isPromoted" class="badge-sale">Promotion</span>
-                  <span *ngIf="produit.isNew && produit.isPromoted" class="badge-spec">Nouveau et Promotion</span>
-                  
-                  
-                  @if (isAcheteur) {
-                    <button class="btn-report-product" (click)="toggleReportModal(produit._id)">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                      </svg>
-                    </button>
-                  }
-                </div>
-                
-                <div class="product-content-modern">
-                  <h4 class="product-name-modern">{{ produit.nom_prod }}</h4>
+        <div class="products-grid-modern">
+          @for (produit of produits; track produit._id; let i = $index) {
+          <div class="product-card-modern" [style.animation-delay]="(i * 80) + 'ms'">
+            <div class="product-image-modern">
+              @if(produit.image_Url) {
+              <img [src]="'http://localhost:5000/' + produit.image_Url" [alt]="produit.nom_prod">
+              } @else {
+              <img src="/img/png/elementor-placeholder-image.png" [alt]="produit.nom_prod">
+              }
+              <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
+              <span *ngIf="produit.isPromoted" class="badge-sale">Promotion</span>
+              <span *ngIf="produit.isNew && produit.isPromoted" class="badge-spec">Nouveau et Promotion</span>
 
-                  <p class="product-price-modern">{{ getProductPrice(produit) | currency:'MGA ':'code':'1.0-0' }}</p>
-                  
-                  <div class="product-actions-modern">
-                    <button (click)="addToPanier(produit)" class="btn-add-chart">Ajouter au panier</button>
-                    <button [routerLink]="['/achats/ajouter', produit._id]" class="btn-buy-now">Acheter</button>
-                  </div>
-                </div>
+
+              @if (isAcheteur) {
+              <button class="btn-report-product" (click)="toggleReportModal(produit._id)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </button>
+              }
+            </div>
+
+            <div class="product-content-modern">
+              <h4 class="product-name-modern">{{ produit.nom_prod }}</h4>
+
+              <div class="product-price-container">
+                <span *ngIf="produit.isPromoted && produit.prix_promo" class="price-original">
+                  {{ getOriginalPrice(produit) | currency:'MGA ':'code':'1.0-0' }}
+                </span>
+                <p class="product-price-modern">{{ getProductPrice(produit) | currency:'MGA ':'code':'1.0-0' }}</p>
               </div>
-            }
+
+              <div class="product-actions-modern">
+                <button (click)="addToPanier(produit)" class="btn-add-chart">Ajouter au panier</button>
+                <button [routerLink]="['/achats/ajouter', produit._id]" class="btn-buy-now">Acheter</button>
+              </div>
+            </div>
           </div>
+          }
+        </div>
         } @else {
-          <div class="empty-products">
-            <div class="empty-icon"></div>
-            <h3>Aucun produit</h3>
-            <p>Bientôt de nouveaux articles...</p>
-          </div>
+        <div class="empty-products">
+          <div class="empty-icon"></div>
+          <h3>Aucun produit</h3>
+          <p>Bientôt de nouveaux articles...</p>
+        </div>
         }
 
         <!-- REVIEWS -->
         @if (boutique) {
-          <div class="reviews-modern">
-            <app-note-boutique [boutiqueId]="boutique._id"></app-note-boutique>
-          </div>
+        <div class="reviews-modern">
+          <app-note-boutique [boutiqueId]="boutique._id"></app-note-boutique>
+        </div>
         }
       </div>
     </div>
@@ -180,25 +191,25 @@
 
   <!-- LEGAL INFO SECTION -->
   @if (boutique?.legal) {
-    <section class="legal-section">
-      <div class="legal-container">
-        <h2>Informations légales</h2>
-        <div class="legal-grid">
-          <div class="legal-item">
-            <span class="legal-label">NIF</span>
-            <span class="legal-value">{{ boutique?.legal?.nif || 'N/A' }}</span>
-          </div>
-          <div class="legal-item">
-            <span class="legal-label">STAT</span>
-            <span class="legal-value">{{ boutique?.legal?.stat || 'N/A' }}</span>
-          </div>
-          <div class="legal-item">
-            <span class="legal-label">Patente</span>
-            <span class="legal-value">{{ boutique?.legal?.rent || 'N/A' }}</span>
-          </div>
+  <section class="legal-section">
+    <div class="legal-container">
+      <h2>Informations légales</h2>
+      <div class="legal-grid">
+        <div class="legal-item">
+          <span class="legal-label">NIF</span>
+          <span class="legal-value">{{ boutique?.legal?.nif || 'N/A' }}</span>
+        </div>
+        <div class="legal-item">
+          <span class="legal-label">STAT</span>
+          <span class="legal-value">{{ boutique?.legal?.stat || 'N/A' }}</span>
+        </div>
+        <div class="legal-item">
+          <span class="legal-label">Patente</span>
+          <span class="legal-value">{{ boutique?.legal?.rent || 'N/A' }}</span>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
   }
 </main>
 
@@ -212,10 +223,10 @@
 
 <!-- MODAL -->
 @if (showReportModal) {
-  <div class="modal-overlay-modern" (click)="toggleReportModal()">
-    <div class="modal-dialog-modern" (click)="$event.stopPropagation()">
-      <button class="modal-close-modern" (click)="toggleReportModal()">✕</button>
-      <app-signaler-produit [produitId]="selectedProduitId!"></app-signaler-produit>
-    </div>
+<div class="modal-overlay-modern" (click)="toggleReportModal()">
+  <div class="modal-dialog-modern" (click)="$event.stopPropagation()">
+    <button class="modal-close-modern" (click)="toggleReportModal()">✕</button>
+    <app-signaler-produit [produitId]="selectedProduitId!"></app-signaler-produit>
   </div>
+</div>
 }
