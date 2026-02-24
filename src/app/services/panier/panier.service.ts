@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 
 @Injectable({
@@ -9,8 +9,14 @@ import { Observable } from 'rxjs';
 export class PanierService {
     // Use environment variable if available, otherwise fallback (or hardcode for now as per other services)
     private apiUrl = 'http://localhost:5000/api/panier';
+    private cartUpdateSource = new Subject<void>();
+    cartUpdate$ = this.cartUpdateSource.asObservable();
 
     constructor(private http: HttpClient) { }
+
+    notifyCartUpdate() {
+        this.cartUpdateSource.next();
+    }
 
     getPanier(): Observable<any> {
         const token = localStorage.getItem('auth_token');
