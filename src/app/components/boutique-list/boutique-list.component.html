@@ -93,7 +93,7 @@
     <section class="section boutiques-grid-section">
       <div class="section-content">
         <div class="boutiques-cards-grid">
-          @for (boutique of filteredBoutiques; track boutique._id) {
+          @for (boutique of paginatedBoutiques; track boutique._id) {
             <div class="boutique-card-modern">
               <!-- Header Card -->
               <div class="boutique-card-header">
@@ -158,6 +158,37 @@
     </section>
   }
 
+  @if (totalPages > 1) {
+  <div class="pagination-container">
+    <button 
+      class="pagination-btn pagination-arrow" 
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1">
+      ←
+    </button>
+
+    @for (page of pages; track page) {
+      <button 
+        class="pagination-btn"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    }
+
+    <button 
+      class="pagination-btn pagination-arrow" 
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages">
+      →
+    </button>
+
+    <span class="pagination-info">
+      Page {{ currentPage }} / {{ totalPages }}
+    </span>
+  </div>
+}
+
   <!-- FOOTER -->
   <footer class="footer-elegant">
     <div class="footer-content-elegant">
@@ -169,10 +200,9 @@
       <div class="footer-column">
         <h4>Navigation</h4>
         <ul>
-          <li><a href="#">Accueil</a></li>
-          <li><a href="#">Boutiques</a></li>
-          <li><a href="#">Produits</a></li>
-          <li><a href="#">Promotions</a></li>
+          <li><a routerLink="/boutiques" routerLinkActive="active">Boutiques</a></li>
+          <li><a routerLink="/produits" routerLinkActive="active">Produits</a></li>
+          <li><a routerLink="/promotions" routerLinkActive="active">Promotions</a></li>
         </ul>
       </div>
 

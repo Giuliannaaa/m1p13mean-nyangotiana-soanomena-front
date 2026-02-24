@@ -1,119 +1,199 @@
-<div class="achat-list-container">
-  <div class="list-header">
-    <h1>Liste des Achats</h1>
-  </div>
-
-  <!-- Filters -->
-  <div class="filter-card">
-    <h3>Filtrer par boutique</h3>
-    <div class="filter-grid">
-      <select [(ngModel)]="boutique_selectionnee" (change)="filterByBoutique()" class="form-select">
-        <option value="">-- Toutes les boutiques --</option>
-        <option *ngFor="let boutique of boutiques" [value]="boutique._id">
-          {{ boutique.name }}
-        </option>
-      </select>
-
-      <button (click)="resetFilter()" class="btn-reset">
-        Réinitialiser
-      </button>
-    </div>
-
-    <div *ngIf="isFiltering" class="filter-stats">
-      <strong>Achats filtrés :</strong> {{ filteredAchats.length }} résultat(s) / {{ achats.length }} total
+<div class="achat-list-elegant">
+  <!-- HEADER -->
+  <div class="achat-header-elegant">
+    <div class="header-content">
+      <h1>Mes Achats</h1>
+      <p>Consultez l'historique et suivi de vos commandes</p>
     </div>
   </div>
 
-  <!-- Empty State -->
-  <div *ngIf="filteredAchats.length === 0" class="empty-state">
-    <p>{{ isFiltering ? 'Aucun achat pour cette boutique' : 'Aucun achat pour le moment' }}</p>
-  </div>
+  <!-- FILTERS SECTION -->
+  <section class="section achat-filters-section">
+    <div class="section-content">
+      <!-- Search & Filters -->
+      <div class="achat-filters-wrapper">
+        <!-- Boutique Filter -->
+        <select [(ngModel)]="boutique_selectionnee" (change)="filterByBoutique()" class="filter-select-achat">
+          <option value="">-- Toutes les boutiques --</option>
+          <option *ngFor="let boutique of boutiques" [value]="boutique._id">
+            {{ boutique.name }}
+          </option>
+        </select>
 
-  <!-- Achat Cards -->
-  <div *ngFor="let achat of filteredAchats" class="achat-card">
-    <!-- Header -->
-    <div class="achat-header">
-      <div class="achat-info">
-        <div class="info-item">
-          <span class="info-label">Date</span>
-          <span class="info-value">{{ achat.createdAt | date:'dd MMM yyyy HH:mm' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Boutique</span>
-          <span class="info-value">{{ getNomBoutique(achat) }}</span>
-        </div>
-      </div>
-      <span class="status-badge" [ngClass]="'status-' + (achat.status?.toLowerCase() || 'en_attente')">
-        {{ achat.status || 'EN ATTENTE' }}
-      </span>
-    </div>
-
-    <!-- Items Table -->
-    <table class="modern-table">
-      <thead>
-        <tr>
-          <th style="width: 80px;">Image</th>
-          <th>Produit</th>
-          <th style="text-align: center;">Qté</th>
-          <th style="text-align: right;">Prix Unitaire</th>
-          <th style="text-align: right;">Sous-total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of achat.items">
-          <td>
-            <img [src]="getProductImage(item)" alt="Produit" class="item-thumb"
-              onerror="this.src='/img/placeholder.png'" />
-          </td>
-          <td><span class="item-name">{{ item.nom_prod || 'Produit inconnu' }}</span></td>
-          <td style="text-align: center;">{{ item.quantity }}</td>
-          <td style="text-align: right;">
-            {{ item.prix_unitaire?.$numberDecimal
-            ? (item.prix_unitaire.$numberDecimal | number:'1.0-0')
-            : (item.prix_unitaire | number:'1.0-0') }} Ar
-          </td>
-          <td style="text-align: right; font-weight: 600;">
-            {{ (item.quantity * (item.prix_unitaire?.$numberDecimal
-            ? parseFloat(item.prix_unitaire.$numberDecimal)
-            : item.prix_unitaire)) | number:'1.0-0' }} Ar
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Footer -->
-    <div class="achat-footer">
-      <div class="achat-actions">
-        <ng-container *ngFor="let nextStatus of getTransitions(achat.status, achat.avec_livraison)">
-          <button (click)="updateStatus(achat._id, nextStatus)" class="btn-action"
-            [style.background-color]="getStatusActionColor(nextStatus)">
-            {{ getStatusActionLabel(nextStatus) }}
-          </button>
-        </ng-container>
-
-        <button (click)="deleteAchat(achat._id)" class="btn-action btn-outline-danger">
-          Supprimer
+        <!-- Reset Button -->
+        <button (click)="resetFilter()" class="btn-reset-achat" title="Réinitialiser les filtres">
+          ↻ Réinitialiser
         </button>
       </div>
 
-      <div class="totals-group">
-        <div class="total-row">
-          <span>Total articles</span>
-          <span>{{ achat.total_achat | number:'1.0-0' }} Ar</span>
+      <!-- Results Counter -->
+      @if (isFiltering) {
+        <div class="filter-stats-achat">
+          <strong>Achats filtrés :</strong> {{ filteredAchats.length }} résultat(s) / {{ achats.length }} total
         </div>
-        <div *ngIf="achat.reduction > 0" class="total-row" style="color: #16a34a;">
-          <span>Réduction</span>
-          <span>-{{ achat.reduction | number:'1.0-0' }} Ar</span>
-        </div>
-        <div *ngIf="achat.avec_livraison" class="total-row" style="color: #2563eb;">
-          <span>Frais de livraison</span>
-          <span>+{{ achat.frais_livraison | number:'1.0-0' }} Ar</span>
-        </div>
-        <div class="total-row grand-total">
-          <span>Total Final</span>
-          <span>{{ achat.total_reel | number:'1.0-0' }} Ar</span>
+      }
+    </div>
+  </section>
+
+  <!-- EMPTY STATE -->
+  @if (filteredAchats.length === 0) {
+    <section class="section">
+      <div class="section-content">
+        <div class="empty-state-achat">
+          <div class="empty-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFFUlEQVR4nO2aXWxTdRjGjxIxhhgTxc8IJqTQrqbAxiYbK25s6xjbyjCzMgJbAGWwLhJQPoayTMxcSzYU4oCQIYQZnCIrbGS1G7DuA/TCXXhhRuIFeEExajQixISA/sy/9GK2Ox2nnm6n5PySJ1nO+/R5n3PS5t8tkyQdHR0dHR0dHR0dVZlWhX2aE/90JzenV0NMcnJzWjW906splhKJGU4aZjhBZdVLiYChEvvMDWDYwC3DerYZq3ku1izxWkMV20VWKFP774SkdfiTKsFUyXa1Mk2V1IQyz0tax/IGNyzrgmWfVStTZIlMyzr+lLRO8usglCi5qpO2FoQSJVd10leDUKLk/m/MDiZnVrA7s4Jr1gr4j8oJWMtxC49WclUnqxx3djlE1SpcWslVndyVBPJWwqJVLAif5a3AKmbCo5Xce8bhYHLBCnYXlHGtYAUkqAKLy3CLe1H8AIrKcBeVwX0i5R+VEgeBktegZHnkWzBRWObAGrwHRwwfldJXQUjJTGvXx5pFZXkpCCmZae36WLOorHwFhJTMtHZ9rFlUKpaBkJKZ1q6PNYvKGjuBtUthTTFWKUFZXcJCcQ9rl3JV8Ysri3BVFsN9ogbFD8DhYHJVEa6qQgLOIkhIFXLVWUhDTF+ERuIs5JmNS7i+cQm8WcDzkkYR3UTHYFc7T6savjmfs5sXw6bFFEkaZZMNe6hjj+rhW2w0bc2HbTZ2SBplq42douPWfPaoHl6TR/mOPNiRy2eSRqnJ40vR8R0bq1UPr8thdm0O1ObwvaRRahfxg+hYl0OK6uGH5vHQrmxu7VrE7X0FPCzne/siB7ZchDANhvu2XOCigvldXWC/3N5GG1N2ZfP3e9nc2ZPOI1I8qH+Z7+qzoD6LuXKenQP01g5CuMJ9SudCIlu2WxbpoW7DUrxwL+SYeyG4MqmQ87j62e/qh3CN4lM0F2roozlKt/Wim9vK51K8aLLyVpMVGq00ynn29VK9zw/hivApnAvt7cUpt7cxkwOiW5OVd6V4sTeD3L0L4KMMuuU8LWfJbjkH4YrwKZwLHeohK0q3r0W3DzOxS/Hi4zSeaM6Aj9O5Juc57mfq8R4IV4RP4VzohJcnR9uJxAPNGVwX3ZozeEGKJwdfInBwPhzI4Ck5j8fHLx4fjNQoHkVzz1f8LLevOR1DsNN8/hAPQ4onLWl4W9LgcBq5ch5fF30+L4xUhEfh3NeFX27foVRKRaeWtMjjVHWOpOI6mgpHU9kk5+k/w/6BMzBS4R6l84Ez8ifAkVTeD3aaJ/89QTVakyn7NAVaU/hEzjN0muqhDhipCI/C+VCn/AnQmkKH6HQsmQ1SvGlLJqltLrTN4Vs5z6VTZA+fgpEK9yidD3vkT4C2OfwY7DR3HP6Ef8LBpBOz+SsoB5NG8/zUypTL7Vy60g4hDYR7rpxk8F7nl08yLDJH7TOPx76Ywz9C4mdpPPBYuOCxQLuFdGmCabewVHTxWLg0bks7zdR0vggdZk5KE4g48jrM+EWXTjO7x22xz8zjXjO/es3gNbM92tlbJ/Fgl5nD3iRuhfxj6663RbxWLlfs9Jr5QPi7zFzvMcb+32gx4TNR3G3kdo8Juk0M+kzYTht5NNx31kSF8MSkJMrD88SObhP53Ua+Cfnu9BhxSBPBOSP287P47bwRJkLnZvF7r5FSaSLxz2Jqn4G6vpkM9Ru40T8T4ioDN8QusXPAMPrvBjo6Ojo6Ojo6OjrSmPwLK/Tu/HbVILUAAAAASUVORK5CYII=" alt="shopping-basket"></div>
+          <h3>Aucun achat</h3>
+          <p>{{ isFiltering ? 'Aucun achat pour cette boutique' : 'Vous n\'avez pas encore effectué d\'achat' }}</p>
         </div>
       </div>
+    </section>
+  }
+
+  <!-- ACHATS LIST -->
+  @if (filteredAchats.length > 0) {
+    <section class="section achat-list-section">
+      <div class="section-content">
+        <div class="achats-stack">
+          @for (achat of filteredAchats; track achat._id) {
+            <div class="achat-card-elegant">
+              <!-- Card Header -->
+              <div class="achat-card-header">
+                <div class="achat-header-info">
+                  <div class="achat-info-item">
+                    <span class="achat-label">Date</span>
+                    <span class="achat-value">{{ achat.createdAt | date:'dd MMM yyyy' }}</span>
+                  </div>
+                  <div class="achat-info-item">
+                    <span class="achat-label">Boutique</span>
+                    <span class="achat-value">{{ getNomBoutique(achat) }}</span>
+                  </div>
+                </div>
+                <span class="achat-status-badge" [ngClass]="'status-' + (achat.status?.toLowerCase() || 'en_attente')">
+                  {{ achat.status || 'EN ATTENTE' }}
+                </span>
+              </div>
+
+              <!-- Items Table -->
+              <div class="achat-items-section">
+                <table class="achat-items-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 70px;">Image</th>
+                      <th>Produit</th>
+                      <th style="text-align: center; width: 60px;">Qté</th>
+                      <th style="text-align: right; width: 120px;">Prix Unit.</th>
+                      <th style="text-align: right; width: 100px;">Sous-total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of achat.items; track item._id) {
+                      <tr>
+                        <td>
+                          <img [src]="getProductImage(item)" [alt]="item.nom_prod" 
+                            class="achat-item-thumb" 
+                            onerror="this.src='/img/placeholder.png'" />
+                        </td>
+                        <td><span class="achat-item-name">{{ item.nom_prod || 'Produit inconnu' }}</span></td>
+                        <td style="text-align: center;">{{ item.quantity }}</td>
+                        <td style="text-align: right;">
+                          {{ item.prix_unitaire?.$numberDecimal
+                          ? (item.prix_unitaire.$numberDecimal | number:'1.0-0')
+                          : (item.prix_unitaire | number:'1.0-0') }} Ar
+                        </td>
+                        <td style="text-align: right; font-weight: 600;">
+                          {{ (item.quantity * (item.prix_unitaire?.$numberDecimal
+                          ? parseFloat(item.prix_unitaire.$numberDecimal)
+                          : item.prix_unitaire)) | number:'1.0-0' }} Ar
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Card Footer -->
+              <div class="achat-card-footer">
+                <div class="achat-actions-group">
+                  @for (nextStatus of getTransitions(achat.status, achat.avec_livraison); track nextStatus) {
+                    <button (click)="updateStatus(achat._id, nextStatus)" 
+                      class="btn-achat-action"
+                      [style.background-color]="getStatusActionColor(nextStatus)">
+                      {{ getStatusActionLabel(nextStatus) }}
+                    </button>
+                  }
+
+                  <button (click)="deleteAchat(achat._id)" class="btn-achat-delete">
+                    Supprimer
+                  </button>
+                </div>
+
+                <div class="achat-totals-group">
+                  <div class="achat-total-row">
+                    <span>Total articles</span>
+                    <span>{{ achat.total_achat | number:'1.0-0' }} Ar</span>
+                  </div>
+                  @if (achat.reduction > 0) {
+                    <div class="achat-total-row" style="color: #22c55e;">
+                      <span>Réduction</span>
+                      <span>-{{ achat.reduction | number:'1.0-0' }} Ar</span>
+                    </div>
+                  }
+                  @if (achat.avec_livraison) {
+                    <div class="achat-total-row" style="color: #2563eb;">
+                      <span>Frais livraison</span>
+                      <span>+{{ achat.frais_livraison | number:'1.0-0' }} Ar</span>
+                    </div>
+                  }
+                  <div class="achat-total-row achat-grand-total">
+                    <span>Total Final</span>
+                    <span>{{ achat.total_reel | number:'1.0-0' }} Ar</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- FOOTER -->
+  <footer class="footer-elegant">
+    <div class="footer-content-elegant">
+      <div class="footer-column">
+        <h4>À propos</h4>
+        <p>SuperMarket est votre plateforme de confiance pour vos achats en ligne.</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a routerLink="/boutiques" routerLinkActive="active">Boutiques</a></li>
+          <li><a routerLink="/produits" routerLinkActive="active">Produits</a></li>
+          <li><a routerLink="/promotions" routerLinkActive="active">Promotions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>contact@supermarket.com</p>
+        <p>+261 6XX XXX XXX</p>
+        <p>Antananarivo, Madagascar</p>
+      </div>
     </div>
-  </div>
+
+    <div class="footer-bottom-elegant">
+      <p>&copy; 2026 SuperMarket. Tous droits réservés.</p>
+      <p>Développé par <strong>Ny Angotiana and Soanomena</strong></p>
+    </div>
+  </footer>
 </div>

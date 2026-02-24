@@ -34,7 +34,7 @@ export class PromotionListComponent implements OnInit {
   loadPromotions(): void {
     this.promotionService.getPromotions().subscribe({
       next: (data) => {
-        console.log('Promotions 👀', data);
+        console.log('Promotions', data);
         this.promotions = data;
       },
       error: (err) => console.error(err)

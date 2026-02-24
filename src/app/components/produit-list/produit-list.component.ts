@@ -249,6 +249,7 @@ export class ProduitListComponent implements OnInit {
       this.prix_min > 0 ||
       this.prix_max < this.prix_max_range ||
       this.searchText !== '';
+      this.currentPage = 1;
 
     console.log('Produits filtrés:', this.filteredProduits.length);
     this.cdr.markForCheck();
@@ -274,6 +275,7 @@ export class ProduitListComponent implements OnInit {
     this.loadProduits();
     this.isFiltering = false;
     this.cdr.markForCheck();
+    this.currentPage = 1;
   }
 
   deleteProduit(id: string | undefined): void {
@@ -373,4 +375,28 @@ export class ProduitListComponent implements OnInit {
       }
     });
   }
+
+  // Pagination
+currentPage: number = 1;
+itemsPerPage: number = 12;
+
+get totalPages(): number {
+  return Math.ceil(this.filteredProduits.length / this.itemsPerPage);
+}
+
+get paginatedProduits(): Produit[] {
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  return this.filteredProduits.slice(start, start + this.itemsPerPage);
+}
+
+get pages(): number[] {
+  return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+}
+
+goToPage(page: number): void {
+  if (page >= 1 && page <= this.totalPages) {
+    this.currentPage = page;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
 }
