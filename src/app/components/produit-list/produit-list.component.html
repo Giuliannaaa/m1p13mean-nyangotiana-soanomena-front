@@ -22,13 +22,8 @@
               d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
               clip-rule="evenodd" />
           </svg>
-          <input 
-            type="text" 
-            [(ngModel)]="searchText" 
-            (keyup)="filterProduits()"
-            placeholder="Rechercher un produit par nom, description ou boutique..." 
-            class="search-input-produits"
-          />
+          <input type="text" [(ngModel)]="searchText" (keyup)="filterProduits()"
+            placeholder="Rechercher un produit par nom, description ou boutique..." class="search-input-produits" />
           <button *ngIf="searchText" (click)="searchText = ''; filterProduits()" class="btn-clear-search">✕</button>
         </div>
       </div>
@@ -57,8 +52,10 @@
             Prix: {{ prix_min | number:'1.0-0' }} - {{ prix_max | number:'1.0-0' }} Ar
           </div>
           <div class="price-sliders-mini">
-            <input type="range" [(ngModel)]="prix_min" (change)="filterProduits()" [min]="0" [max]="prix_max_range" class="slider-mini" />
-            <input type="range" [(ngModel)]="prix_max" (change)="filterProduits()" [min]="0" [max]="prix_max_range" class="slider-mini" />
+            <input type="range" [(ngModel)]="prix_min" (change)="filterProduits()" [min]="0" [max]="prix_max_range"
+              class="slider-mini" />
+            <input type="range" [(ngModel)]="prix_max" (change)="filterProduits()" [min]="0" [max]="prix_max_range"
+              class="slider-mini" />
           </div>
         </div>
 
@@ -73,135 +70,139 @@
 
       <!-- Results Counter -->
       @if (searchText || isFiltering || isLoadingSpecial) {
-        <div class="results-indicator">
-          <span class="result-count">{{ filteredProduits.length }} résultat(s)</span>
-          @if (searchText) {
-            <span class="active-filter-badge">Recherche: "{{ searchText }}"</span>
-          }
-        </div>
+      <div class="results-indicator">
+        <span class="result-count">{{ filteredProduits.length }} résultat(s)</span>
+        @if (searchText) {
+        <span class="active-filter-badge">Recherche: "{{ searchText }}"</span>
+        }
+      </div>
       }
     </div>
   </section>
 
   <!-- EMPTY STATE -->
   @if (filteredProduits.length === 0) {
-    <section class="section">
-      <div class="section-content">
-        <div class="empty-state-produits">
-          <div class="empty-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFQElEQVR4nO2ab0xVdRjHT2vzVb2pXombJRcu3MQSxXLeCYUpAhdNx1ALvdwL9wIXrdUqSJokDkybbU5XbZnWsrYskj8KCPgnqBf92aJavayJ9M4ybWtN56c9XA/S1XvvOb9znR473+2znec5z5/vc5zonJrmyJEjR44cOXJkVOXcOT1C7YwGvk1r4O8ZDXAzEQ9pEb5JayAs3rQbKc8Wps2sp/P+CNyKzIxwWDzeoPO5Y1Yd76fXQXotf6TXsX5GkHuMds+q5T3pLXkLnv/y+pS8CVIjtUbniodZtWy44gnxKF61VCszTKs7DJlhzrtqmWum11PPXZkhLrhrYWMvNI1cn019IDWZYf5yB7jbzA53iBx3mHPi0R1mq5ZKZYcJekLgCXHJU0OZ6f4aAtJf8Aq0DCcmv3liD9Jjdo8nRFF2DRcn+kPUaanQnCBFOUEuzqmGnBrqlWZUc0r6q9+FtlOJqdkHUis9iruCE16ruTQniE+zovkBZs8NcC43CLlBWhUNPZAb5PKCMGwfgNdPJqZ9EB4JT+y7PC9EusrO3ADbxPPcIOfnB8z9dp3UvBD3zfczllcFeVXqP1jy/LwqMyq2we7jxqhondiJ9KrsFK/iWWbIDXKL6REL/byx0A+3BRvYZfoDeNfzq3c93A4squQX0x8gv5JLBZVQbvFvVzJDOHjMHHqfld3iXWbILaabC58CwYqBqXMO9Rvn475oTyr3m25ctg4EPS5aS/HStYzp+Vjk3RPrWB5vTlevcTqPXp1r9QMozylZA8JkXMGYnotH8RpOx5vTd9Q4vUeuzrT6AZTnlFWAEC9OVh+bP95jnKHuaE+ifap3GNaqchDixcnqY/Mj3cYZ7or2JNqneodhla8GIV6crD42/3Wncb7qjPYk2qd6h2GtXQVCvDhZfWx+9PB/6dgDzRujyPPUd999Fu1JtE/1DsN6eiUI8eJk9bH5nzuijOyHlkg0N5XmOji1L1rzU8fVvGnjBn0llX8FCPHiZPWx+R8Pwp4XoerJaOxfwe8bVvCsv4xn5FlyVSth70vww4eTNZY/gPKcoA8EPQ74GNNzcSm99o/BgI+z8i6yOloT8HEx4GNP5Uru1WvkWXLyLqb2rLXzr73DsMKlIOhxTSnLQyWc1vOxyLtQMUXXmbN5sqaUvmofD8bdWYZHaqbMfNm08SR3GFakGAQtBapfimtTCRlm6jcWqf1bQMru2LQcBM3mUr7juWUgaDaX8h0vLAVBs7mU72haAoJVA1vKmda4hNcaC/lNn5mUQsabCtkuvVb3K9/RXAiCVQObC9muzzLN47Rb3a98R8tjIFg10FLAuMzZ38X3BwbACPu6GZ3YX8C45f2qd7QWgGDVQGs+4zLn2KeMnugBI/R/wqj0bM3njOX9qne0LwbBqoG2xbTrsxRos7pf+Y6dXhCsGtjiYdpOL+07vYzrM5Oxw8uZHV7apNfqfuU7di0CQbO5lO/YvRAEzeZSvmPvoyBoNpfyHW8vAEGzuZTveCcPBM3mUr7jwDwQNJtL+Y4PckHQblHp/uIRW2d6wUcPg6DdotL9xSO2zvSCQw+BkKr4ZknZR0cOCKmKb5aUfXTNBiFVsVXp84xi2UdPNheOeOCwm+kSy7OgvzcbW5U+zyjS051Bmjz3ePjT9ML+bI73Z0NfFo2aTdWfRdOVG4ZMNw9kUTrohsFM/hnIpHEwgzTNJhKvA1k0iXe5YSCDEqVBJ1xsO5kBtsal9v8bJ/W5i9JhF0Mj6VwYcYEdGE7nvHj+QvVX3pEjR44cOXKk/R/0L2PhuPYnIQbZAAAAAElFTkSuQmCC" alt="product"></div>
-          <h3>Aucun produit trouvé</h3>
-          <p>
-            {{ isFiltering || searchText ? 'Essayez de modifier vos critères de recherche' : 'Aucun produit disponible pour le moment' }}
-          </p>
-        </div>
+  <section class="section">
+    <div class="section-content">
+      <div class="empty-state-produits">
+        <div class="empty-icon"><img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFQElEQVR4nO2ab0xVdRjHT2vzVb2pXombJRcu3MQSxXLeCYUpAhdNx1ALvdwL9wIXrdUqSJokDkybbU5XbZnWsrYskj8KCPgnqBf92aJavayJ9M4ybWtN56c9XA/S1XvvOb9znR473+2znec5z5/vc5zonJrmyJEjR44cOXJkVOXcOT1C7YwGvk1r4O8ZDXAzEQ9pEb5JayAs3rQbKc8Wps2sp/P+CNyKzIxwWDzeoPO5Y1Yd76fXQXotf6TXsX5GkHuMds+q5T3pLXkLnv/y+pS8CVIjtUbniodZtWy44gnxKF61VCszTKs7DJlhzrtqmWum11PPXZkhLrhrYWMvNI1cn019IDWZYf5yB7jbzA53iBx3mHPi0R1mq5ZKZYcJekLgCXHJU0OZ6f4aAtJf8Aq0DCcmv3liD9Jjdo8nRFF2DRcn+kPUaanQnCBFOUEuzqmGnBrqlWZUc0r6q9+FtlOJqdkHUis9iruCE16ruTQniE+zovkBZs8NcC43CLlBWhUNPZAb5PKCMGwfgNdPJqZ9EB4JT+y7PC9EusrO3ADbxPPcIOfnB8z9dp3UvBD3zfczllcFeVXqP1jy/LwqMyq2we7jxqhondiJ9KrsFK/iWWbIDXKL6REL/byx0A+3BRvYZfoDeNfzq3c93A4squQX0x8gv5JLBZVQbvFvVzJDOHjMHHqfld3iXWbILaabC58CwYqBqXMO9Rvn475oTyr3m25ctg4EPS5aS/HStYzp+Vjk3RPrWB5vTlevcTqPXp1r9QMozylZA8JkXMGYnotH8RpOx5vTd9Q4vUeuzrT6AZTnlFWAEC9OVh+bP95jnKHuaE+ifap3GNaqchDixcnqY/Mj3cYZ7or2JNqneodhla8GIV6crD42/3Wncb7qjPYk2qd6h2GtXQVCvDhZfWx+9PB/6dgDzRujyPPUd999Fu1JtE/1DsN6eiUI8eJk9bH5nzuijOyHlkg0N5XmOji1L1rzU8fVvGnjBn0llX8FCPHiZPWx+R8Pwp4XoerJaOxfwe8bVvCsv4xn5FlyVSth70vww4eTNZY/gPKcoA8EPQ74GNNzcSm99o/BgI+z8i6yOloT8HEx4GNP5Uru1WvkWXLyLqb2rLXzr73DsMKlIOhxTSnLQyWc1vOxyLtQMUXXmbN5sqaUvmofD8bdWYZHaqbMfNm08SR3GFakGAQtBapfimtTCRlm6jcWqf1bQMru2LQcBM3mUr7juWUgaDaX8h0vLAVBs7mU72haAoJVA1vKmda4hNcaC/lNn5mUQsabCtkuvVb3K9/RXAiCVQObC9muzzLN47Rb3a98R8tjIFg10FLAuMzZ38X3BwbACPu6GZ3YX8C45f2qd7QWgGDVQGs+4zLn2KeMnugBI/R/wqj0bM3njOX9qne0LwbBqoG2xbTrsxRos7pf+Y6dXhCsGtjiYdpOL+07vYzrM5Oxw8uZHV7apNfqfuU7di0CQbO5lO/YvRAEzeZSvmPvoyBoNpfyHW8vAEGzuZTveCcPBM3mUr7jwDwQNJtL+Y4PckHQblHp/uIRW2d6wUcPg6DdotL9xSO2zvSCQw+BkKr4ZknZR0cOCKmKb5aUfXTNBiFVsVXp84xi2UdPNheOeOCwm+kSy7OgvzcbW5U+zyjS051Bmjz3ePjT9ML+bI73Z0NfFo2aTdWfRdOVG4ZMNw9kUTrohsFM/hnIpHEwgzTNJhKvA1k0iXe5YSCDEqVBJ1xsO5kBtsal9v8bJ/W5i9JhF0Mj6VwYcYEdGE7nvHj+QvVX3pEjR44cOXKk/R/0L2PhuPYnIQbZAAAAAElFTkSuQmCC"
+            alt="product"></div>
+        <h3>Aucun produit trouvé</h3>
+        <p>
+          {{ isFiltering || searchText ? 'Essayez de modifier vos critères de recherche' : 'Aucun produit disponible pour le moment' }}
+        </p>
       </div>
-    </section>
+    </div>
+  </section>
   }
 
   <!-- PRODUITS GRID -->
   @if (filteredProduits.length > 0) {
-    <section class="section produits-grid-section">
-      <div class="section-content">
-        <div class="produits-cards-grid">
-          @for (produit of paginatedProduits; track produit._id) {
-            <div class="produit-card-modern">
-              <!-- Header Card -->
-              <div class="produit-card-header">
-                <div class="produit-badge-status">
-                  <span class="badge-stock" [ngClass]="produit.stock_etat ? 'badge-available' : 'badge-unavailable'">
-                    {{ produit.stock_etat ? '✓ Disponible' : 'Rupture' }}
-                  </span>
-                </div>
-              </div>
-
-              <!-- Content Card -->
-              <div class="produit-card-content">
-                <div class="produit-image-box">
-                  @if(produit.image_Url) {
-                    <img [src]="'http://localhost:5000/' + produit.image_Url" [alt]="produit.nom_prod" class="produit-image">
-                  } @else {
-                    <div class="produit-placeholder">
-                      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO2abWiVZRjHHz9E0ItCRGhaSepKNF82NNPM0pm6nc45cx7d2cs5c27PdGcz8UPUKNPALMzUTFCwqHBrg5qbii9tTcO30ohAwRDqg/siREIUWR/qF9c55/HleO7zvJznHIY8f/jBdl//+8f13Ij4QU3z4sWLFy9evHjx4sU0j+sMGxlj/agYF0fG+GdUMwwG4rvEuDgqxrqxLQzVcpFHYjw8ehUXRjfBYOaxJs4/qjPC9QcYs4oDY1dBYStEu2HNCVh7GuRMMLtv9OROJpz4ZBfZSXaTszEr2a+5mQKdZ59shKdWw9o+eO3kDeRcMHMYvZvvpiMbn+wmO8q57OzaA0ysp2diAyz9ENafuBU5F0wdyV7qfbd9oR2J8wkNdLvy8ZPqKZi8gn8LG2HdEdj0za1Mrk9g5jF6qffd9r15FGTXyfX8N3UF47N+gKI6dhfVQcU78P6x25GZYMET76VzuO1btikxK1zOrqw+/plqHppey18zlsPbXbCz/3aerk1g5jJ66Rxu+zZ1w4xamB7l72lRhjt+gJkR3poVhfDrsKcvPTIXzFxGT+Vx2yc7xzsRNjj6+CKde56r4dc5NfBeO3zWmx6ZC2Y+o6fyuO3b3JZ0VfPb/Grutf0A88JUzauC8MvQeVSNdARTX7KXyeW2T3aXTnEllbYfYEEl+xZUwsbt0H1YjXQEC754L5PLbZ/sLp0Xw3TZfoCSCn4prYCOTjh8SI10BDOf0cvkctvX0ZH0LeNn2w8QCHEtsBS+6oH+g2qkI5j6kr1MLrd9snu8F+Ka7QdYvITfy0NwqB1OHUhP/5cgHcHv536VKxRimNE71pU/35GORGfxEq7afoCl5Xy9rBz2bIbve9LT/gFIR6goo0zpWky50ft8R/58H2+57uu1/QDhAMHKMqgPw5k2OL/vVs51QHMEpCOEy/gpFOKBVI+cVQa5ZPSaa+Fs5+0+OXPki6b3nW6DxqqkK0DQ9gNoGkMiQXojQWgKQ89WuNCZYP82WBMBmdUEOBsJck5+jgQYqCkjVLWQoUI0QHlNgEvxWaIT7zXL395b4XxHgv1bYU1Nwndzz4LvW/lZdjmwLenrhK4t0FKd3C9Iv3yLgwfQtKYQ99X5OV7nh3Qsf4kf9DJGCHV+zmbofRctYbjrPR8P1vn5Udnzc1oeztHH3whD6kup0n0gNJTyh+7jlO4j1rKQu42WXsRduo+VMmvwcTVOKScbfDTKLFc92UEvoUUv5Yzu48/re/pourmXdZpKQNAGeXK25+pFIGiDPDnbc+0CELRBnpzt+cp8ELRBnpzt2VoMgmr+ajElrcUMGL0MDLTOZZGDe5Z8Zns6zrq5IKjmb8xlwOiY8gKXHd2z4DPb03E2PA+C07mqZ/VevnzKbJwDgtO5qmf1Xr58yrw7GwSzuVWses3itk+ZLbNAMJtbxarXLG77lNk+EwSnc1XP6r18+ZTZOQMEp3NVz+q9fPmU2T0dBKdzVc/qvXz5lPloGghO56qe1Xv58inzaREIduep56m/f1LIgHHmmMIb/xAy29Nx2qaCYHeeep76+94pLNo7hcvGuV3kbvtUFlrd03E6p4Bgd556bubJ9Z6O88UkEOzOU8/NPLne03G6J4IV3PJki+sPcHACWMEtT7a4/gBHxoPgdG635zQ58/cWcKXvCegtSP+/r2QmmHms9pykbxyzkzteyVp2fBzcSdh+gJNj4U4i6z8RXrx48eLFixcvXrQ7K/8Di29rK6RBZYgAAAAASUVORK5CYII=" alt="product">
-                    </div>
-                  }
-                </div>
-
-                <h3 class="produit-name">{{ produit.nom_prod }}</h3>
-                <p class="produit-shop">{{ produit.store_id?.name || 'Boutique inconnue' }}</p>
-                <p class="produit-description">{{ produit.descriptions || 'Pas de description' }}</p>
-
-                <!-- Badges -->
-                <div class="produit-badges-section">
-                  @for (badge of getProductBadges(produit); track badge.text) {
-                    <span class="produit-badge" [style.background-color]="badge.color" [style.color]="badge.color === '#ffc107' ? 'black' : 'white'">
-                      {{ badge.text }}
-                    </span>
-                  }
-                </div>
-
-                <!-- Price Info -->
-                <div class="produit-price-info">
-                  <span class="produit-price">{{ produit.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar</span>
-                </div>
-              </div>
-
-              <!-- Footer Card with Actions -->
-              <div class="produit-card-footer">
-                <button (click)="goToBuyProduct(produit._id)" class="btn-produit-view">
-                  Voir
-                </button>
-
-                @if (isAdmin) {
-                  <button [routerLink]="['/produits/modifier', produit._id]" class="btn-produit-edit">
-                    Modifier
-                  </button>
-                  <button (click)="deleteProduit(produit._id)" class="btn-produit-delete">
-                    Supprimer
-                  </button>
-                }
-
-                <!-- Add to Cart for Buyers -->
-                @if (isAcheteur) {
-                  <button 
-                    (click)="addToPanier(produit)"
-                    class="btn-produit-cart">
-                    Ajouter
-                  </button>
-                }
-
-                <!-- Edit Price for Shop Owners -->
-                @if (isBoutique) {
-                  <button (click)="openPriceModal(produit)" class="btn-produit-price">
-                    Modifier prix
-                  </button>
-                }
-              </div>
+  <section class="section produits-grid-section">
+    <div class="section-content">
+      <div class="produits-cards-grid">
+        @for (produit of paginatedProduits; track produit._id) {
+        <div class="produit-card-modern">
+          <!-- Header Card -->
+          <div class="produit-card-header">
+            <div class="produit-badge-status">
+              <span class="badge-stock" [ngClass]="produit.stock_etat ? 'badge-available' : 'badge-unavailable'">
+                {{ produit.stock_etat ? '✓ Disponible' : 'Rupture' }}
+              </span>
             </div>
-          }
+          </div>
+
+          <!-- Content Card -->
+          <div class="produit-card-content">
+            <div class="produit-image-box">
+              @if(produit.image_Url) {
+              <img [src]="'http://localhost:5000/' + produit.image_Url" [alt]="produit.nom_prod" class="produit-image">
+              } @else {
+              <div class="produit-placeholder">
+                <img
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO2abWiVZRjHHz9E0ItCRGhaSepKNF82NNPM0pm6nc45cx7d2cs5c27PdGcz8UPUKNPALMzUTFCwqHBrg5qbii9tTcO30ohAwRDqg/siREIUWR/qF9c55/HleO7zvJznHIY8f/jBdl//+8f13Ij4QU3z4sWLFy9evHjx4sU0j+sMGxlj/agYF0fG+GdUMwwG4rvEuDgqxrqxLQzVcpFHYjw8ehUXRjfBYOaxJs4/qjPC9QcYs4oDY1dBYStEu2HNCVh7GuRMMLtv9OROJpz4ZBfZSXaTszEr2a+5mQKdZ59shKdWw9o+eO3kDeRcMHMYvZvvpiMbn+wmO8q57OzaA0ysp2diAyz9ENafuBU5F0wdyV7qfbd9oR2J8wkNdLvy8ZPqKZi8gn8LG2HdEdj0za1Mrk9g5jF6qffd9r15FGTXyfX8N3UF47N+gKI6dhfVQcU78P6x25GZYMET76VzuO1btikxK1zOrqw+/plqHppey18zlsPbXbCz/3aerk1g5jJ66Rxu+zZ1w4xamB7l72lRhjt+gJkR3poVhfDrsKcvPTIXzFxGT+Vx2yc7xzsRNjj6+CKde56r4dc5NfBeO3zWmx6ZC2Y+o6fyuO3b3JZ0VfPb/Grutf0A88JUzauC8MvQeVSNdARTX7KXyeW2T3aXTnEllbYfYEEl+xZUwsbt0H1YjXQEC754L5PLbZ/sLp0Xw3TZfoCSCn4prYCOTjh8SI10BDOf0cvkctvX0ZH0LeNn2w8QCHEtsBS+6oH+g2qkI5j6kr1MLrd9snu8F+Ka7QdYvITfy0NwqB1OHUhP/5cgHcHv536VKxRimNE71pU/35GORGfxEq7afoCl5Xy9rBz2bIbve9LT/gFIR6goo0zpWky50ft8R/58H2+57uu1/QDhAMHKMqgPw5k2OL/vVs51QHMEpCOEy/gpFOKBVI+cVQa5ZPSaa+Fs5+0+OXPki6b3nW6DxqqkK0DQ9gNoGkMiQXojQWgKQ89WuNCZYP82WBMBmdUEOBsJck5+jgQYqCkjVLWQoUI0QHlNgEvxWaIT7zXL395b4XxHgv1bYU1Nwndzz4LvW/lZdjmwLenrhK4t0FKd3C9Iv3yLgwfQtKYQ99X5OV7nh3Qsf4kf9DJGCHV+zmbofRctYbjrPR8P1vn5Udnzc1oeztHH3whD6kup0n0gNJTyh+7jlO4j1rKQu42WXsRduo+VMmvwcTVOKScbfDTKLFc92UEvoUUv5Yzu48/re/pourmXdZpKQNAGeXK25+pFIGiDPDnbc+0CELRBnpzt+cp8ELRBnpzt2VoMgmr+ajElrcUMGL0MDLTOZZGDe5Z8Zns6zrq5IKjmb8xlwOiY8gKXHd2z4DPb03E2PA+C07mqZ/VevnzKbJwDgtO5qmf1Xr58yrw7GwSzuVWses3itk+ZLbNAMJtbxarXLG77lNk+EwSnc1XP6r18+ZTZOQMEp3NVz+q9fPmU2T0dBKdzVc/qvXz5lPloGghO56qe1Xv58inzaREIduep56m/f1LIgHHmmMIb/xAy29Nx2qaCYHeeep76+94pLNo7hcvGuV3kbvtUFlrd03E6p4Bgd556bubJ9Z6O88UkEOzOU8/NPLne03G6J4IV3PJki+sPcHACWMEtT7a4/gBHxoPgdG635zQ58/cWcKXvCegtSP+/r2QmmHms9pykbxyzkzteyVp2fBzcSdh+gJNj4U4i6z8RXrx48eLFixcvXrQ7K/8Di29rK6RBZYgAAAAASUVORK5CYII="
+                  alt="product">
+              </div>
+              }
+            </div>
+
+            <h3 class="produit-name">{{ produit.nom_prod }}</h3>
+            <p class="produit-shop">{{ produit.store_id?.name || 'Boutique inconnue' }}</p>
+            <p class="produit-description">{{ produit.descriptions || 'Pas de description' }}</p>
+
+            <!-- Badges -->
+            <div class="produit-badges-section">
+              @for (badge of getProductBadges(produit); track badge.text) {
+              <span class="produit-badge" [style.background-color]="badge.color"
+                [style.color]="badge.color === '#ffc107' ? 'black' : 'white'">
+                {{ badge.text }}
+              </span>
+              }
+            </div>
+
+            <!-- Price Info -->
+            <div class="produit-price-info">
+              @if(produit.isPromoted && produit.prix_promo !== null && produit.prix_promo !== undefined) {
+              <div class="price-promo-container">
+                <span class="old-price">{{ (produit.prix_unitaire?.$numberDecimal || produit.prix_unitaire) |
+                  number:'1.0-0' }} Ar</span>
+                <span class="promo-price">{{ produit.prix_promo | number:'1.0-0' }} Ar</span>
+              </div>
+              } @else {
+              <span class="produit-price">{{ (produit.prix_unitaire?.$numberDecimal || produit.prix_unitaire) |
+                number:'1.0-0' }} Ar</span>
+              }
+            </div>
+          </div>
+
+          <!-- Footer Card with Actions -->
+          <div class="produit-card-footer">
+            <button (click)="goToBuyProduct(produit._id)" class="btn-produit-view">
+              Voir
+            </button>
+
+            @if (isAdmin) {
+            <button [routerLink]="['/produits/modifier', produit._id]" class="btn-produit-edit">
+              Modifier
+            </button>
+            <button (click)="deleteProduit(produit._id)" class="btn-produit-delete">
+              Supprimer
+            </button>
+            }
+
+            <!-- Add to Cart for Buyers -->
+            @if (isAcheteur) {
+            <button (click)="addToPanier(produit)" class="btn-produit-cart">
+              Ajouter
+            </button>
+            }
+
+            <!-- Edit Price for Shop Owners -->
+            @if (isBoutique) {
+            <button (click)="openPriceModal(produit)" class="btn-produit-price">
+              Modifier prix
+            </button>
+            }
+          </div>
         </div>
+        }
       </div>
-    </section>
+    </div>
+  </section>
   }@if (totalPages > 1) {
   <div class="pagination-container">
-    <button 
-      class="pagination-btn pagination-arrow" 
-      (click)="goToPage(currentPage - 1)"
-      [disabled]="currentPage === 1">
+    <button class="pagination-btn pagination-arrow" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
       ←
     </button>
 
     @for (page of pages; track page) {
-      <button 
-        class="pagination-btn"
-        [class.active]="page === currentPage"
-        (click)="goToPage(page)">
-        {{ page }}
-      </button>
+    <button class="pagination-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
+      {{ page }}
+    </button>
     }
 
-    <button 
-      class="pagination-btn pagination-arrow" 
-      (click)="goToPage(currentPage + 1)"
+    <button class="pagination-btn pagination-arrow" (click)="goToPage(currentPage + 1)"
       [disabled]="currentPage === totalPages">
       →
     </button>
@@ -210,7 +211,7 @@
       Page {{ currentPage }} / {{ totalPages }}
     </span>
   </div>
-}
+  }
 
   <!-- FOOTER -->
   <footer class="footer-elegant">
@@ -264,23 +265,19 @@
 
     <div class="modal-body" *ngIf="selectedProduct">
       <div class="product-info-brief">
-        <img 
+        <img
           [src]="selectedProduct.image_Url ? ('http://localhost:5000/' + selectedProduct.image_Url) : 'img/png/elementor-placeholder-image.png'"
-          alt="Product" 
-          class="modal-product-thumb">
+          alt="Product" class="modal-product-thumb">
         <div class="product-text">
           <h3>{{ selectedProduct.nom_prod }}</h3>
-          <p class="current-price">Prix actuel: <span>{{ selectedProduct.prix_unitaire.$numberDecimal | number:'1.0-0' }} Ar</span></p>
+          <p class="current-price">Prix actuel: <span>{{ selectedProduct.prix_unitaire.$numberDecimal | number:'1.0-0'
+              }} Ar</span></p>
         </div>
       </div>
 
       <div class="form-group">
         <label for="new-price">Nouveau prix (Ar)</label>
-        <input 
-          type="number" 
-          id="new-price" 
-          [(ngModel)]="updatedPrice" 
-          class="form-control"
+        <input type="number" id="new-price" [(ngModel)]="updatedPrice" class="form-control"
           placeholder="Entrez le nouveau prix">
       </div>
     </div>

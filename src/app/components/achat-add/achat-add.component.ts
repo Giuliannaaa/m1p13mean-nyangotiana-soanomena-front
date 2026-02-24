@@ -5,12 +5,14 @@ import { AchatService } from '../../services/achat/achat.service';
 import { PromotionService } from '../../services/promotion/promotion.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-achat-add',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './achat-add.component.html',
+  styleUrl: './achat-add.component.css'
 })
 export class AchatAddComponent implements OnInit {
 
@@ -32,12 +34,15 @@ export class AchatAddComponent implements OnInit {
   image_Url: string = '';
   isLoading: boolean = true;
 
+  isAcheteur = false;
+
   constructor(
     private route: ActivatedRoute,
     private produitService: ProduitService,
     private achatService: AchatService,
     private promotionService: PromotionService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -51,6 +56,7 @@ export class AchatAddComponent implements OnInit {
     this.produitService.getProduitById(this.prod_id).subscribe({
       next: (response: any) => {
         // console.log('Réponse API:', response);
+        this.isAcheteur = this.authService.getRole() === 'Acheteur';
 
         // Les vraies données sont dans response.data !
         const data = response.data || response;

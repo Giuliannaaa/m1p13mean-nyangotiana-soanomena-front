@@ -8,7 +8,7 @@ import { environment } from '../../environnements/environnement';
 })
 export class MessageService {
   private apiUrl = `${environment.apiUrl}/api/messages`;
-  
+
   private unreadCount$ = new BehaviorSubject<number>(0);
 
 
@@ -21,7 +21,7 @@ export class MessageService {
     });
   }
 
-   private boutiqueApiUrl = 'http://localhost:5000/boutiques'; 
+  private boutiqueApiUrl = 'http://localhost:5000/boutiques';
 
   // ENVOYER UN MESSAGE
   sendMessage(receiverId: string, boutiqueId: string, message: string, subject?: string, messageType?: string): Observable<any> {
@@ -38,9 +38,9 @@ export class MessageService {
     );
   }
 
-getBoutiqueContact(boutiqueId: string): Observable<any> {
-  return this.http.get(`${this.apiUrl}/boutique/${boutiqueId}/contact`, { headers: this.getHeaders() });
-}
+  getBoutiqueContact(boutiqueId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/boutique/${boutiqueId}/contact`, { headers: this.getHeaders() });
+  }
 
   // OBTENIR LES MESSAGES REÇUS
   getReceivedMessages(boutiqueId?: string): Observable<any> {
@@ -123,9 +123,9 @@ getBoutiqueContact(boutiqueId: string): Observable<any> {
     });
   }
 
-getAllBoutiques(): Observable<any> {
-  return this.http.get(this.boutiqueApiUrl, { headers: this.getHeaders() });
-}
+  getAllBoutiques(): Observable<any> {
+    return this.http.get(this.boutiqueApiUrl, { headers: this.getHeaders() });
+  }
 
   // SUPPRIMER UN MESSAGE
   deleteMessage(messageId: string): Observable<any> {
@@ -136,10 +136,10 @@ getAllBoutiques(): Observable<any> {
   }
 
   // Supprimer une conversation
-deleteConversation(otherUserId: string, boutiqueId: string): Observable<any> {
-  return this.http.delete(
-    `${this.apiUrl}/conversation/${otherUserId}/${boutiqueId}`,
-    { headers: this.getHeaders() }
-  );
-}
+  deleteConversation(otherUserId: string, boutiqueId: string): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/conversation/${otherUserId}/${boutiqueId}`,
+      { headers: this.getHeaders() }
+    );
+  }
 }

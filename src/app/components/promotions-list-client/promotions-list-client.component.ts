@@ -41,7 +41,7 @@ export class PromotionsListClientComponent implements OnInit {
     this.isLoading = true;
     this.promotionService.getPromotions().subscribe({
       next: (response: any) => {
-        console.log('Promotions reçues:', response);
+        // console.log('Promotions reçues:', response);
         
         // Gérer les deux formats de réponse
         const promosData = Array.isArray(response) ? response : (response.data || []);

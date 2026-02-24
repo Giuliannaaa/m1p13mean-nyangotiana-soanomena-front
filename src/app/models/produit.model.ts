@@ -12,13 +12,17 @@ export interface Produit {
   };
   image_Url?: string;
   image_preview?: string;
-  
+
   isNew?: boolean;
   isBestSeller?: boolean;
   isPromoted?: boolean;
   purchaseCount?: number;
   views?: number;
-  
+
+  // Promotion data (calculated from backend)
+  prix_promo?: number;
+  promotion?: any;
+
   // Timestamps
   createdAt?: Date;
   updatedAt?: Date;

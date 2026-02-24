@@ -44,7 +44,6 @@
                     <p class="card-label">{{ outOfStockCount > 0 ? 'produits à réapprovisionner' : 'aucun produit en
                         rupture' }}</p>
                 </div>
-                <span class="card-hint" *ngIf="outOfStockCount > 0">Voir la liste →</span>
             </div>
 
             <div class="stat-card promo-card" [class.clickable]="activePromotionsCount > 0"
@@ -58,7 +57,6 @@
                     <p class="card-label">{{ activePromotionsCount > 0 ? 'promotions en cours' : 'aucune promotion
                         active' }}</p>
                 </div>
-                <span class="card-hint" *ngIf="activePromotionsCount > 0">Voir la liste →</span>
             </div>
         </div>
 

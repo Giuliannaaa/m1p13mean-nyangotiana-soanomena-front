@@ -75,22 +75,22 @@ export class ProduitListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-  const role = this.authService.getRole();
-  this.isAdmin = role === 'Admin';
-  this.isBoutique = role === 'Boutique';
-  this.isAcheteur = role === 'Acheteur';
+    const role = this.authService.getRole();
+    this.isAdmin = role === 'Admin';
+    this.isBoutique = role === 'Boutique';
+    this.isAcheteur = role === 'Acheteur';
 
-  // RÉCUPÉRER LE PARAMÈTRE DE RECHERCHE DE L'URL
-  this.route.queryParams.subscribe(params => {
-    if (params['search']) {
-      this.searchText = params['search'];
-      console.log('Recherche depuis dashboard:', this.searchText);
-    }
-  });
+    // RÉCUPÉRER LE PARAMÈTRE DE RECHERCHE DE L'URL
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        this.searchText = params['search'];
+        console.log('Recherche depuis dashboard:', this.searchText);
+      }
+    });
 
-  this.loadProduits();
-  this.loadBoutiques();
-}
+    this.loadProduits();
+    this.loadBoutiques();
+  }
 
   loadProduits(): void {
     this.produitService.getProduits().subscribe({
@@ -314,6 +314,7 @@ export class ProduitListComponent implements OnInit {
     this.panierService.addToPanier(produit._id!, 1).subscribe({
       next: (res) => {
         alert('Produit ajouté au panier !');
+        this.panierService.notifyCartUpdate();
       },
       error: (err: string) => {
         console.error(err);

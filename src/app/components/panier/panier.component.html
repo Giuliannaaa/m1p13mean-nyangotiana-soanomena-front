@@ -1,79 +1,138 @@
-<div class="container mt-5">
-    <div class="card shadow-lg border-0 glass-effect">
-        <div class="card-header bg-transparent border-0">
-            <h2 class="text-white mb-0"><i class="fas fa-shopping-cart me-2"></i>Mon Panier</h2>
+<div class="container py-5">
+    <div class="card shadow-2xl border-0 overflow-hidden main-cart-card">
+        <div class="card-header border-0 py-4">
+            <h2 class="text-white mb-0 d-flex align-items-center">
+                <i class="fas fa-shopping-basket me-3"></i>Mon Panier
+            </h2>
         </div>
-        <div class="card-body">
-            <div *ngIf="isLoading" class="text-center text-white">
-                <div class="spinner-border" role="status">
+
+        <div class="card-body p-0">
+            <!-- Loading -->
+            <div *ngIf="isLoading" class="p-5 text-center">
+                <div class="spinner-border text-light" role="status">
                     <span class="visually-hidden">Chargement...</span>
                 </div>
             </div>
 
+            <!-- Empty -->
             <div *ngIf="!isLoading && (!panier || !panier.items || panier.items.length === 0)"
-                class="text-center text-white">
-                <p class="lead">Votre panier est vide.</p>
-                <a href="/produits" class="btn btn-light rounded-pill px-4">Commencer vos achats</a>
+                class="p-5 text-center text-white">
+                <div class="empty-cart-icon mb-4">
+                    <i class="fas fa-shopping-cart fa-4x opacity-20"></i>
+                </div>
+                <p class="lead mb-4">Votre panier est vide pour le moment.</p>
+                <a routerLink="/produits" class="btn btn-primary rounded-pill px-5 py-3 shadow-lg">
+                    Découvrir nos produits
+                </a>
             </div>
 
+            <!-- Content -->
             <div *ngIf="!isLoading && panier && panier.items && panier.items.length > 0">
                 <div class="table-responsive">
-                    <table class="table table-hover text-white align-middle">
+                    <table class="table table-cart align-middle">
                         <thead>
                             <tr>
-                                <th>Produit</th>
-                                <th>Prix Unitaire</th>
-                                <th>Quantité</th>
-                                <th>Total</th>
-                                <th>Actions</th>
+                                <th class="ps-4">Produit</th>
+                                <th>Prix</th>
+                                <th class="text-center">Quantité</th>
+                                <th class="text-end pe-4">Total</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of panier.items">
-                                <td>
-                                    <span *ngIf="item.produit">{{ item.produit.nom_prod }}</span>
-                                    <span *ngIf="!item.produit" class="text-muted">Produit indisponible
-                                        ({{item.nomProduit}})</span>
-                                </td>
-                                <td>{{ item.prixUnitaire.$numberDecimal || item.prixUnitaire | number:'1.2-2' }} Ar</td>
-                                <td style="width: 150px;">
-                                    <div class="input-group input-group-sm">
-                                        <button class="btn btn-outline-light" type="button"
-                                            (click)="updateQuantity(item.produit._id, item.quantite - 1)"
-                                            [disabled]="item.quantite <= 1">-</button>
-                                        <input type="text" class="form-control text-center bg-transparent text-white"
-                                            [value]="item.quantite" readonly>
-                                        <button class="btn btn-outline-light" type="button"
-                                            (click)="updateQuantity(item.produit._id, item.quantite + 1)">+</button>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="product-info ml-3">
+                                            <h6 class="mb-0 text-white">{{ item.produit?.nom_prod || item.nomProduit }}
+                                            </h6>
+                                            <span *ngIf="item.promotion"
+                                                class="badge bg-warning text-dark tiny-badge">EN PROMO</span>
+                                            <span *ngIf="!item.produit" class="text-danger small">Indisponible</span>
+                                        </div>
                                     </div>
                                 </td>
-                                <td>{{ (item.prixUnitaire.$numberDecimal || item.prixUnitaire) * item.quantite |
-                                    number:'1.2-2' }} Ar</td>
                                 <td>
-                                    <button class="btn btn-danger btn-sm rounded-circle"
-                                        (click)="removeItem(item.produit._id)" title="Retirer">
-                                        <i class="fas fa-trash"></i>
+                                    <div *ngIf="item.prixReduit" class="price-container">
+                                        <span class="original-price struck-out">{{ item.prixUnitaire.$numberDecimal ||
+                                            item.prixUnitaire | number:'1.0-0' }} Ar</span>
+                                        <span class="current-price text-warning fw-bold">{{ item.prixReduit |
+                                            number:'1.0-0' }} Ar</span>
+                                    </div>
+                                    <div *ngIf="!item.prixReduit" class="current-price text-white">
+                                        {{ item.prixUnitaire.$numberDecimal || item.prixUnitaire | number:'1.0-0' }} Ar
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="quantity-control mx-auto">
+                                        <button (click)="updateQuantity(item.produit._id, item.quantite - 1)"
+                                            [disabled]="item.quantite <= 1" class="btn-qty">-</button>
+                                        <span class="qty-value">{{ item.quantite }}</span>
+                                        <button (click)="updateQuantity(item.produit._id, item.quantite + 1)"
+                                            class="btn-qty">+</button>
+                                    </div>
+                                </td>
+                                <td class="text-end pe-4 fw-bold">
+                                    {{ (item.prixReduit || (item.prixUnitaire.$numberDecimal || item.prixUnitaire)) *
+                                    item.quantite | number:'1.0-0' }} Ar
+                                </td>
+                                <td>
+                                    <button class="btn btn-remove" (click)="removeItem(item.produit._id)">
+                                        <i class="fas fa-times"></i>
                                     </button>
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot>
-                            <tr class="fw-bold fs-5">
-                                <td colspan="3" class="text-end">Total Global :</td>
-                                <td>{{ panier.total | number:'1.2-2' }} Ar</td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <button class="btn btn-outline-danger rounded-pill px-4" (click)="clearPanier()">
-                        <i class="fas fa-trash-alt me-2"></i>Vider le panier
-                    </button>
-                    <button class="btn btn-success rounded-pill px-5 fs-5" (click)="validerPanier()">
-                        <i class="fas fa-check-circle me-2"></i>Valider mon panier
-                    </button>
+                <!-- Footer / Support -->
+                <div class="p-4 border-top border-white-10 bg-black-20">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-6">
+                            <div class="delivery-option p-3 rounded-3 glass-card">
+                                <div class="form-check form-switch fs-5">
+                                    <input class="form-check-input" type="checkbox" id="deliverySwitch"
+                                        [(ngModel)]="avecLivraison">
+                                    <label class="form-check-label text-white ms-2" for="deliverySwitch">
+                                        <i class="fas fa-truck me-2"></i>Demander la livraison
+                                    </label>
+                                </div>
+                                <p class="small text-white-50 mt-2 mb-0">
+                                    Frais de livraison :
+                                    <span *ngIf="!avecLivraison">--</span>
+                                    <span *ngIf="avecLivraison">Calculé selon vos articles</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cart-summary p-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-white-50">Sous-total :</span>
+                                    <span class="text-white fw-bold">{{ panier.totalActualise | number:'1.0-0' }}
+                                        Ar</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3 fs-4">
+                                    <span class="text-white">Total à payer :</span>
+                                    <span class="text-warning fw-bold">{{ panier.totalActualise | number:'1.0-0' }}
+                                        Ar</span>
+                                </div>
+                                <p *ngIf="avecLivraison" class="small text-info mb-3">
+                                    <i class="fas fa-info-circle me-1"></i>Les frais de livraison seront ajoutés lors de
+                                    la validation.
+                                </p>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary btn-lg rounded-pill shadow-xl py-3"
+                                        (click)="validerPanier()">
+                                        <i class="fas fa-lock me-2"></i>Valider et Commander
+                                    </button>
+                                    <button class="btn btn-link text-white-50 btn-sm" (click)="clearPanier()">
+                                        Vider le panier
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
