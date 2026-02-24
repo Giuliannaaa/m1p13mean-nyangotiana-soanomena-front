@@ -25,7 +25,7 @@
         </a>
       </li>
       <li>
-        <a routerLink="/promotions" routerLinkActive="active">
+        <a routerLink="/admin/promotions" routerLinkActive="active">
           <i class="icon-promotions"></i> Promotions
         </a>
       </li>
@@ -40,16 +40,24 @@
         </a>
       </li>
       <li>
-        <a routerLink="/messagerie" class="nav-link">
-          Messagerie
-          @if (unreadCount > 0) {
-            <span class="badge">{{ unreadCount }}</span>
+        <a routerLink="/messagerie" routerLinkActive="active">
+          <i class="icon-messages"></i> Messagerie
+          @if (unreadMessages > 0) {
+            <span class="badge">{{ unreadMessages }}</span>
           }
         </a>
       </li>
       <li>
         <a routerLink="/admin/signalements" routerLinkActive="active">
           <i class="icon-users"></i> Signalements
+          @if (unreadSignalements > 0) {
+            <span class="badge">{{ unreadSignalements }}</span>
+          }
+        </a>
+      </li>
+      <li>
+        <a routerLink="/profile" routerLinkActive="active">
+          <i class="icon-users"></i> Profile
         </a>
       </li>
       

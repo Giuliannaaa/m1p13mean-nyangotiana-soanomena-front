@@ -313,40 +313,45 @@
   </section>
 
   <!-- PROMOTIONS -->
-  <section class="section promotions-section-elegant">
-    <div class="section-header-elegant">
+<section class="section promotions-section-elegant">
+  <div class="section-header-elegant">
+    <div class="header-title-group">
       <h2>Offres spéciales</h2>
       <p>Profitez de nos réductions</p>
     </div>
+    <a routerLink="/promotions" class="btn-see-all">
+      Voir toutes les promotions →
+    </a>
+  </div>
 
-    @if (activePromotions.length > 0) {
-      <div class="promotions-grid-elegant">
-        @for (promo of activePromotions.slice(0, 6); track promo._id) {
-          <div class="promotion-card-elegant">
-            <div class="promo-tag">
-              @if (promo.type_prom === 'POURCENTAGE') {
-                {{ promo.montant }}% OFF
-              } @else {
-                {{ promo.montant }} Ar
-              }
-            </div>
-            
-            <h4>{{ promo.nom_promo }}</h4>
-            <p>{{ promo.description }}</p>
-            
-            <div class="promo-footer">
-              <small>Jusqu'au {{ formatDate(promo.date_fin) }}</small>
-              <button class="btn-arrow" (click)="getBoutiqueFromPromo(promo)">
-                →
-              </button>
-            </div>
+  @if (activePromotions.length > 0) {
+    <div class="promotions-grid-elegant">
+      @for (promo of activePromotions.slice(0, 3); track promo._id) {
+        <div class="promotion-card-elegant">
+          <div class="promo-tag">
+            @if (promo.type_prom === 'POURCENTAGE') {
+              {{ promo.montant }}% OFF
+            } @else {
+              {{ promo.montant }} Ar
+            }
           </div>
-        }
-      </div>
-    } @else {
-      <p class="empty-message">Aucune promotion active</p>
-    }
-  </section>
+          
+          <h4>{{ promo.nom_promo }}</h4>
+          <p>{{ promo.description }}</p>
+          
+          <div class="promo-footer">
+            <small>Jusqu'au {{ formatDate(promo.date_fin) }}</small>
+            <button class="btn-arrow" (click)="getBoutiqueFromPromo(promo)" title="Voir la boutique">
+              →
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-message">Aucune promotion active</p>
+  }
+</section>
 
   <!-- AVIS CLIENTS -->
   <section class="section reviews-section-elegant">
@@ -429,10 +434,9 @@
       <div class="footer-column">
         <h4>Navigation</h4>
         <ul>
-          <li><a href="#">Accueil</a></li>
-          <li><a href="#">Boutiques</a></li>
-          <li><a href="#">Produits</a></li>
-          <li><a href="#">Promotions</a></li>
+          <li><a routerLink="/boutiques" routerLinkActive="active">Boutiques</a></li>
+          <li><a routerLink="/produits" routerLinkActive="active">Produits</a></li>
+          <li><a routerLink="/promotions" routerLinkActive="active">Promotions</a></li>
         </ul>
       </div>
 

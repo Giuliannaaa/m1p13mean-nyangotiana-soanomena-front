@@ -99,4 +99,12 @@ export class SignalementService {
       { headers: this.getHeaders() }
     );
   }
+
+  //Notification
+  getUnreadCount(): Observable<any> {
+  return this.http.get(
+    `${this.apiUrl}/unread-count`,
+    { headers: this.getHeaders() }
+  );
+}
 }

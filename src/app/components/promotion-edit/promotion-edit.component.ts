@@ -80,7 +80,7 @@ export class PromotionEditComponent implements OnInit {
       .subscribe({
         next: () => {
           alert('Promotion modifiée avec succès');
-          this.router.navigate(['/promotions']);
+          this.router.navigate(['/admin/promotions']);
         },
         error: (err) => {
           console.error(err);

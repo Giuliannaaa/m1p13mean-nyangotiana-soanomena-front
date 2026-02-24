@@ -125,7 +125,7 @@ export class BuyerDashboardComponent implements OnInit {
           reviews = response.data;
         }
         
-        this.boutiqueReviews = reviews.slice(0, 6);
+        this.boutiqueReviews = reviews.slice(0, 9);
         
         console.log('Avis chargés:', this.boutiqueReviews.length);
         console.log('Avis détails:', this.boutiqueReviews.map(r => ({
@@ -145,7 +145,7 @@ export class BuyerDashboardComponent implements OnInit {
         this.avisService.getTousLesAvisPublic().subscribe({
           next: (response: any) => {
             console.log('Avis chargés (endpoint public):', response.length);
-            this.boutiqueReviews = (Array.isArray(response) ? response : response.data || []).slice(0, 6);
+            this.boutiqueReviews = (Array.isArray(response) ? response : response.data || []).slice(0, 9);
             this.cdr.markForCheck();
           },
           error: (err2) => {

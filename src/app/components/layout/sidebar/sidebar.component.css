@@ -69,6 +69,16 @@
   transition: background 0.3s;
 }
 
+.badge {
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 7px;
+  font-size: 0.75rem;
+  margin-left: auto;
+  float: right;
+}
+
 .btn-logout-sidebar:hover {
   background-color: #c0392b;
 }

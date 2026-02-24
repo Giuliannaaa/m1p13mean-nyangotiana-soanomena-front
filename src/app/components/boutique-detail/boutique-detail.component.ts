@@ -31,7 +31,7 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
     showReportModal = false;
     selectedProduitId: string | null = null;
 
-    // 🆕 Carousel properties
+    // Carousel properties
     currentImageIndex: number = 0;
     private carouselInterval?: any;
 
@@ -63,7 +63,7 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
                 this.boutique = data;
                 this.isLoading = false;
 
-                // 🆕 Démarrer le carousel si plusieurs images
+                // Démarrer le carousel si plusieurs images
                 if (this.boutique?.images && this.boutique.images.length > 1) {
                     this.startCarousel();
                 }
@@ -185,7 +185,7 @@ export class BoutiqueDetailComponent implements OnInit, OnDestroy {
     }
 
     // ============================================
-    // 🆕 MÉTHODES CAROUSEL
+    // MÉTHODES CAROUSEL
     // ============================================
 
     /**

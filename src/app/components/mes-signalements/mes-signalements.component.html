@@ -1,4 +1,5 @@
 <div class="mes-signalements-container">
+
   <!-- HEADER -->
   <div class="page-header">
     <div class="header-content">
@@ -18,15 +19,14 @@
     </div>
   }
 
-  <!-- FILTERS -->
+  <!-- FILTRES -->
   @if (!isLoading && signalements.length > 0) {
     <div class="filters-section">
       <div class="filters-grid">
-        <!-- Filtre Statut -->
         <div class="filter-group">
-          <label for="filtreStatut">Statut</label>
-          <select id="filtreStatut" [(ngModel)]="filtreStatut" (change)="filterSignalements()" class="filter-select">
-            <option value="">-- Tous les statuts --</option>
+          <label>Statut</label>
+          <select [(ngModel)]="filtreStatut" (change)="filterSignalements()" class="filter-select">
+            <option value="">Tous les statuts</option>
             <option value="signale">Signalé</option>
             <option value="en_cours">En cours</option>
             <option value="resolu">Résolu</option>
@@ -34,18 +34,14 @@
           </select>
         </div>
 
-        <!-- Recherche -->
         <div class="filter-group">
-          <label for="searchText">Recherche</label>
-          <input type="text" id="searchText" [(ngModel)]="searchText" (keyup)="filterSignalements()" 
+          <label>Recherche</label>
+          <input type="text" [(ngModel)]="searchText" (keyup)="filterSignalements()"
             placeholder="Produit, boutique..." class="filter-input" />
         </div>
 
-        <!-- Bouton Réinitialiser -->
         <div class="filter-group">
-          <button (click)="resetFilters()" class="btn-reset">
-            Réinitialiser
-          </button>
+          <button (click)="resetFilters()" class="btn-reset">Réinitialiser</button>
         </div>
       </div>
     </div>
@@ -54,93 +50,76 @@
   <!-- EMPTY STATE -->
   @if (!isLoading && signalements.length === 0) {
     <div class="empty-state">
-      <div class="empty-icon"></div>
       <h3>Aucun signalement</h3>
       <p>Vous n'avez pas encore signalé de produits. Si vous trouvez un problème avec un produit, n'hésitez pas à le signaler.</p>
     </div>
   }
 
-  <!-- SIGNALEMENTS CARDS -->
+  <!-- GRID -->
   @if (!isLoading && filteredSignalements.length > 0) {
     <div class="signalements-grid">
       @for (signalement of filteredSignalements; track signalement._id) {
         <div class="signalement-card" (click)="openModal(signalement)">
-          <!-- Card Header -->
+
           <div class="card-header">
-            <div class="header-left">
-              <span class="status-badge" [style.background-color]="getStatutBadgeColor(signalement.statut)">
-                {{ getStatutIcon(signalement.statut) }} {{ getStatutLabel(signalement.statut) }}
-              </span>
-            </div>
-            <div class="header-right">
-              <span class="date">{{ signalement.createdAt | date: 'dd/MM/yyyy' }}</span>
-            </div>
+            <span class="status-badge" [style.background-color]="getStatutBadgeColor(signalement.statut)">
+              {{ getStatutIcon(signalement.statut) }} {{ getStatutLabel(signalement.statut) }}
+            </span>
+            <span class="header-right">{{ signalement.createdAt | date: 'dd/MM/yyyy' }}</span>
           </div>
 
-          <!-- Card Body -->
           <div class="card-body">
-            <!-- Produit -->
             <div class="info-block">
-              <label class="label">Produit</label>
+              <span class="label">Produit</span>
               <p class="product-name">{{ signalement.produit_id?.nom_prod || 'Produit supprimé' }}</p>
             </div>
 
-            <!-- Boutique -->
             <div class="info-block">
-              <label class="label">Boutique</label>
+              <span class="label">Boutique</span>
               <p class="text">{{ signalement.boutique_id?.name || 'Boutique supprimée' }}</p>
             </div>
 
-            <!-- Raison -->
             <div class="info-block">
-              <label class="label">Raison</label>
+              <span class="label">Raison</span>
               <p class="text">{{ getRaisonLabel(signalement.raison) }}</p>
             </div>
 
-            <!-- Admin Response Preview -->
             @if (signalement.reponse_admin) {
               <div class="admin-response-preview">
                 <div class="response-label">Réponse admin</div>
                 <p class="response-text">{{ signalement.reponse_admin.substring(0, 80) }}...</p>
               </div>
             } @else {
-              <div class="pending-badge">
-                En attente de traitement
-              </div>
+              <div class="pending-badge">En attente de traitement</div>
             }
           </div>
 
-          <!-- Card Footer -->
           <div class="card-footer">
-            <button class="btn-details">
-              Voir les détails →
-            </button>
+            <button class="btn-details">Voir les détails →</button>
           </div>
         </div>
       }
     </div>
   }
 
-  <!-- NO RESULTS AFTER FILTER -->
+  <!-- NO RESULTS -->
   @if (!isLoading && filteredSignalements.length === 0 && signalements.length > 0) {
     <div class="no-results">
       <p>Aucun signalement ne correspond à votre recherche</p>
     </div>
   }
 
-  <!-- MODAL DETAIL -->
+  <!-- MODAL -->
   @if (showModal && selectedSignalement) {
     <div class="modal-overlay" (click)="closeModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
-        <!-- Modal Header -->
+
         <div class="modal-header">
           <h2>Détail du signalement</h2>
           <button class="modal-close" (click)="closeModal()">✕</button>
         </div>
 
-        <!-- Modal Body -->
         <div class="modal-body">
-          <!-- Status -->
           <div class="modal-section">
             <h4>Statut</h4>
             <span class="status-badge-large" [style.background-color]="getStatutBadgeColor(selectedSignalement.statut)">
@@ -148,48 +127,44 @@
             </span>
           </div>
 
-          <!-- Product Info -->
           <div class="modal-section">
             <h4>Produit</h4>
             <div class="section-content">
-              <p><strong>Nom:</strong> {{ selectedSignalement.produit_id?.nom_prod || '❌ Produit supprimé' }}</p>
-              <p><strong>Boutique:</strong> {{ selectedSignalement.boutique_id?.name || '❌ Boutique supprimée' }}</p>
+              <p><strong>Nom :</strong> {{ selectedSignalement.produit_id?.nom_prod || 'Produit supprimé' }}</p>
+              <p><strong>Boutique :</strong> {{ selectedSignalement.boutique_id?.name || 'Boutique supprimée' }}</p>
             </div>
           </div>
 
-          <!-- Complaint Details -->
           <div class="modal-section">
             <h4>Votre signalement</h4>
             <div class="section-content">
-              <p><strong>Raison:</strong> {{ getRaisonLabel(selectedSignalement.raison) }}</p>
-              <p><strong>Description:</strong></p>
-              <div class="description-box">
-                "{{ selectedSignalement.description }}"
-              </div>
-              <p class="date-text"><strong>Signalé le:</strong> {{ selectedSignalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+              <p><strong>Raison :</strong> {{ getRaisonLabel(selectedSignalement.raison) }}</p>
+              <p class="date-text"><strong>Signalé le :</strong> {{ selectedSignalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
             </div>
+            <div class="description-box">{{ selectedSignalement.description }}</div>
           </div>
 
-          <!-- Admin Response -->
           @if (selectedSignalement.reponse_admin) {
-            <div class="modal-section admin-response-section">
-              <h4>Réponse de l'administrateur</h4>
-              <div class="response-content">
-                {{ selectedSignalement.reponse_admin }}
+            <div class="modal-section">
+              <h4 style="color: #22c55e;">Réponse de l'administrateur</h4>
+              <div class="admin-response-section">
+                <div class="response-content">{{ selectedSignalement.reponse_admin }}</div>
               </div>
             </div>
           } @else {
-            <div class="modal-section pending-section">
-              <p>Votre signalement est en attente de traitement par les administrateurs.</p>
+            <div class="modal-section">
+              <div class="pending-section">
+                <p>Votre signalement est en attente de traitement par les administrateurs.</p>
+              </div>
             </div>
           }
         </div>
 
-        <!-- Modal Footer -->
         <div class="modal-footer">
           <button (click)="closeModal()" class="btn-close">Fermer</button>
         </div>
       </div>
     </div>
   }
+
 </div>

@@ -1,5 +1,6 @@
 /* ============================================
    NAVBAR - DESIGN ELEGANT MINIMALISTE
+   AVEC NOTIFICATIONS
    ============================================ */
 
 .navbar {
@@ -163,19 +164,32 @@
 
 .badge {
   position: absolute;
-  top: 4px;
+  top: 2px;
   right: -8px;
   background: #ef4444;
   color: white;
   border-radius: 10px;
-  width: 20px;
+  min-width: 20px;
   height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   animation: pulse 2s infinite;
+  padding: 0 4px;
+}
+
+.badge-messages {
+  background: #3b82f6;
+}
+
+.badge-achats {
+  background: #f59e0b;
+}
+
+.badge-signalements {
+  background: #ef4444;
 }
 
 @keyframes pulse {
@@ -188,11 +202,78 @@
 }
 
 /* ============================================
+   NOTIFICATION BADGES (Desktop)
+   ============================================ */
+
+.notification-badges {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding-right: 20px;
+  border-right: 1px solid #e8e8e8;
+  margin-right: 20px;
+}
+
+.notification-badge-link {
+  position: relative;
+  font-size: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.notification-badge-link:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.notification-badge-link.has-unread {
+  opacity: 1;
+}
+
+.notification-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ef4444;
+  color: white;
+  border-radius: 10px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  animation: pulse 2s infinite;
+  padding: 0 4px;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notification-badge-link.has-unread .notification-count {
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+/* ============================================
    NAVBAR ACTIONS - USER MENU (Desktop)
    ============================================ */
 
 .navbar-actions {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 /* User Menu */
@@ -429,6 +510,16 @@
    RESPONSIVE DESIGN
    ============================================ */
 
+@media (max-width: 1200px) {
+  .notification-badges {
+    gap: 12px;
+  }
+
+  .notification-badge-link {
+    font-size: 18px;
+  }
+}
+
 @media (max-width: 968px) {
   .navbar {
     padding: 0 20px;
@@ -517,6 +608,10 @@
     z-index: 1002;
     display: none;
   }
+
+  .notification-badges {
+    display: none;
+  }
 }
 
 @media (max-width: 600px) {
@@ -563,7 +658,9 @@
   .btn-user-profile,
   .badge,
   .hamburger span,
-  .user-dropdown {
+  .user-dropdown,
+  .notification-badge-link,
+  .notification-count {
     transition: none;
     animation: none;
   }
@@ -573,7 +670,8 @@
 .navbar-links a:focus-visible,
 .btn-user-profile:focus-visible,
 .dropdown-logout:focus-visible,
-.mobile-logout-btn:focus-visible {
+.mobile-logout-btn:focus-visible,
+.notification-badge-link:focus-visible {
   outline: 2px solid #2c5aa0;
   outline-offset: 2px;
 }
