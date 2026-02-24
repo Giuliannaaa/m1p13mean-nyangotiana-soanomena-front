@@ -9,12 +9,12 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { BoutiqueDashboardComponent } from './pages/boutique-dashboard/boutique-dashboard.component';
-import { BuyerDashboardComponent } from './components/buyer-dashboard/buyer-dashboard.component'; // ✅ CHANGE LE CHEMIN
+import { BuyerDashboardComponent } from './components/buyer-dashboard/buyer-dashboard.component';
 import { PromotionListComponent } from './components/promotion-list/promotion-list.component';
 import { PromotionAddComponent } from './components/promotion-add/promotion-add.component';
 import { PromotionEditComponent } from './components/promotion-edit/promotion-edit.component';
 
-//CRUD
+// CRUD Components
 import { CategorieAddComponent } from "./components/categorie-add/categorie-add.component";
 import { CategorieListComponent } from "./components/categorie-list/categorie-list.component";
 import { CategorieEditComponent } from './components/categorie-edit/categorie-edit.component';
@@ -32,63 +32,90 @@ import { SignalementsAdminComponent } from './components/signalements-admin/sign
 import { MesSignalementsComponent } from './components/mes-signalements/mes-signalements.component';
 import { MessagereieComponent } from './components/messagerie/messagerie.component';
 import { SignalementBoutiqueComponent } from './components/signalement-boutique/signalement-boutique.component';
-
+import { PromotionsListClientComponent } from './components/promotions-list-client/promotions-list-client.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
-    { path: 'forgot-password', component: ForgotPasswordComponent },
-    { path: 'reset-password', component: ResetPasswordComponent },
-    { path: 'admin/dashboard', component: AdminDashboardComponent },
-    { path: 'boutique/dashboard', component: BoutiqueDashboardComponent },
-    { path: 'buyer/dashboard', component: BuyerDashboardComponent },
+  // ============================================
+  // AUTH ROUTES
+  // ============================================
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
 
-    //CRUD categorie
-    { path: 'categories', component: CategorieListComponent },
-    { path: 'categories/ajouter', component: CategorieAddComponent },
-    { path: 'categories/modifier/:id', component: CategorieEditComponent },
+  // ============================================
+  // DASHBOARD ROUTES
+  // ============================================
+  { path: 'admin/dashboard', component: AdminDashboardComponent },
+  { path: 'boutique/dashboard', component: BoutiqueDashboardComponent },
+  { path: 'buyer/dashboard', component: BuyerDashboardComponent },
 
-    //CRUD boutique
-    { path: 'boutiques', component: BoutiqueListComponent },
-    { path: 'boutiques/ajouter', component: BoutiqueAddComponent },
-    { path: 'boutiques/modifier/:id', component: BoutiqueEditComponent },
-    { path: 'boutique/:id', component: BoutiqueDetailComponent },
+  // ============================================
+  // CATEGORIES CRUD
+  // ============================================
+  { path: 'categories', component: CategorieListComponent },
+  { path: 'categories/ajouter', component: CategorieAddComponent },
+  { path: 'categories/modifier/:id', component: CategorieEditComponent },
 
-    //CRUD produit
-    { path: 'produits', component: ProduitListComponent },
-    { path: 'produits/ajouter', component: ProduitAddComponent },
-    { path: 'produits/modifier/:id', component: ProduitEditComponent },
+  // ============================================
+  // BOUTIQUES ROUTES
+  // ============================================
+  { path: 'boutiques', component: BoutiqueListComponent },
+  { path: 'boutiques/ajouter', component: BoutiqueAddComponent },
+  { path: 'boutiques/modifier/:id', component: BoutiqueEditComponent },
+  { path: 'boutique/:id', component: BoutiqueDetailComponent },
+  { path: 'boutiques/:id', component: BoutiqueDetailComponent }, // Detail boutique
 
-    //Achat
-    { path: 'achats/ajouter/:prod_id', component: AchatAddComponent },
-    { path: 'achats', component: AchatListComponent },
+  // ============================================
+  // PRODUITS ROUTES
+  // ============================================
+  { path: 'produits', component: ProduitListComponent },
+  { path: 'produits/ajouter', component: ProduitAddComponent },
+  { path: 'produits/modifier/:id', component: ProduitEditComponent },
+  { path: 'produits/:id', component: ProduitDetailComponent }, // Detail produit
 
-    // Panier
-    { path: 'panier', component: PanierComponent },
+  // ============================================
+  // PROMOTIONS ROUTES
+  // IMPORTANT: Routes sans paramètres AVANT les routes avec paramètres
+  // ============================================
+  { path: 'promotions', component: PromotionsListClientComponent, data: { title: 'Promotions' } }, // Page promotions CLIENT
+  { path: 'admin/promotions', component: PromotionListComponent, data: { title: 'Gestion des promotions' } }, // Admin
+  { path: 'promotions/ajouter', component: PromotionAddComponent },
+  { path: 'promotions/modifier/:id', component: PromotionEditComponent },
 
-    //CRUD promotion
-    { path: 'promotions', component: PromotionListComponent },
-    { path: 'promotions/ajouter', component: PromotionAddComponent },
-    { path: 'promotions/modifier/:id', component: PromotionEditComponent },
-    { path: 'admin/utilisateurs', component: UserListComponent },
+  // ============================================
+  // ACHATS ROUTES
+  // ============================================
+  { path: 'achats', component: AchatListComponent },
+  { path: 'achats/ajouter/:prod_id', component: AchatAddComponent },
 
-    //Liste suivi
-    { path: 'mes-suivis', component: MesSuivisComponent },
+  // ============================================
+  // PANIER ROUTE
+  // ============================================
+  { path: 'panier', component: PanierComponent },
 
-    //Detail boutique
-    { path: 'boutiques/:id', component: BoutiqueDetailComponent },
+  // ============================================
+  // UTILISATEURS ROUTE
+  // ============================================
+  { path: 'admin/utilisateurs', component: UserListComponent },
+  { path: 'profile', component: UserProfileComponent },
 
-    //Detail produit
-    { path: 'produits/:id', component: ProduitDetailComponent },
+  // ============================================
+  // SUIVI ROUTES
+  // ============================================
+  { path: 'mes-suivis', component: MesSuivisComponent },
 
-    //Page de signalement
-    { path: 'admin/signalements', component: SignalementsAdminComponent },
-    { path: 'mes-signalements', component: MesSignalementsComponent },
-    { path: 'signalement-boutique', component: SignalementBoutiqueComponent },
+  // ============================================
+  // SIGNALEMENTS ROUTES
+  // ============================================
+  { path: 'admin/signalements', component: SignalementsAdminComponent },
+  { path: 'mes-signalements', component: MesSignalementsComponent },
+  { path: 'signalement-boutique', component: SignalementBoutiqueComponent },
 
-    //Messagerie
-    { path: 'messagerie', component: MessagereieComponent },
-
-    // { path: 'dashboard-buyer', component: BuyerDashboardComponent },
+  // ============================================
+  // MESSAGERIE ROUTE
+  // ============================================
+  { path: 'messagerie', component: MessagereieComponent },
 ];

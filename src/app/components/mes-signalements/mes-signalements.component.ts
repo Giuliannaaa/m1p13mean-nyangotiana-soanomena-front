@@ -50,7 +50,7 @@ export class MesSignalementsComponent implements OnInit {
     // APPELER LA NOUVELLE ROUTE ACHETEUR AU LIEU DE L'ADMIN
     this.signalementService.getMesSignalements().subscribe({
       next: (response: any) => {
-        console.log('Mes signalements:', response);
+        // console.log('Mes signalements:', response);
         this.signalements = response.data || [];
         this.filteredSignalements = this.signalements;
         this.isLoading = false;

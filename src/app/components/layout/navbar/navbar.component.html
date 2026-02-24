@@ -20,7 +20,7 @@
     <div class="mobile-user-header">
       <div class="mobile-user-avatar">{{ getUserInitials() }}</div>
       <div class="mobile-user-info">
-        <p class="mobile-user-name">{{ userFirstname }} {{ userLastname }}</p>
+        <p class="mobile-user-name"><a routerLink="/profile" routerLinkActive="active" (click)="closeMenu()">{{ userFirstname }} {{ userLastname }}</a></p>
         <p class="mobile-user-email">{{ userEmail }}</p>
       </div>
     </div>
@@ -47,20 +47,41 @@
         </a>
       </li>
 
+      <!-- PROMOTIONS LINK -->
+      <li>
+        <a routerLink="/promotions" routerLinkActive="active" (click)="closeMenu()">
+          Promotions
+        </a>
+      </li>
+
       <!-- BOUTIQUE ONLY -->
       @if (userRole === 'Boutique') {
         <li class="nav-divider"></li>
+        
         <li>
           <a routerLink="/messagerie" routerLinkActive="active" (click)="closeMenu()" class="nav-badge-link">
             Messagerie
-            @if (unreadCount > 0) {
-              <span class="badge">{{ unreadCount }}</span>
+            @if (unreadMessages > 0) {
+              <span class="badge badge-messages">{{ unreadMessages }}</span>
             }
           </a>
         </li>
+
         <li>
-          <a routerLink="/signalement-boutique" routerLinkActive="active" (click)="closeMenu()">
+          <a routerLink="/achats" routerLinkActive="active" (click)="closeMenu()" class="nav-badge-link">
+            Commandes
+            @if (unreadAchats > 0) {
+              <span class="badge badge-achats">{{ unreadAchats }}</span>
+            }
+          </a>
+        </li>
+
+        <li>
+          <a routerLink="/signalement-boutique" routerLinkActive="active" (click)="closeMenu()" class="nav-badge-link">
             Signalements
+            @if (unreadSignalements > 0) {
+              <span class="badge badge-signalements">{{ unreadSignalements }}</span>
+            }
           </a>
         </li>
       }
@@ -68,14 +89,22 @@
       <!-- ACHETEUR ONLY -->
       @if (userRole === 'Acheteur') {
         <li class="nav-divider"></li>
+
         <li>
-          <a routerLink="/mes-signalements" routerLinkActive="active" (click)="closeMenu()">
-            Mes signalements
+          <a routerLink="/achats" routerLinkActive="active" (click)="closeMenu()" class="nav-badge-link">
+            Mes achats
+            @if (unreadAchats > 0) {
+              <span class="badge badge-achats">{{ unreadAchats }}</span>
+            }
           </a>
         </li>
+
         <li>
-          <a routerLink="/achats" routerLinkActive="active" (click)="closeMenu()">
-            Mes achats
+          <a routerLink="/mes-signalements" routerLinkActive="active" (click)="closeMenu()" class="nav-badge-link">
+            Mes signalements
+            @if (unreadSignalements > 0) {
+              <span class="badge badge-signalements">{{ unreadSignalements }}</span>
+            }
           </a>
         </li>
       }
@@ -91,6 +120,8 @@
 
   <!-- ACTIONS - USER MENU (Desktop only) -->
   <div class="navbar-actions">
+
+    <!-- User Menu -->
     <div class="user-menu">
       <button class="btn-user-profile" (click)="toggleUserMenu()" [class.active]="userMenuOpen" [title]="userFirstname">
         <span class="user-avatar">{{ getUserInitials() }}</span>
@@ -106,7 +137,7 @@
           <div class="dropdown-header">
             <div class="header-avatar">{{ getUserInitials() }}</div>
             <div class="header-info">
-              <p class="header-name">{{ userFirstname }} {{ userLastname }}</p>
+              <p class="header-name"><a routerLink="/profile" routerLinkActive="active" (click)="closeMenu()">{{ userFirstname }} {{ userLastname }}</a></p>
               <p class="header-email">{{ userEmail }}</p>
             </div>
           </div>

@@ -1,8 +1,8 @@
 /* ============================================
-   ACHAT LIST - ELEGANT MINIMALISTE
+   PROMOTIONS LIST CLIENT - ELEGANT MINIMALISTE
    ============================================ */
 
-.achat-list-elegant {
+.promotions-list-elegant {
   background: #ffffff;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -13,7 +13,7 @@
    HEADER SECTION
    ============================================ */
 
-.achat-header-elegant {
+.promotions-header-elegant {
   background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 50%, #f0f0f0 100%);
   padding: 60px 20px;
   border-bottom: 1px solid #e8e8e8;
@@ -21,14 +21,14 @@
   overflow: hidden;
 }
 
-.achat-header-elegant::before {
+.promotions-header-elegant::before {
   content: '';
   position: absolute;
   top: -40%;
   left: -15%;
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle, rgba(100, 200, 150, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%);
   border-radius: 50%;
   animation: floatBg 15s ease-in-out infinite;
   pointer-events: none;
@@ -50,7 +50,7 @@
   z-index: 1;
 }
 
-.achat-header-elegant h1 {
+.promotions-header-elegant h1 {
   font-size: 48px;
   font-weight: 400;
   margin-bottom: 10px;
@@ -58,7 +58,7 @@
   color: #222;
 }
 
-.achat-header-elegant p {
+.promotions-header-elegant p {
   font-size: 16px;
   color: #666;
   margin: 0;
@@ -69,7 +69,7 @@
    FILTERS SECTION
    ============================================ */
 
-.achat-filters-section {
+.promotions-filters-section {
   background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
   padding: 40px 20px;
   border-bottom: 1px solid #f0f0f0;
@@ -84,14 +84,14 @@
   margin: 0 auto;
 }
 
-.achat-filters-wrapper {
+.promotions-filters-wrapper {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
 
-.filter-select-achat {
+.filter-select-promo {
   padding: 12px 16px;
   background: white;
   border: 1px solid #ddd;
@@ -101,16 +101,16 @@
   cursor: pointer;
   transition: all 0.3s ease;
   outline: none;
-  min-width: 200px;
+  min-width: 160px;
 }
 
-.filter-select-achat:hover,
-.filter-select-achat:focus {
+.filter-select-promo:hover,
+.filter-select-promo:focus {
   border-color: #222;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.btn-reset-achat {
+.btn-reset-promo {
   padding: 12px 20px;
   background: white;
   border: 1px solid #ddd;
@@ -122,13 +122,13 @@
   color: #666;
 }
 
-.btn-reset-achat:hover {
+.btn-reset-promo:hover {
   border-color: #ef4444;
   background: rgba(239, 68, 68, 0.05);
   color: #ef4444;
 }
 
-.filter-stats-achat {
+.filter-stats-promo {
   font-size: 13px;
   color: #666;
   font-weight: 500;
@@ -140,7 +140,7 @@
    EMPTY STATE
    ============================================ */
 
-.empty-state-achat {
+.empty-state-promo {
   text-align: center;
   padding: 80px 20px;
 }
@@ -150,14 +150,14 @@
   margin-bottom: 20px;
 }
 
-.empty-state-achat h3 {
+.empty-state-promo h3 {
   font-size: 24px;
   font-weight: 400;
   margin-bottom: 12px;
   color: #222;
 }
 
-.empty-state-achat p {
+.empty-state-promo p {
   font-size: 14px;
   color: #999;
   max-width: 400px;
@@ -165,242 +165,172 @@
 }
 
 /* ============================================
-   ACHATS LIST SECTION
+   PROMOTIONS GRID SECTION
    ============================================ */
 
-.achat-list-section {
+.promotions-grid-section {
   padding: 40px 20px;
   background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 50%, #f0f0f0 100%);
 }
 
-.achats-stack {
-  display: flex;
-  flex-direction: column;
+.promotions-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
 }
 
 /* ============================================
-   ACHAT CARD
+   PROMO CARD
    ============================================ */
 
-.achat-card-elegant {
+.promo-card-elegant {
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 2px;
   overflow: hidden;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.achat-card-elegant:hover {
+.promo-card-elegant:hover {
   border-color: #999;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
 }
 
-.achat-card-header {
-  padding: 20px;
-  background: #f9f9f9;
+.promo-card-header {
+  padding: 24px 20px;
+  background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
   border-bottom: 1px solid #e8e8e8;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 20px;
-  flex-wrap: wrap;
 }
 
-.achat-header-info {
-  display: flex;
-  gap: 30px;
-  flex: 1;
-  min-width: 300px;
+.promo-badge-large {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  color: white;
+  border-radius: 8px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 90px;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
-.achat-info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.promo-badge-text {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
 }
 
-.achat-label {
+.promo-badge-label {
+  display: block;
   font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  color: #999;
   letter-spacing: 0.5px;
-  font-weight: 600;
+  margin-top: 4px;
+  opacity: 0.9;
 }
 
-.achat-value {
-  font-size: 14px;
-  font-weight: 600;
-  color: #222;
-}
-
-.achat-status-badge {
+.promo-status-badge {
   display: inline-block;
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 2px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
 }
 
-.status-en_attente {
-  background: rgba(249, 115, 22, 0.1);
-  color: #f97316;
-}
-
-.status-confirmee {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-}
-
-.status-en_livraison {
-  background: rgba(168, 85, 247, 0.1);
-  color: #a855f7;
-}
-
-.status-delivree {
+.badge-active {
   background: rgba(34, 197, 94, 0.1);
   color: #22c55e;
 }
 
-.status-annulee {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+.badge-expired {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
 }
 
-/* ============================================
-   ITEMS TABLE
-   ============================================ */
-
-.achat-items-section {
-  overflow-x: auto;
+.promo-card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.achat-items-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.achat-items-table th {
-  padding: 14px 20px;
-  background: #f9f9f9;
-  border-bottom: 1px solid #e8e8e8;
-  font-size: 12px;
+.promo-name {
+  font-size: 18px;
   font-weight: 600;
+  color: #222;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.promo-description {
+  font-size: 13px;
   color: #666;
-  text-align: left;
-  text-transform: uppercase;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.promo-code-badge {
+  background: rgba(79, 70, 229, 0.1);
+  border: 1px solid rgba(79, 70, 229, 0.2);
+  color: #4f46e5;
+  padding: 8px 12px;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.promo-code-badge strong {
+  font-weight: 700;
   letter-spacing: 0.5px;
 }
 
-.achat-items-table td {
-  padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 13px;
-  vertical-align: middle;
-}
-
-.achat-item-thumb {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 2px;
-  border: 1px solid #e8e8e8;
-}
-
-.achat-item-name {
-  font-weight: 600;
-  color: #222;
-}
-
-/* ============================================
-   ACHAT CARD FOOTER
-   ============================================ */
-
-.achat-card-footer {
-  padding: 20px;
-  background: #f9f9f9;
-  border-top: 1px solid #e8e8e8;
+.promo-date-info {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.achat-actions-group {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.btn-achat-action {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 2px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  color: white;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.btn-achat-action:hover {
-  opacity: 0.9;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.btn-achat-delete {
-  padding: 10px 16px;
-  background: white;
-  border: 1px solid #e8e8e8;
-  border-radius: 2px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  color: #666;
-  transition: all 0.3s ease;
-}
-
-.btn-achat-delete:hover {
-  border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.05);
-  color: #ef4444;
-}
-
-.achat-totals-group {
-  min-width: 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: white;
-  padding: 12px;
-  border-radius: 2px;
-  border: 1px solid #e8e8e8;
-}
-
-.achat-total-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #666;
-}
-
-.achat-total-row span:last-child {
-  font-weight: 600;
-  color: #222;
-}
-
-.achat-grand-total {
-  margin-top: 8px;
+  gap: 12px;
   padding-top: 8px;
   border-top: 1px solid #e8e8e8;
-  font-size: 15px;
-  color: #22c55e;
+}
+
+.promo-date-info small {
+  font-size: 12px;
+  color: #999;
+  flex: 1;
+}
+
+.promo-card-footer {
+  padding: 16px 20px;
+  background: #f9f9f9;
+  border-top: 1px solid #e8e8e8;
+}
+
+.btn-promo-view {
+  width: 100%;
+  padding: 12px 16px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-promo-view:hover {
+  background: #000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* ============================================
@@ -478,119 +408,67 @@
    ============================================ */
 
 @media (max-width: 1024px) {
-  .achat-header-elegant h1 {
-    font-size: 36px;
-  }
-
-  .achat-card-header {
-    flex-direction: column;
-  }
-
-  .achat-header-info {
+  .promotions-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
-  }
-
-  .achat-card-footer {
-    flex-direction: column-reverse;
-    align-items: stretch;
-  }
-
-  .achat-actions-group {
-    width: 100%;
-  }
-
-  .btn-achat-action {
-    flex: 1;
-  }
-
-  .achat-totals-group {
-    min-width: auto;
   }
 }
 
 @media (max-width: 768px) {
-  .achat-header-elegant {
+  .promotions-header-elegant {
     padding: 40px 16px;
   }
 
-  .achat-header-elegant h1 {
-    font-size: 28px;
+  .promotions-header-elegant h1 {
+    font-size: 32px;
   }
 
-  .achat-header-elegant p {
+  .promotions-header-elegant p {
     font-size: 14px;
   }
 
-  .achat-filters-wrapper {
+  .promotions-filters-wrapper {
     flex-direction: column;
   }
 
-  .filter-select-achat {
+  .filter-select-promo {
     width: 100%;
     min-width: auto;
   }
 
-  .btn-reset-achat {
+  .btn-reset-promo {
     width: 100%;
   }
 
-  .achat-list-section {
+  .promotions-grid-section {
     padding: 30px 16px;
   }
 
-  .achat-card-header {
-    padding: 16px;
+  .promotions-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
   }
 
-  .achat-header-info {
-    gap: 20px;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .achat-info-item {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .achat-label {
-    order: -1;
-    min-width: 60px;
-  }
-
-  .achat-items-table {
-    font-size: 12px;
-  }
-
-  .achat-items-table th,
-  .achat-items-table td {
-    padding: 10px 12px;
-  }
-
-  .achat-item-thumb {
-    width: 50px;
-    height: 50px;
-  }
-
-  .achat-card-footer {
+  .promo-card-header {
     padding: 16px;
-    gap: 16px;
+    gap: 12px;
   }
 
-  .achat-actions-group {
-    width: 100%;
+  .promo-badge-large {
+    min-width: 80px;
+    padding: 12px 16px;
   }
 
-  .btn-achat-action,
-  .btn-achat-delete {
-    flex: 1;
-    min-width: 70px;
+  .promo-badge-text {
+    font-size: 24px;
   }
 
-  .achat-totals-group {
-    width: 100%;
+  .promo-card-content {
+    padding: 16px;
+  }
+
+  .promo-name {
+    font-size: 16px;
   }
 
   .footer-content-elegant {
@@ -600,79 +478,77 @@
 }
 
 @media (max-width: 480px) {
-  .achat-header-elegant {
+  .promotions-header-elegant {
     padding: 30px 12px;
   }
 
-  .achat-header-elegant h1 {
+  .promotions-header-elegant h1 {
     font-size: 24px;
   }
 
-  .achat-header-elegant p {
+  .promotions-header-elegant p {
     font-size: 13px;
   }
 
-  .filter-select-achat {
+  .promotions-filters-wrapper {
+    gap: 10px;
+  }
+
+  .filter-select-promo {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  .btn-reset-promo {
+    padding: 10px 16px;
     font-size: 12px;
   }
 
-  .achat-list-section {
+  .promotions-grid-section {
     padding: 20px 12px;
   }
 
-  .achat-card-header {
+  .promotions-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .promo-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .promo-status-badge {
+    align-self: flex-start;
+  }
+
+  .promo-badge-large {
+    width: 100%;
+    text-align: left;
+  }
+
+  .promo-card-content {
     padding: 12px;
+    gap: 10px;
   }
 
-  .achat-label {
-    font-size: 10px;
-    min-width: 50px;
+  .promo-name {
+    font-size: 14px;
   }
 
-  .achat-value {
+  .promo-description {
     font-size: 12px;
   }
 
-  .achat-status-badge {
-    font-size: 10px;
-    padding: 6px 12px;
+  .promo-date-info {
+    flex-direction: column;
+    gap: 4px;
   }
 
-  .achat-items-table th {
-    font-size: 10px;
-    padding: 8px;
-  }
-
-  .achat-items-table td {
-    padding: 10px 8px;
-    font-size: 11px;
-  }
-
-  .achat-item-thumb {
-    width: 45px;
-    height: 45px;
-  }
-
-  .achat-card-footer {
-    padding: 12px;
-  }
-
-  .btn-achat-action,
-  .btn-achat-delete {
-    font-size: 11px;
-    padding: 8px 12px;
-  }
-
-  .achat-total-row {
+  .btn-promo-view {
     font-size: 12px;
-  }
-
-  .achat-grand-total {
-    font-size: 13px;
-  }
-
-  .footer-content-elegant {
-    gap: 24px;
+    padding: 10px 14px;
   }
 
   .footer-column h4 {
@@ -683,6 +559,10 @@
   .footer-column a {
     font-size: 12px;
   }
+
+  .footer-bottom-elegant {
+    font-size: 11px;
+  }
 }
 
 /* ============================================
@@ -690,13 +570,12 @@
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
-  .achat-card-elegant,
-  .btn-achat-action,
-  .btn-achat-delete {
+  .promo-card-elegant,
+  .btn-promo-view {
     transition: none;
   }
 
-  .achat-header-elegant::before {
+  .promotions-header-elegant::before {
     animation: none;
   }
 }

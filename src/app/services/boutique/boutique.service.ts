@@ -70,7 +70,7 @@ export class BoutiqueService {
     return this.http.delete(`${this.apiUrl}/${storeId}/images/${imageId}`, { headers: this.getHeaders() });
   }
 
-  getBoutiqueByOwner(ownerId: string): Observable<Boutique[]> {
+  getBoutiqueByOwner(ownerId: string): Observable<any> {
     return this.http.get<Boutique[]>(`${this.apiUrl}/owner/${ownerId}`);
   }
 

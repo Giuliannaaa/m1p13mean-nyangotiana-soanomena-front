@@ -61,7 +61,7 @@ export class BuyerDashboardComponent implements OnInit {
         } else if (response.categories && Array.isArray(response.categories)) {
           this.categories = response.categories;
         }
-        console.log('Catégories chargées:', this.categories.length);
+        // console.log('Catégories chargées:', this.categories.length);
       },
       error: (err) => console.error('Erreur catégories:', err)
     });
@@ -70,11 +70,11 @@ export class BuyerDashboardComponent implements OnInit {
     this.boutiqueService.getNewBoutiques().subscribe({
       next: (response: any) => {
         this.newBoutiques = response.data || response || [];
-        console.log('Nouvelles boutiques chargées:', this.newBoutiques.length);
-        console.log('Boutiques avec catégories:', this.newBoutiques.map(b => ({
-          name: b.name,
-          categoryId: b.categoryId
-        })));
+        // console.log('Nouvelles boutiques chargées:', this.newBoutiques.length);
+        // console.log('Boutiques avec catégories:', this.newBoutiques.map(b => ({
+        //   name: b.name,
+        //   categoryId: b.categoryId
+        // })));
         this.cdr.markForCheck();
       },
       error: (err) => console.error('Erreur nouvelles boutiques:', err)
@@ -84,7 +84,7 @@ export class BuyerDashboardComponent implements OnInit {
     this.dashboardService.getBestSellerProducts().subscribe({
       next: (response: any) => {
         this.bestSellerProducts = response.data || response || [];
-        console.log('Best sellers chargés:', this.bestSellerProducts.length);
+        // console.log('Best sellers chargés:', this.bestSellerProducts.length);
         this.cdr.markForCheck();
       },
       error: (err) => console.error('Erreur best sellers:', err)
@@ -94,7 +94,7 @@ export class BuyerDashboardComponent implements OnInit {
     this.produitService.getProduits().subscribe({
       next: (response: any) => {
         this.allProducts = response.data || response || [];
-        console.log('TOUS les produits chargés:', this.allProducts.length);
+        // console.log('TOUS les produits chargés:', this.allProducts.length);
         this.cdr.markForCheck();
       },
       error: (err) => console.error('Erreur chargement tous produits:', err)
@@ -115,7 +115,7 @@ export class BuyerDashboardComponent implements OnInit {
     // CHARGER LES AVIS - AVEC LE BON SERVICE
     this.avisService.getTousLesAvis().subscribe({
       next: (response: any) => {
-        console.log('Réponse avis brute:', response);
+        // console.log('Réponse avis brute:', response);
         
         let reviews: any[] = [];
         
@@ -125,15 +125,15 @@ export class BuyerDashboardComponent implements OnInit {
           reviews = response.data;
         }
         
-        this.boutiqueReviews = reviews.slice(0, 6);
+        this.boutiqueReviews = reviews.slice(0, 9);
         
-        console.log('Avis chargés:', this.boutiqueReviews.length);
-        console.log('Avis détails:', this.boutiqueReviews.map(r => ({
-          acheteur: r.acheteur_id?.firstname || 'Anonyme',
-          boutique: r.boutique_id?.name || 'Inconnue',
-          rating: r.rating || r.note,
-          comment: r.comment?.substring(0, 30) || r.commentaire?.substring(0, 30) || '...'
-        })));
+        // console.log('Avis chargés:', this.boutiqueReviews.length);
+        // console.log('Avis détails:', this.boutiqueReviews.map(r => ({
+        //   acheteur: r.acheteur_id?.firstname || 'Anonyme',
+        //   boutique: r.boutique_id?.name || 'Inconnue',
+        //   rating: r.rating || r.note,
+        //   comment: r.comment?.substring(0, 30) || r.commentaire?.substring(0, 30) || '...'
+        // })));
         
         this.cdr.markForCheck();
       },
@@ -145,7 +145,7 @@ export class BuyerDashboardComponent implements OnInit {
         this.avisService.getTousLesAvisPublic().subscribe({
           next: (response: any) => {
             console.log('Avis chargés (endpoint public):', response.length);
-            this.boutiqueReviews = (Array.isArray(response) ? response : response.data || []).slice(0, 6);
+            this.boutiqueReviews = (Array.isArray(response) ? response : response.data || []).slice(0, 9);
             this.cdr.markForCheck();
           },
           error: (err2) => {

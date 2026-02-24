@@ -1,0 +1,382 @@
+<div class="profile-container">
+  <!-- HEADER -->
+  <div class="profile-header-elegant">
+    <div class="header-content">
+      <h1>Mon Profil</h1>
+      <p>Gérez vos informations personnelles</p>
+      <div class="header-actions">
+         @if (!isEditMode) {
+            <button (click)="enableEditMode()" class="btn-edit-profile">
+            Modifier mon profil
+            </button>
+            <button (click)="openPasswordModal()" class="btn-password">
+              Changer mot de passe
+            </button>
+        }
+    </div>
+    </div>
+    <!-- MODAL CHANGEMENT MOT DE PASSE -->
+@if (showPasswordModal) {
+  <div class="modal-overlay" (click)="closePasswordModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <h3>Changer le mot de passe</h3>
+
+      @if (passwordError) {
+        <div class="modal-error">{{ passwordError }}</div>
+      }
+
+      <div class="form-group">
+        <label>Mot de passe actuel</label>
+        <input 
+          type="password" 
+          [(ngModel)]="passwordData.currentPassword"
+          placeholder="Votre mot de passe actuel"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Nouveau mot de passe</label>
+        <input 
+          type="password" 
+          [(ngModel)]="passwordData.newPassword"
+          placeholder="Au moins 6 caractères"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Confirmer le nouveau mot de passe</label>
+        <input 
+          type="password" 
+          [(ngModel)]="passwordData.confirmPassword"
+          placeholder="Répéter le nouveau mot de passe"
+        />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="closePasswordModal()" [disabled]="isChangingPassword">
+          Annuler
+        </button>
+        <button class="btn-save" (click)="changePassword()" [disabled]="isChangingPassword">
+          {{ isChangingPassword ? 'Modification...' : 'Modifier' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+  </div>
+
+  <!-- MESSAGES -->
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- LOADING -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Chargement...</p>
+    </div>
+  }
+
+  <!-- PROFILE CONTENT -->
+  @if (!isLoading) {
+    <section class="section profile-section">
+      <div class="section-content">
+        <!-- VIEW MODE -->
+        @if (!isEditMode) {
+          <div class="profile-card-view">
+            <!-- Profile Header -->
+            <div class="profile-card-header">
+              <div class="profile-avatar-large">
+                {{ user.firstname?.charAt(0)?.toUpperCase() }}{{ user.lastname?.charAt(0)?.toUpperCase() }}
+              </div>
+              <div class="profile-header-info">
+                <h2 class="profile-name">{{ user.firstname }} {{ user.lastname }}</h2>
+                <span class="role-badge" [ngClass]="getRoleBadgeClass(user.role)">
+                  {{ getRoleIcon(user.role) }} {{ user.role }}
+                </span>
+                <p class="profile-email">{{ user.email }}</p>
+              </div>
+            </div>
+
+            <!-- Profile Info Grid -->
+            <div class="profile-info-grid">
+              <!-- Contact Information -->
+              <div class="info-section">
+                <h3>Informations de contact</h3>
+                <div class="info-item">
+                  <span class="label">Email</span>
+                  <span class="value">{{ user.email }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Téléphone</span>
+                  <span class="value">{{ user.phone || 'Non renseigné' }}</span>
+                </div>
+              </div>
+
+              <!-- Account Information -->
+              <div class="info-section">
+                <h3>Informations du compte</h3>
+                <div class="info-item">
+                  <span class="label">Rôle</span>
+                  <span class="value">{{ user.role }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Date d'inscription</span>
+                  <span class="value">{{ formatDate(user.createdAt) }}</span>
+                </div>
+              </div>
+
+              <!-- Document Information -->
+              @if (user.role === 'Boutique') {
+                <div class="info-section">
+                  <h3>Documents</h3>
+                  <div class="info-item">
+                    <span class="label">Nif</span>
+                    <span class="value">{{ boutique?.legal?.nif || 'Non renseigné' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Stat</span>
+                    <span class="value">{{ boutique?.legal?.stat || 'Non renseigné' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Loye</span>
+                    <span class="value">{{ boutique?.legal?.rent || 'Non renseigné' }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <!-- ZONE DANGER -->
+            @if (!isEditMode) {
+            <div class="danger-zone">
+                <h3>Zone dangereuse</h3>
+
+                @if (!user.deleteRequestedAt) {
+                <div class="danger-item">
+                    <div class="danger-info">
+                    <p class="danger-title">Supprimer mon compte</p>
+                    <p class="danger-desc">Une fois la demande soumise, votre compte sera supprimé définitivement dans 30 jours. Vous pouvez annuler avant ce délai.</p>
+                    </div>
+                    <button class="btn-danger" (click)="showDeleteModal = true">
+                    Supprimer mon compte
+                    </button>
+                </div>
+                } @else {
+                <div class="danger-item pending-delete">
+                    <div class="danger-info">
+                    <p class="danger-title">Suppression planifiée</p>
+                    <p class="danger-desc">Votre compte sera supprimé définitivement dans <strong>{{ getDaysRemaining() }} jours</strong>. Vous pouvez annuler cette demande.</p>
+                    </div>
+                    <button class="btn-cancel-danger" (click)="cancelDelete()">
+                    Annuler la suppression
+                    </button>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- MODAL CONFIRMATION -->
+            @if (showDeleteModal) {
+            <div class="modal-overlay" (click)="showDeleteModal = false">
+                <div class="modal-box" (click)="$event.stopPropagation()">
+                <h3>Confirmer la suppression</h3>
+                <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action sera <strong>définitive dans 30 jours</strong>. Vous pouvez annuler avant ce délai.</p>
+                <div class="modal-actions">
+                    <button class="btn-cancel" (click)="showDeleteModal = false">Annuler</button>
+                    <button class="btn-danger" (click)="requestDelete()">Confirmer</button>
+                </div>
+                </div>
+            </div>
+            }
+          </div>
+        }
+
+        <!-- EDIT MODE -->
+        @if (isEditMode) {
+          <div class="profile-card-edit">
+            <h3>Modifier mes informations</h3>
+
+            <form (ngSubmit)="saveProfile()" class="profile-form">
+              <!-- Row 1: Firstname & Lastname -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="firstname">Prénom *</label>
+                  <input 
+                    type="text" 
+                    id="firstname" 
+                    [(ngModel)]="editData.firstname" 
+                    name="firstname"
+                    placeholder="Votre prénom"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="lastname">Nom *</label>
+                  <input 
+                    type="text" 
+                    id="lastname" 
+                    [(ngModel)]="editData.lastname" 
+                    name="lastname"
+                    placeholder="Votre nom"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Row 2: Email & Phone -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="email">Email (non modifiable)</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    [(ngModel)]="editData.email" 
+                    name="email"
+                    disabled
+                    class="input-disabled"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="phone">Téléphone</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    [(ngModel)]="editData.phone" 
+                    name="phone"
+                    placeholder="+261 XX XXX XXX"
+                  />
+                </div>
+              </div>
+
+              <!-- Document Section (Boutique only) -->
+              @if (user.role === 'Boutique') {
+                <div class="document-section">
+                  <h4>Informations de document</h4>
+                  
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="docType">Type de document</label>
+                      <select 
+                        id="docType" 
+                        [(ngModel)]="editData.document.type" 
+                        name="docType"
+                      >
+                        <option value="">-- Sélectionner --</option>
+                        <option value="CIN">CIN</option>
+                        <option value="PASSEPORT">PASSEPORT</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="docNumber">Numéro de document</label>
+                      <input 
+                        type="text" 
+                        id="docNumber" 
+                        [(ngModel)]="editData.document.number" 
+                        name="docNumber"
+                        placeholder="Numéro du document"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Document Upload -->
+                  <div class="form-group full-width">
+                    <label for="docFile">Fichier du document</label>
+                    <div class="file-upload-area">
+                      <input 
+                        type="file" 
+                        id="docFile" 
+                        (change)="onDocumentSelected($event)"
+                        accept=".pdf,.jpg,.png"
+                        class="file-input-hidden"
+                      />
+                      <label for="docFile" class="file-upload-label">
+                        <span class="upload-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAACx0lEQVR4nO2azWsTURTFf7GK2FrrvqBCVNCF3+Cq0qYu60Y3gpuWgktF0JVff0VpSzeCC6ExgrpyY/WPiLrSrVYjWqFoQSMXzsAlJJPJB/NeoAcehMl9b+Zk5t573pnANraRhmlgGXgHbGjY5yWgxADgMPAGqLcZFlMkUkwCNV3oF+AucAoY0bDP94B1xVjsBBE+Spu6wKfAaEqsfVdxZIoxkrAcKGSYU3Bk1hhQEgn2AV81tzSoJBI8cPODJXavJAyntYaV5txxwD0SK8COHtYa1To/CYCkT1R6uBONRH6QM84DT4DLwJ4+rHdGRKrkjJ19Xu+hiCwSAEeU4J+ALXXql8ClDtcZA76JyBQ54zrwJ0VDlYHhDOtYbj3TnNfkjDs68T9VqxPALmAcuAF81/erGUgshZIoCYm/wHyLmGOOzEwGEpvqR0FIzLWJvanYFxlImDIISmJEuWDJ2ohxxa/HTsKw4BK7sSHuVpd+FTsJw1F14qS7m4pthTFXnaIikeCC2w2a7rqvLr1X46yaXaLJajEndjHj/nwtZIltR8JjSjlQdY5JVbIjl459DhhyHbsbEkFxULLAVGyinbbUseddiV1QYqdhFngEXHU/Si6YdAl4RccW3SYpQdntEyyxm2FOd9DibhNoj11x+4mPOmbayZfNcooeioLEUkMj+63j1syyWDazMZLAOX8mL7JYNo9jJIEEXl2CL82ySXZx11Sqo7NsZhRjEvx4BstmKG9XvNaB77TqqtQt4BCwPwbL5q0zlLNYNsOOTN3doaCWzUVn7ae54q0es+fAZyfFg1k2yzqxvZ8YaMvmQ5MG1y2CWjYbOrHppV4Q1LLpF5GC29LWVAVzx3tdwMku5we1bJolu7147BRBjYJGTDtLJs0YiJpEt+8woiTRKFGitmyyYCJ2y6YTRGvZdIuS+5PLL42B+pPLNgiE/1uIPGN9qq9YAAAAAElFTkSuQmCC" alt="chain"></span>
+                        <span class="upload-text">Cliquez pour sélectionner un fichier</span>
+                        <span class="upload-hint">(PDF, JPG, PNG max 5MB)</span>
+                      </label>
+                      
+                      @if (documentPreview) {
+                        <div class="file-preview">
+                          <img [src]="documentPreview" alt="Aperçu du document" />
+                          <p>{{ documentFile?.name }}</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <!-- Form Actions -->
+              <div class="form-actions">
+                <button 
+                  type="button" 
+                  (click)="cancelEdit()" 
+                  class="btn-cancel"
+                  [disabled]="isLoading"
+                >
+                  Annuler
+                </button>
+                <button 
+                  type="submit" 
+                  class="btn-save"
+                  [disabled]="isLoading"
+                >
+                  {{ isLoading ? 'Sauvegarde...' : 'Sauvegarder les modifications' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- FOOTER -->
+  <footer class="footer-elegant">
+    <div class="footer-content-elegant">
+      <div class="footer-column">
+        <h4>À propos</h4>
+        <p>SuperMarket vous offre une plateforme complète de gestion de profil.</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a routerLink="/boutiques" routerLinkActive="active">Boutiques</a></li>
+          <li><a routerLink="/produits" routerLinkActive="active">Produits</a></li>
+          <li><a routerLink="/promotions" routerLinkActive="active">Promotions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>contact@supermarket.com</p>
+        <p>+261 6XX XXX XXX</p>
+        <p>Antananarivo, Madagascar</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom-elegant">
+      <p>&copy; 2026 SuperMarket. Tous droits réservés.</p>
+      <p>Développé par <strong>Ny Angotiana and Soanomena</strong></p>
+    </div>
+  </footer>
+</div>
