@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environnements/environnement';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class PromotionService {
 
   private apiUrl = `${environment.apiUrl}/promotions`;//Utilisation variable d'environment
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /** Ajouter une promotion */
   addPromotion(promotion: any): Observable<any> {
@@ -37,7 +37,7 @@ export class PromotionService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-   /** Récupérer la promotion active pour un produit */
+  /** Récupérer la promotion active pour un produit */
   /*getPromotionActiveByProduit(prod_id: string) {
     return this.http.get(
       `${environment.apiUrl}/promotions/active/${prod_id}`

@@ -3,13 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Produit } from '../../models/produit.model';
 import { ApiResponse } from '../../models/api-response.interface';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProduitService {
 
-  private baseUrl = 'http://localhost:5000/api/produits';
+  private baseUrl = `${environment.apiUrl}/api/produits`;
 
   constructor(private http: HttpClient) { }
 
@@ -22,7 +23,7 @@ export class ProduitService {
   }
 
   getBoutiques(): Observable<any> {
-    return this.http.get<ApiResponse<Produit[]>>(`http://localhost:5000/api/auth/boutiques`);
+    return this.http.get<ApiResponse<Produit[]>>(`${environment.apiUrl}/api/auth/boutiques`);
   }
 
   getProduits(): Observable<ApiResponse<Produit[]>> {

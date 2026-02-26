@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { environment } from '../../environnements/environnement';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class MessageService {
     });
   }
 
-  private boutiqueApiUrl = 'http://localhost:5000/boutiques';
+  private boutiqueApiUrl = `${environment.apiUrl}/boutiques`;
 
   // ENVOYER UN MESSAGE
   sendMessage(receiverId: string, boutiqueId: string, message: string, subject?: string, messageType?: string): Observable<any> {

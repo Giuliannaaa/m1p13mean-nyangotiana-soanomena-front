@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environnements/environnement';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +22,8 @@ export class AvisService {
   noterBoutique(boutiqueId: string, rating: number, comment?: string): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/noter`,
-      { 
-        boutique_id: boutiqueId, 
+      {
+        boutique_id: boutiqueId,
         rating,
         comment: comment || ''
       },
