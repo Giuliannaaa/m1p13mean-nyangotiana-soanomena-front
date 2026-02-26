@@ -1,6 +1,7 @@
 {
   "name": "m1p13mean-nyangotiana-soanomena-front",
   "version": "0.0.0",
+  "sideEffects": false,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
