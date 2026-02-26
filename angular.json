@@ -26,33 +26,22 @@
             ],
             "styles": [
               "src/styles.css"
+            ],
+            "budgets": [
+              {
+                "type": "initial",
+                "maximumWarning": "1.5mb",
+                "maximumError": "2mb"
+              },
+              {
+                "type": "anyComponentStyle",
+                "maximumWarning": "12kb",
+                "maximumError": "35kb"
+              }
             ]
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "1.4MB",
-                  "maximumError": "2MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "12kB",
-                  "maximumError": "35kB"
-                },
-                {
-                  "type": "anyScript",
-                  "maximumWarning": "800kB",
-                  "maximumError": "1.5MB"
-                },
-                {
-                  "type": "bundle",
-                  "name": "main*",
-                  "maximumWarning": "900kB",
-                  "maximumError": "1.8MB"
-                }
-              ],
               "outputHashing": "all",
               "fileReplacements": [
                 {
