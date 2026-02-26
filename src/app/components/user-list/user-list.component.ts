@@ -4,6 +4,7 @@ import { UserService } from '../../services/user/user.service';
 import { User } from '../../models/user.model';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-user-list',
@@ -73,21 +74,21 @@ export class UserListComponent implements OnInit {
     }
 
     loadUserDocuments(): void {
-    this.userService.getUserDocuments().subscribe({
-        next: (response) => {
-        console.log('Documents reçus:', response);
-        this.boutiqueUsers = response.data;
-        },
-        error: (err) => console.error('Erreur documents:', err)
-    });
+        this.userService.getUserDocuments().subscribe({
+            next: (response) => {
+                console.log('Documents reçus:', response);
+                this.boutiqueUsers = response.data;
+            },
+            error: (err) => console.error('Erreur documents:', err)
+        });
     }
 
     getDocumentUrl(filePath: string): string {
-    return `http://localhost:5000/${filePath.replace('./', '')}`;
+        return `${environment.apiUrl}/${filePath.replace('./', '')}`;
     }
 
     isPdf(filePath: string): boolean {
-    return filePath.toLowerCase().endsWith('.pdf');
+        return filePath.toLowerCase().endsWith('.pdf');
     }
 
     // Aperçu modal
@@ -95,12 +96,12 @@ export class UserListComponent implements OnInit {
     previewVisible: boolean = false;
 
     openPreview(url: string): void {
-    this.previewUrl = url;
-    this.previewVisible = true;
+        this.previewUrl = url;
+        this.previewVisible = true;
     }
 
     closePreview(): void {
-    this.previewUrl = '';
-    this.previewVisible = false;
+        this.previewUrl = '';
+        this.previewVisible = false;
     }
 }

@@ -6,6 +6,7 @@ import { BoutiqueService } from '../../services/boutique/boutique.service';
 import { CategorieService } from '../../services/categorie/categorie.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-boutique-edit',
@@ -162,6 +163,6 @@ export class BoutiqueEditComponent implements OnInit {
     getImageUrl(url: string): string {
         if (!url) return 'assets/img/default-store.jpg';
         if (url.startsWith('http')) return url;
-        return `http://localhost:5000/${url.replace(/\\/g, '/')}`;
+        return `${environment.apiUrl}/${url.replace(/\\/g, '/')}`;
     }
 }

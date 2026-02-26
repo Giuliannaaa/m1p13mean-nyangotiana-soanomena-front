@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environnements/environnement';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AchatService {
@@ -58,8 +58,8 @@ export class AchatService {
   }
 
   getUnreadCount(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/unread-count`, {
-    headers: this.getHeaders()
-  });
-}
+    return this.http.get(`${this.apiUrl}/unread-count`, {
+      headers: this.getHeaders()
+    });
+  }
 }

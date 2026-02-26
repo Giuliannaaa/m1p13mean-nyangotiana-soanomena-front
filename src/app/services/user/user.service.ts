@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environnements/environnement';
+import { environment } from '../../../environments/environment';
 import { User } from '../../models/user.model';
 import { AuthService } from '../auth/auth.service';
 
@@ -21,11 +21,10 @@ export class UserService {
         let headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        
+
         if (token) {
             headers = headers.set('Authorization', `Bearer ${token}`);
         }
-        
         return headers;
     }
 
@@ -55,7 +54,7 @@ export class UserService {
     }
 
     getUserDocuments(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/boutique-documents`);
+        return this.http.get(`${this.apiUrl}/boutique-documents`);
     }
 
     /**
@@ -88,14 +87,14 @@ export class UserService {
     }
 
     requestDeleteAccount(id: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${id}/request-delete`, {});
+        return this.http.post(`${this.apiUrl}/${id}/request-delete`, {});
     }
 
     cancelDeleteAccount(id: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${id}/cancel-delete`, {});
+        return this.http.post(`${this.apiUrl}/${id}/cancel-delete`, {});
     }
 
     changePassword(id: string, data: { currentPassword: string, newPassword: string }): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/change-password`, data);
+        return this.http.put(`${this.apiUrl}/${id}/change-password`, data);
     }
 }

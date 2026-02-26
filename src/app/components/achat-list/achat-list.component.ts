@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AchatService } from '../../services/achat/achat.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-achat-list',
@@ -158,7 +159,7 @@ export class AchatListComponent implements OnInit {
     }
 
     const cleanPath = img.replace(/\\/g, '/');
-    return `http://localhost:5000/${cleanPath}`;
+    return `${environment.apiUrl}/${cleanPath}`;
   }
 
   // Helper pour parser les Decimal128 dans le HTML
