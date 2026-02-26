@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { environment } from '../../environnements/environnement';
+import { environment } from '../../environments/environment';
 import { MessageService } from './message.service';
 import { SignalementService } from './signalement.service';
 import { AchatService } from './achat/achat.service';
@@ -24,10 +24,10 @@ export class NotificationService {
   unreadSignalements$ = this.unreadSignalementsSubject.asObservable();
   totalNotifications$ = this.totalNotificationsSubject.asObservable();
 
-  constructor(private http: HttpClient, 
+  constructor(private http: HttpClient,
     private messageService: MessageService,
     private signalementService: SignalementService,
-    private achatService: AchatService) {}
+    private achatService: AchatService) { }
 
   /**
    * Charger TOUTES les notifications
@@ -42,16 +42,16 @@ export class NotificationService {
    * MESSAGES : Obtenir le nombre de messages non lus
    */
 
-loadUnreadMessages(): void {
-  this.messageService.getUnreadCount().subscribe({
-    next: (response) => {
-      const count = response.unreadCount || response.count || 0;
-      this.unreadMessagesSubject.next(count);
-      this.updateTotalNotifications();
-    },
-    error: () => this.unreadMessagesSubject.next(0)
-  });
-}
+  loadUnreadMessages(): void {
+    this.messageService.getUnreadCount().subscribe({
+      next: (response) => {
+        const count = response.unreadCount || response.count || 0;
+        this.unreadMessagesSubject.next(count);
+        this.updateTotalNotifications();
+      },
+      error: () => this.unreadMessagesSubject.next(0)
+    });
+  }
 
   /**
    * ACHATS : Obtenir le nombre d'achats non traités
@@ -59,15 +59,15 @@ loadUnreadMessages(): void {
    * Pour ACHETEUR : achats en attente de réponse
    */
   loadUnreadAchats(): void {
-  this.achatService.getUnreadCount().subscribe({
-    next: (response) => {
-      const count = response.unreadCount || response.count || 0;
-      this.unreadAchatsSubject.next(count);
-      this.updateTotalNotifications();
-    },
-    error: () => this.unreadAchatsSubject.next(0)
-  });
-}
+    this.achatService.getUnreadCount().subscribe({
+      next: (response) => {
+        const count = response.unreadCount || response.count || 0;
+        this.unreadAchatsSubject.next(count);
+        this.updateTotalNotifications();
+      },
+      error: () => this.unreadAchatsSubject.next(0)
+    });
+  }
 
   /**
    * SIGNALEMENTS : Obtenir le nombre de signalements non traités

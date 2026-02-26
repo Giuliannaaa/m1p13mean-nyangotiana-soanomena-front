@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environnements/environnement';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +22,8 @@ export class SignalementService {
   creerSignalement(produitId: string, raison: string, description: string): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/creer`,
-      { 
-        produit_id: produitId, 
+      {
+        produit_id: produitId,
         raison,
         description
       },
@@ -59,7 +59,7 @@ export class SignalementService {
   updateStatusSignalement(signalementId: string, statut: string, reponseAdmin?: string): Observable<any> {
     return this.http.patch(
       `${this.apiUrl}/admin/${signalementId}/status`,
-      { 
+      {
         statut,
         reponse_admin: reponseAdmin || null
       },
@@ -102,9 +102,9 @@ export class SignalementService {
 
   //Notification
   getUnreadCount(): Observable<any> {
-  return this.http.get(
-    `${this.apiUrl}/unread-count`,
-    { headers: this.getHeaders() }
-  );
-}
+    return this.http.get(
+      `${this.apiUrl}/unread-count`,
+      { headers: this.getHeaders() }
+    );
+  }
 }

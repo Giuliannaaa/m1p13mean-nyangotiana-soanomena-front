@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from "rxjs";
-import { environment } from "../../../environnements/environnement";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
@@ -38,27 +38,27 @@ export class CategorieService {
 
     // GET boutiques par catégorie
     getBoutiquesByCategory(categoryId: string): Observable<any> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-    });
-    return this.http.get<any>(
-        `${this.apiUrl}/category/${categoryId}`,
-        { headers: headers }
-    );
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<any>(
+            `${this.apiUrl}/category/${categoryId}`,
+            { headers: headers }
+        );
     }
 
     // GET valider/désactiver boutique
     validateBoutique(boutiqueId: string, isValidated: boolean): Observable<any> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-    });
-    return this.http.put<any>(
-        `${this.apiUrl}/${boutiqueId}/validate`,
-        { isValidated: isValidated },
-        { headers: headers }
-    );
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.put<any>(
+            `${this.apiUrl}/${boutiqueId}/validate`,
+            { isValidated: isValidated },
+            { headers: headers }
+        );
     }
 
 }

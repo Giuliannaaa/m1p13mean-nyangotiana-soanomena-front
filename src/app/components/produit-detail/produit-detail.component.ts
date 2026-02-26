@@ -6,6 +6,7 @@ import { ProduitService } from '../../services/produits/produits.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { SignalerProduitComponent } from '../../components/signalement-produit/signalement-produit.component';
 import { PanierService } from '../../services/panier/panier.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-produit-detail',
@@ -65,14 +66,10 @@ export class ProduitDetailComponent implements OnInit {
   }
 
   getImageUrl(imagePath: string): string {
-    // Si le chemin commence par 'uploads/', c'est bon
-
     if (imagePath.startsWith('uploads/') || imagePath.startsWith('/uploads/') || imagePath.startsWith('uploads\\')) {
-      return `http://localhost:5000/${imagePath}`;
+      return `${environment.apiUrl}/${imagePath}`;
     }
-
-    // Sinon, ajouter 'uploads/' devant
-    return `http://localhost:5000/uploads/${imagePath}`;
+    return `${environment.apiUrl}/uploads/${imagePath}`;
   }
 
   toggleReportModal(): void {

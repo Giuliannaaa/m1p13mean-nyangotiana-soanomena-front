@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { environment } from '../../environnements/environnement';
+import { environment } from '../../environments/environment';
 import { Suivi } from '../models/suivi.model';
 import { AuthService } from './auth/auth.service';
 
