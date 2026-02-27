@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
 import { environment } from '../../../environments/environment';
 import imageCompression from 'browser-image-compression';
+import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
 
 @Component({
     selector: 'app-boutique-edit',
@@ -37,6 +38,7 @@ export class BoutiqueEditComponent implements OnInit {
     previews: string[] = [];
 
     isCompressing = false;
+    isUploading = false;
 
     private boutiqueService = inject(BoutiqueService);
     private categorieService = inject(CategorieService);
@@ -81,16 +83,6 @@ export class BoutiqueEditComponent implements OnInit {
                 if (data.owner && data.owner._id) {
                     this.boutique.ownerId = data.owner._id;
                 }
-                // // Map legal nested fields if they exist as a string from backend
-                // if (typeof data.legal === 'string') {
-                //     try {
-                //         this.boutique.legal = JSON.parse(data.legal);
-                //     } catch (e) {
-                //         this.boutique.legal = { nif: '', stat: '', rent: '' };
-                //     }
-                // } else if (data.legal) {
-                //     this.boutique.legal = { ...data.legal };
-                // }
             },
             error: (err) => console.error('Erreur chargement boutique', err)
         });
@@ -99,7 +91,7 @@ export class BoutiqueEditComponent implements OnInit {
     // Compression d'une image
     private async compressImage(file: File): Promise<File> {
         const options = {
-            maxSizeMB: 1,           // max 1MB par image
+            maxSizeMB: 300,           // max 1MB par image
             maxWidthOrHeight: 1024, // redimensionner si trop grand
             useWebWorker: true,
         };
@@ -107,52 +99,72 @@ export class BoutiqueEditComponent implements OnInit {
     }
 
     async updateBoutique(): Promise<void> {
-        const formData = new FormData();
+        this.isUploading = true;
+        try {
+            if (environment.production) {
+                // ── PROD : uploader les images sur Cloudinary puis updateBoutique ──
+                const imageUrls: string[] = [];
 
-        // Appender les champs simples
-        formData.append('name', this.boutique.name);
-        formData.append('description', this.boutique.description);
-        formData.append('categoryId', this.boutique.categoryId);
-        formData.append('ownerId', this.boutique.ownerId);
-        if (this.boutique.isValidated !== undefined) {
-            formData.append('isValidated', String(this.boutique.isValidated));
-        }
-
-        // Appender les objets
-        // formData.append('legal', JSON.stringify(this.boutique.legal));
-
-        // // Appender les nouvelles images
-        // if (this.selectedFiles && this.selectedFiles.length > 0) {
-        //     for (let i = 0; i < this.selectedFiles.length; i++) {
-        //         formData.append('images', this.selectedFiles[i]);
-        //     }
-        // }
-
-        if (this.selectedFiles && this.selectedFiles.length > 0) {
-            this.isCompressing = true;
-            try {
-                for (const file of this.selectedFiles) {
-                    const compressed = await this.compressImage(file);
-                    formData.append('images', compressed, file.name);
+                if (this.selectedFiles.length > 0) {
+                    for (const file of this.selectedFiles) {
+                        const compressed = await this.compressImage(file);
+                        const url = await uploadToCloudinary(compressed, `stores/${this.boutiqueId}`);
+                        imageUrls.push(url);
+                    }
                 }
-            } catch (err) {
-                console.error('Erreur compression image:', err);
-                alert('Erreur lors de la compression des images');
-                this.isCompressing = false;
-                return;
-            }
-            this.isCompressing = false;
-        }
 
-        this.boutiqueService.updateBoutique(this.boutiqueId, formData).subscribe({
-            next: () => {
-                this.router.navigate(['/boutiques']);
-            },
-            error: (err) => {
-                console.error('Erreur modification', err);
-                alert('Erreur lors de la modification : ' + (err.error?.message || err.message));
+                const payload: any = {
+                    name: this.boutique.name,
+                    description: this.boutique.description,
+                    categoryId: this.boutique.categoryId,
+                    ownerId: this.boutique.ownerId,
+                    isValidated: this.boutique.isValidated,
+                };
+
+                if (imageUrls.length > 0) {
+                    payload.imageUrls = imageUrls;
+                }
+
+                this.boutiqueService.updateBoutique(this.boutiqueId, payload).subscribe({
+                    next: () => this.router.navigate(['/boutiques']),
+                    error: (err) => {
+                        console.error('Erreur modification', err);
+                        alert('Erreur : ' + (err.error?.message || err.message));
+                    }
+                });
+
+            } else {
+                // ── DEV : envoi multipart ──
+                const formData = new FormData();
+                formData.append('name', this.boutique.name);
+                formData.append('description', this.boutique.description);
+                formData.append('categoryId', this.boutique.categoryId);
+                formData.append('ownerId', this.boutique.ownerId);
+                if (this.boutique.isValidated !== undefined) {
+                    formData.append('isValidated', String(this.boutique.isValidated));
+                }
+
+                if (this.selectedFiles.length > 0) {
+                    this.isCompressing = true;
+                    for (const file of this.selectedFiles) {
+                        const compressed = await this.compressImage(file);
+                        formData.append('images', compressed, file.name);
+                    }
+                    this.isCompressing = false;
+                }
+
+                this.boutiqueService.updateBoutique(this.boutiqueId, formData).subscribe({
+                    next: () => this.router.navigate(['/boutiques']),
+                    error: (err) => {
+                        console.error('Erreur modification', err);
+                        alert('Erreur : ' + (err.error?.message || err.message));
+                    }
+                });
             }
-        });
+        } catch (error) {
+            console.error('Erreur modification', error);
+            alert('Erreur : ' + (error));
+        }
     }
 
     onImageSelected(event: any): void {

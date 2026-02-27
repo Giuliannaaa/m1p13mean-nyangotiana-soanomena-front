@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { BoutiqueService } from '../../services/boutique/boutique.service';
 import imageCompression from 'browser-image-compression';
+import { environment } from '../../../environments/environment.prod';
+import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
 
 @Component({
   selector: 'app-produit-edit',
@@ -35,6 +37,7 @@ export class ProduitEditComponent {
   selectedFile!: File;
 
   isCompressing = false;
+  isUploading = false;
 
   constructor(private produitService: ProduitService,
     private router: Router, // si tu veux récupérer id pour édition
@@ -120,7 +123,7 @@ export class ProduitEditComponent {
   // Compression d'une image
   private async compressImage(file: File): Promise<File> {
     const options = {
-      maxSizeMB: 1,           // max 1MB par image
+      maxSizeMB: 300,           // max 1MB par image
       maxWidthOrHeight: 1024, // redimensionner si trop grand
       useWebWorker: true,
     };
@@ -146,38 +149,75 @@ export class ProduitEditComponent {
 
 
   async updateProduit(): Promise<void> {
-    const formData = new FormData();
+    this.isUploading = true;
 
-    formData.append('nom_prod', this.produit.nom_prod);
-    formData.append('descriptions', this.produit.descriptions);
-    formData.append('prix_unitaire', String(this.produit.prix_unitaire_val));
-    formData.append('stock_etat', String(this.produit.stock_etat));
-    formData.append('type_produit', this.produit.type_produit);
-    formData.append('livraison', JSON.stringify(this.produit.livraison));
-    formData.append('store_id', this.produit.store_id);
-    formData.append('stock', this.produit.stock);
+    try {
+      if (environment.production) {
+        // ── PROD : upload Cloudinary puis envoyer l'URL ──
+        const payload: any = {
+          nom_prod: this.produit.nom_prod,
+          descriptions: this.produit.descriptions,
+          prix_unitaire: this.produit.prix_unitaire_val,
+          stock_etat: this.produit.stock_etat,
+          type_produit: this.produit.type_produit,
+          livraison: this.produit.livraison,
+          store_id: this.produit.store_id,
+          stock: this.produit.stock,
+        };
 
-    // if (this.selectedFile) {
-    //   formData.append('image_Url', this.selectedFile);
-    // }
-    if (this.selectedFile) {
-      this.isCompressing = true;
-      try {
-        const compressed = await this.compressImage(this.selectedFile);
-        formData.append('image_Url', compressed, this.selectedFile.name);
-      } catch (err) {
-        console.error('Erreur compression image:', err);
-        alert('Erreur lors de la compression des images');
-        this.isCompressing = false;
-        return;
+        if (this.selectedFile) {
+          try {
+            const compressed = await this.compressImage(this.selectedFile);
+            const url = await uploadToCloudinary(compressed, `product/${this.produitId}`);
+            payload.image_Url = url;
+          } catch (err) {
+            console.error('Erreur upload image:', err);
+            alert('Erreur lors de l\'upload de l\'image');
+            this.isUploading = false;
+            return;
+          }
+        }
+
+        this.produitService.updateProduit(this.produitId, payload).subscribe({
+          next: () => this.router.navigate(['/produits']),
+          error: (err: any) => {
+            console.error('Erreur modification:', err);
+            alert('Erreur : ' + (err.error?.message || err.message));
+          }
+        });
+
+      } else {
+        // ── DEV : compress + envoi multipart ──
+        const formData = new FormData();
+        formData.append('nom_prod', this.produit.nom_prod);
+        formData.append('descriptions', this.produit.descriptions);
+        formData.append('prix_unitaire', String(this.produit.prix_unitaire_val));
+        formData.append('stock_etat', String(this.produit.stock_etat));
+        formData.append('type_produit', this.produit.type_produit);
+        formData.append('livraison', JSON.stringify(this.produit.livraison));
+        formData.append('store_id', this.produit.store_id);
+        formData.append('stock', this.produit.stock);
+
+        if (this.selectedFile) {
+          const compressed = await this.compressImage(this.selectedFile);
+          formData.append('image_Url', compressed, this.selectedFile.name);
+        }
+
+        this.produitService.updateProduit(this.produitId, formData).subscribe({
+          next: () => this.router.navigate(['/produits']),
+          error: (err: any) => {
+            console.error('Erreur modification:', err);
+            alert('Erreur : ' + (err.error?.message || err.message));
+          }
+        });
       }
-      this.isCompressing = false;
-    }
 
-    this.produitService.updateProduit(this.produitId, formData)
-      .subscribe(() => {
-        this.router.navigate(['/produits']);
-      });
+    } catch (err) {
+      console.error('Erreur upload:', err);
+      alert('Erreur lors de l\'upload de l\'image');
+    } finally {
+      this.isUploading = false;
+    }
   }
 
 }
