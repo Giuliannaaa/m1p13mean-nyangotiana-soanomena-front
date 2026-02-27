@@ -8,7 +8,7 @@ import { BoutiqueService } from '../../services/boutique/boutique.service';
 import { Boutique } from '../../models/boutique.model';
 import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
 import imageCompression from 'browser-image-compression';
-import { environment } from '../../../environments/environment.prod';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-profile',
