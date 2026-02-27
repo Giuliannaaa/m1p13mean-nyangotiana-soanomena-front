@@ -5,7 +5,7 @@ import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BoutiqueService } from '../../services/boutique/boutique.service';
 import imageCompression from 'browser-image-compression';
-import { environment } from '../../../environments/environment.prod';
+import { environment } from '../../../environments/environment';
 import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
 
 @Component({

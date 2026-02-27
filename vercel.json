@@ -1,4 +1,6 @@
 {
+    "buildCommand": "npm run build -- --configuration production",
+    "outputDirectory": "dist/m1p13mean-nyangotiana-soanomena-front/browser",
     "rewrites": [
         {
             "source": "/(.*)",
