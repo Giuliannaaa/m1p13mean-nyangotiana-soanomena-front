@@ -136,9 +136,9 @@
               } @else {
               <img src="/img/png/elementor-placeholder-image.png" [alt]="produit.nom_prod">
               }
-              <span *ngIf="produit.isNew" class="badge-new">Nouveau</span>
+              <span *ngIf="produit.isProductNew" class="badge-new">Nouveau</span>
               <span *ngIf="produit.isPromoted" class="badge-sale">Promotion</span>
-              <span *ngIf="produit.isNew && produit.isPromoted" class="badge-spec">Nouveau et Promotion</span>
+              <span *ngIf="produit.isProductNew && produit.isPromoted" class="badge-spec">Nouveau et Promotion</span>
 
 
               @if (isAcheteur) {

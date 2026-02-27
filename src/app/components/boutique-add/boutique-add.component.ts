@@ -6,6 +6,7 @@ import { BoutiqueService } from '../../services/boutique/boutique.service';
 import { CategorieService } from '../../services/categorie/categorie.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
+import imageCompression from 'browser-image-compression';
 
 @Component({
   selector: 'app-boutique-add',
@@ -33,6 +34,7 @@ export class BoutiqueAddComponent implements OnInit {
   users: any[] = [];
   selectedFiles: File[] = [];
   previews: string[] = [];
+  isCompressing = false;
 
   private boutiqueService = inject(BoutiqueService);
   private categorieService = inject(CategorieService);
@@ -72,7 +74,17 @@ export class BoutiqueAddComponent implements OnInit {
     });
   }
 
-  addBoutique(): void {
+  // Compression d'une image
+  private async compressImage(file: File): Promise<File> {
+    const options = {
+      maxSizeMB: 1,           // max 1MB par image
+      maxWidthOrHeight: 1024, // redimensionner si trop grand
+      useWebWorker: true,
+    };
+    return await imageCompression(file, options);
+  }
+
+  async addBoutique(): Promise<void> {
     const formData = new FormData();
 
     // Appender les champs simples
@@ -85,11 +97,21 @@ export class BoutiqueAddComponent implements OnInit {
     // Appender les objets (JSON stringify nécessaire pour express-fileupload avec parseNested: true)
     formData.append('legal', JSON.stringify(this.boutique.legal));
 
-    // Appender les images
+    // Compresser les images avant envoi
     if (this.selectedFiles && this.selectedFiles.length > 0) {
-      for (let i = 0; i < this.selectedFiles.length; i++) {
-        formData.append('images', this.selectedFiles[i]);
+      this.isCompressing = true;
+      try {
+        for (const file of this.selectedFiles) {
+          const compressed = await this.compressImage(file);
+          formData.append('images', compressed, file.name);
+        }
+      } catch (err) {
+        console.error('Erreur compression image:', err);
+        alert('Erreur lors de la compression des images');
+        this.isCompressing = false;
+        return;
       }
+      this.isCompressing = false;
     }
 
     this.boutiqueService.createBoutique(formData).subscribe({
