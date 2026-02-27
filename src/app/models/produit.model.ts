@@ -13,7 +13,7 @@ export interface Produit {
   image_Url?: string;
   image_preview?: string;
 
-  isNew?: boolean;
+  isProductNew?: boolean;
   isBestSeller?: boolean;
   isPromoted?: boolean;
   purchaseCount?: number;
