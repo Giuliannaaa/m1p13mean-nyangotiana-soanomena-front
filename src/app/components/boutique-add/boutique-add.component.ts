@@ -7,7 +7,7 @@ import { CategorieService } from '../../services/categorie/categorie.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
 import imageCompression from 'browser-image-compression';
-import { environment } from '../../../environments/environment.prod';
+import { environment } from '../../../environments/environment';
 import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
 
 @Component({

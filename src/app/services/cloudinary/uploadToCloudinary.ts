@@ -1,4 +1,4 @@
-import { environment } from "../../../environments/environment.prod";
+import { environment } from "../../../environments/environment";
 
 export async function uploadToCloudinary(file: File, folder: string = 'stores'): Promise<string> {
     const formData = new FormData();
