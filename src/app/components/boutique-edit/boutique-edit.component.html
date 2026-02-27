@@ -70,7 +70,8 @@
             <div class="form-group">
                 <label for="images">Ajouter des image(s)</label>
                 <div class="file-input-wrapper">
-                    <input type="file" id="images" (change)="onImageSelected($event)" class="file-input" multiple />
+                    <input type="file" id="images" (change)="onImageSelected($event)" class="file-input" multiple
+                        [attr.max]="5" />
                     <div class="file-input-label">
                         <span>📁 Choisir des images</span>
                     </div>

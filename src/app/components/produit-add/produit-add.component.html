@@ -79,7 +79,8 @@
             <div class="form-group">
                 <label for="image_Url">Image du produit</label>
                 <div class="file-input-wrapper">
-                    <input type="file" id="image_Url" (change)="onImageSelected($event)" class="file-input" />
+                    <input type="file" id="image_Url" (change)="onImageSelected($event)" class="file-input"
+                        [attr.max]="5" />
                     <div class="file-input-label">
                         <span>📁 Choisir une image</span>
                     </div>

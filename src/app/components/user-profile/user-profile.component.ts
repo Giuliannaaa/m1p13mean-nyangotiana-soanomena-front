@@ -6,6 +6,9 @@ import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
 import { BoutiqueService } from '../../services/boutique/boutique.service';
 import { Boutique } from '../../models/boutique.model';
+import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
+import imageCompression from 'browser-image-compression';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-user-profile',
@@ -48,90 +51,99 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserProfile();
     const id = this.route.snapshot.paramMap.get('id');
-        if (id) {
-            this.loadBoutique(id);
-            
-            
-        }
+    if (id) {
+      this.loadBoutique(id);
+
+
+    }
+  }
+
+  private async compressImage(file: File): Promise<File> {
+    const options = {
+      maxSizeMB: 300,           // max 500MB par image
+      maxWidthOrHeight: 1024, // redimensionner si trop grand
+      useWebWorker: true,
+    };
+    return await imageCompression(file, options);
   }
 
   loadBoutique(id: string): void {
-        this.boutiqueService.getBoutiqueById(id).subscribe({
-            next: (data) => {
-                this.boutique = data;
-                this.isLoading = false;
-            },
-            error: (err) => {
-                console.error('Erreur chargement boutique:', err);
-                this.isLoading = false;
-            }
-        });
-    }
+    this.boutiqueService.getBoutiqueById(id).subscribe({
+      next: (data) => {
+        this.boutique = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement boutique:', err);
+        this.isLoading = false;
+      }
+    });
+  }
 
   loadUserProfile(): void {
-      this.isLoading = true;
-      const currentUser = this.authService.getCurrentUser();
+    this.isLoading = true;
+    const currentUser = this.authService.getCurrentUser();
 
-      if (!currentUser || !currentUser.id) {
-        this.errorMessage = 'Vous devez être connecté';
-        this.isLoading = false;
-        this.router.navigate(['/login']);
-        return;
-      }
-
-      this.userService.getUserById(currentUser.id).subscribe({
-        next: (response: any) => {
-          const userData = response.data || response;
-          this.user = {
-            _id: userData._id,
-            firstname: userData.firstname || '',
-            lastname: userData.lastname || '',
-            email: userData.email || '',
-            phone: userData.phone || '',
-            role: userData.role || 'Acheteur',
-            createdAt: userData.createdAt,
-            document: {                            
-              type: userData.document?.type || '',
-              number: userData.document?.number || '',
-              file: userData.document?.file || ''
-            },
-            deleteRequestedAt: userData.deleteRequestedAt || null
-          };
-          this.isLoading = false;
-          this.cdr.markForCheck();
-
-          // Charger la boutique si l'utilisateur est de rôle Boutique
-          if (this.user.role === 'Boutique') {
-            this.loadBoutiqueByOwner(this.user._id);
-          }
-        },
-        error: (err) => {
-          console.error('Erreur chargement profil:', err);
-          this.errorMessage = 'Erreur lors du chargement du profil';
-          this.isLoading = false;
-        }
-      });
+    if (!currentUser || !currentUser.id) {
+      this.errorMessage = 'Vous devez être connecté';
+      this.isLoading = false;
+      this.router.navigate(['/login']);
+      return;
     }
+
+    this.userService.getUserById(currentUser.id).subscribe({
+      next: (response: any) => {
+        const userData = response.data || response;
+        this.user = {
+          _id: userData._id,
+          firstname: userData.firstname || '',
+          lastname: userData.lastname || '',
+          email: userData.email || '',
+          phone: userData.phone || '',
+          role: userData.role || 'Acheteur',
+          createdAt: userData.createdAt,
+          document: {
+            type: userData.document?.type || '',
+            number: userData.document?.number || '',
+            file: userData.document?.file || ''
+          },
+          deleteRequestedAt: userData.deleteRequestedAt || null
+        };
+        this.isLoading = false;
+        this.cdr.markForCheck();
+
+        // Charger la boutique si l'utilisateur est de rôle Boutique
+        if (this.user.role === 'Boutique') {
+          this.loadBoutiqueByOwner(this.user._id);
+        }
+      },
+      error: (err) => {
+        console.error('Erreur chargement profil:', err);
+        this.errorMessage = 'Erreur lors du chargement du profil';
+        this.isLoading = false;
+      }
+    });
+  }
 
   loadBoutiqueByOwner(ownerId: string): void {
-  console.log('ownerId envoyé:', ownerId);
-  this.boutiqueService.getBoutiqueByOwner(ownerId).subscribe({
-    next: (data) => {
-      console.log('Boutique trouvée:', data);
-      this.boutique = data.data || data;
-      this.cdr.markForCheck();
-    },
-    error: (err) => {
-      console.error('Status:', err.status);
-      console.error('Message:', err.error);
-      if (err.status === 404) {
-        this.boutique = null; // pas de boutique pour cet utilisateur
+    console.log('ownerId envoyé:', ownerId);
+    this.boutiqueService.getBoutiqueByOwner(ownerId).subscribe({
+      next: (data) => {
+        console.log('Boutique trouvée:', data);
+        this.boutique = data.data || data;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Status:', err.status);
+        console.error('Message:', err.error);
+        if (err.status === 404) {
+          this.boutique = null; // pas de boutique pour cet utilisateur
+        }
       }
-    }
-  });
-}
+    });
+  }
 
-  
+
 
   /**
    * Activer le mode édition
@@ -169,7 +181,7 @@ export class UserProfileComponent implements OnInit {
     const file = event.target.files?.[0];
     if (file) {
       this.documentFile = file;
-      
+
       // Aperçu
       const reader = new FileReader();
       reader.onload = (e: any) => {
@@ -183,54 +195,104 @@ export class UserProfileComponent implements OnInit {
    * Sauvegarder les modifications
    */
 
-  saveProfile(): void {
-  if (!this.editData.firstname || !this.editData.lastname) {
-    this.errorMessage = 'Le prénom et nom sont obligatoires';
-    return;
-  }
+  async saveProfile(): Promise<void> {
+    if (!this.editData.firstname || !this.editData.lastname) {
+      this.errorMessage = 'Le prénom et nom sont obligatoires';
+      return;
+    }
 
-  this.isLoading = true;
-  this.successMessage = '';
-  this.errorMessage = '';
+    this.isLoading = true;
+    this.successMessage = '';
+    this.errorMessage = '';
 
-  const formData = new FormData();
-  formData.append('firstname', this.editData.firstname);
-  formData.append('lastname', this.editData.lastname);
-  formData.append('phone', this.editData.phone || '');
+    try {
+      if (environment.production) {
+        // ── PROD : upload Cloudinary si fichier, puis envoyer l'URL ──
+        const payload: any = {
+          firstname: this.editData.firstname,
+          lastname: this.editData.lastname,
+          phone: this.editData.phone || '',
+        };
 
-  if (this.editData.document?.type) {
-    // JSON.stringify pour 'legal' dans la boutique
-    formData.append('document', JSON.stringify({
-      type: this.editData.document.type,
-      number: this.editData.document.number || ''
-    }));
-  }
+        if (this.editData.document?.type) {
+          payload.document = {
+            type: this.editData.document.type,
+            number: this.editData.document.number || ''
+          };
+        }
 
-  // Fichier document
-  if (this.documentFile) {
-    formData.append('documentFile', this.documentFile);
-  }
+        if (this.documentFile) {
+          const isImage = this.documentFile.type.startsWith('image/');
+          const fileToUpload = isImage
+            ? await this.compressImage(this.documentFile)
+            : this.documentFile;
+          const url = await uploadToCloudinary(fileToUpload, `documents/${this.editData.firstname}`);
+          payload.documentFileUrl = url;
+        }
 
-  this.userService.updateUserProfile(this.user._id, formData).subscribe({
-    next: (response: any) => {
-      this.user = response.data || response;
-      this.isEditMode = false;
-      this.isLoading = false;
-      this.successMessage = 'Profil mis à jour avec succès!';
-      this.documentFile = null;
-      this.documentPreview = '';
-      this.cdr.markForCheck();
-      setTimeout(() => { this.successMessage = ''; }, 3000);
-    },
-    error: (err) => {
-      console.error('Erreur complète:', err);
-      console.error('Status:', err.status);
-      console.error('Message backend:', err.error);
-      this.errorMessage = err.error?.message || 'Erreur lors de la mise à jour';
+        this.userService.updateUserProfile(this.user._id, payload).subscribe({
+          next: () => {
+            this.successMessage = 'Profil mis à jour avec succès !';
+            this.isEditMode = false;
+            this.documentFile = null;
+            this.documentPreview = '';
+            this.isLoading = false;
+            this.cdr.markForCheck();
+            setTimeout(() => { this.successMessage = ''; }, 3000);
+          },
+          error: (err) => {
+            console.error('Erreur complète:', err);
+            console.error('Status:', err.status);
+            console.error('Message backend:', err.error);
+            this.errorMessage = err.error?.message || 'Erreur lors de la mise à jour';
+            this.isLoading = false;
+          }
+        });
+
+      } else {
+        // ── DEV : envoi multipart ──
+        const formData = new FormData();
+        formData.append('firstname', this.editData.firstname);
+        formData.append('lastname', this.editData.lastname);
+        formData.append('phone', this.editData.phone || '');
+
+        if (this.editData.document?.type) {
+          formData.append('document', JSON.stringify({
+            type: this.editData.document.type,
+            number: this.editData.document.number || ''
+          }));
+        }
+
+        if (this.documentFile) {
+          formData.append('documentFile', this.documentFile);
+        }
+
+        this.userService.updateUserProfile(this.user._id, formData).subscribe({
+          next: () => {
+            this.successMessage = 'Profil mis à jour avec succès !';
+            this.isEditMode = false;
+            this.documentFile = null;
+            this.documentPreview = '';
+            this.isLoading = false;
+            this.cdr.markForCheck();
+            setTimeout(() => { this.successMessage = ''; }, 3000);
+          },
+          error: (err) => {
+            console.error('Erreur complète:', err);
+            console.error('Status:', err.status);
+            console.error('Message backend:', err.error);
+            this.errorMessage = err.error?.message || 'Erreur lors de la mise à jour';
+            this.isLoading = false;
+          }
+        });
+      }
+
+    } catch (err) {
+      console.error('Erreur upload:', err);
+      this.errorMessage = 'Erreur lors de l\'upload du fichier';
       this.isLoading = false;
     }
-  });
-}
+  }
 
   /**
    * Formater la date
@@ -270,100 +332,100 @@ export class UserProfileComponent implements OnInit {
 
   showDeleteModal: boolean = false;
 
-requestDelete(): void {
-  this.userService.requestDeleteAccount(this.user._id).subscribe({
-    next: (response) => {
-      this.user.deleteRequestedAt = response.deleteRequestedAt;
-      this.showDeleteModal = false;
-      this.successMessage = 'Demande de suppression enregistrée. Votre compte sera supprimé dans 30 jours.';
-      this.cdr.markForCheck();
-      setTimeout(() => { this.successMessage = ''; }, 5000);
-    },
-    error: (err) => {
-      this.errorMessage = err.error?.message || 'Erreur lors de la demande de suppression';
-    }
-  });
-}
-
-cancelDelete(): void {
-  this.userService.cancelDeleteAccount(this.user._id).subscribe({
-    next: () => {
-      this.user.deleteRequestedAt = null;
-      this.successMessage = 'Demande de suppression annulée.';
-      this.cdr.markForCheck();
-      setTimeout(() => { this.successMessage = ''; }, 3000);
-    },
-    error: (err) => {
-      this.errorMessage = err.error?.message || 'Erreur lors de l\'annulation';
-    }
-  });
-}
-
-getDaysRemaining(): number {
-  if (!this.user.deleteRequestedAt) return 30;
-  const deleteDate = new Date(this.user.deleteRequestedAt).getTime() + 30 * 24 * 60 * 60 * 1000;
-  return Math.ceil((deleteDate - Date.now()) / (1000 * 60 * 60 * 24));
-}
-
-// Password change
-showPasswordModal: boolean = false;
-passwordData: any = {
-  currentPassword: '',
-  newPassword: '',
-  confirmPassword: ''
-};
-passwordError: string = '';
-passwordSuccess: string = '';
-isChangingPassword: boolean = false;
-
-openPasswordModal(): void {
-  this.showPasswordModal = true;
-  this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
-  this.passwordError = '';
-  this.passwordSuccess = '';
-}
-
-closePasswordModal(): void {
-  this.showPasswordModal = false;
-  this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
-  this.passwordError = '';
-}
-
-changePassword(): void {
-  if (!this.passwordData.currentPassword || !this.passwordData.newPassword || !this.passwordData.confirmPassword) {
-    this.passwordError = 'Tous les champs sont obligatoires';
-    return;
+  requestDelete(): void {
+    this.userService.requestDeleteAccount(this.user._id).subscribe({
+      next: (response) => {
+        this.user.deleteRequestedAt = response.deleteRequestedAt;
+        this.showDeleteModal = false;
+        this.successMessage = 'Demande de suppression enregistrée. Votre compte sera supprimé dans 30 jours.';
+        this.cdr.markForCheck();
+        setTimeout(() => { this.successMessage = ''; }, 5000);
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Erreur lors de la demande de suppression';
+      }
+    });
   }
 
-  if (this.passwordData.newPassword.length < 6) {
-    this.passwordError = 'Le nouveau mot de passe doit contenir au moins 6 caractères';
-    return;
+  cancelDelete(): void {
+    this.userService.cancelDeleteAccount(this.user._id).subscribe({
+      next: () => {
+        this.user.deleteRequestedAt = null;
+        this.successMessage = 'Demande de suppression annulée.';
+        this.cdr.markForCheck();
+        setTimeout(() => { this.successMessage = ''; }, 3000);
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Erreur lors de l\'annulation';
+      }
+    });
   }
 
-  if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
-    this.passwordError = 'Les mots de passe ne correspondent pas';
-    return;
+  getDaysRemaining(): number {
+    if (!this.user.deleteRequestedAt) return 30;
+    const deleteDate = new Date(this.user.deleteRequestedAt).getTime() + 30 * 24 * 60 * 60 * 1000;
+    return Math.ceil((deleteDate - Date.now()) / (1000 * 60 * 60 * 24));
   }
 
-  this.isChangingPassword = true;
-  this.passwordError = '';
+  // Password change
+  showPasswordModal: boolean = false;
+  passwordData: any = {
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  };
+  passwordError: string = '';
+  passwordSuccess: string = '';
+  isChangingPassword: boolean = false;
 
-  this.userService.changePassword(this.user._id, {
-    currentPassword: this.passwordData.currentPassword,
-    newPassword: this.passwordData.newPassword
-  }).subscribe({
-    next: () => {
-      this.isChangingPassword = false;
-      this.showPasswordModal = false;
-      this.successMessage = 'Mot de passe modifié avec succès !';
-      this.cdr.markForCheck();
-      setTimeout(() => { this.successMessage = ''; }, 3000);
-    },
-    error: (err) => {
-      this.isChangingPassword = false;
-      this.passwordError = err.error?.message || 'Mot de passe actuel incorrect';
+  openPasswordModal(): void {
+    this.showPasswordModal = true;
+    this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
+    this.passwordError = '';
+    this.passwordSuccess = '';
+  }
+
+  closePasswordModal(): void {
+    this.showPasswordModal = false;
+    this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
+    this.passwordError = '';
+  }
+
+  changePassword(): void {
+    if (!this.passwordData.currentPassword || !this.passwordData.newPassword || !this.passwordData.confirmPassword) {
+      this.passwordError = 'Tous les champs sont obligatoires';
+      return;
     }
-  });
-}
+
+    if (this.passwordData.newPassword.length < 6) {
+      this.passwordError = 'Le nouveau mot de passe doit contenir au moins 6 caractères';
+      return;
+    }
+
+    if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
+      this.passwordError = 'Les mots de passe ne correspondent pas';
+      return;
+    }
+
+    this.isChangingPassword = true;
+    this.passwordError = '';
+
+    this.userService.changePassword(this.user._id, {
+      currentPassword: this.passwordData.currentPassword,
+      newPassword: this.passwordData.newPassword
+    }).subscribe({
+      next: () => {
+        this.isChangingPassword = false;
+        this.showPasswordModal = false;
+        this.successMessage = 'Mot de passe modifié avec succès !';
+        this.cdr.markForCheck();
+        setTimeout(() => { this.successMessage = ''; }, 3000);
+      },
+      error: (err) => {
+        this.isChangingPassword = false;
+        this.passwordError = err.error?.message || 'Mot de passe actuel incorrect';
+      }
+    });
+  }
 }
 
