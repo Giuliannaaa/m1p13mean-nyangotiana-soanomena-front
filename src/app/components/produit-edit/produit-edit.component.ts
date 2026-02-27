@@ -154,6 +154,13 @@ export class ProduitEditComponent {
     try {
       if (environment.production) {
         // ── PROD : upload Cloudinary puis envoyer l'URL ──
+        let imageUrl = '';
+
+        if (this.selectedFile) {
+          const compressed = await this.compressImage(this.selectedFile);
+          imageUrl = await uploadToCloudinary(compressed, `product/${this.produitId}`);
+        }
+
         const payload: any = {
           nom_prod: this.produit.nom_prod,
           descriptions: this.produit.descriptions,
@@ -165,17 +172,8 @@ export class ProduitEditComponent {
           stock: this.produit.stock,
         };
 
-        if (this.selectedFile) {
-          try {
-            const compressed = await this.compressImage(this.selectedFile);
-            const url = await uploadToCloudinary(compressed, `product/${this.produitId}`);
-            payload.image_Url = url;
-          } catch (err) {
-            console.error('Erreur upload image:', err);
-            alert('Erreur lors de l\'upload de l\'image');
-            this.isUploading = false;
-            return;
-          }
+        if (imageUrl) {
+          payload.image_Url = imageUrl;
         }
 
         this.produitService.updateProduit(this.produitId, payload).subscribe({
