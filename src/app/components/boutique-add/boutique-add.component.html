@@ -80,7 +80,9 @@
 
             <div class="form-actions">
                 <button type="button" routerLink="/boutiques" class="btn-secondary">Annuler</button>
-                <button type="submit" [disabled]="boutiqueForm.invalid" class="btn-primary">Ajouter la boutique</button>
+                <button type="submit" [disabled]="boutiqueForm.invalid" class="btn-primary"
+                    [disabled]="boutiqueForm.invalid || isUploading">{{ isUploading ? 'Upload en cours...' : 'Ajouter la
+                    boutique' }}</button>
             </div>
         </form>
     </div>

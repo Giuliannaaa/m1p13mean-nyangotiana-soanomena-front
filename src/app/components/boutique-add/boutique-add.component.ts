@@ -7,6 +7,8 @@ import { CategorieService } from '../../services/categorie/categorie.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
 import imageCompression from 'browser-image-compression';
+import { environment } from '../../../environments/environment.prod';
+import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
 
 @Component({
   selector: 'app-boutique-add',
@@ -35,6 +37,7 @@ export class BoutiqueAddComponent implements OnInit {
   selectedFiles: File[] = [];
   previews: string[] = [];
   isCompressing = false;
+  isUploading = false;
 
   private boutiqueService = inject(BoutiqueService);
   private categorieService = inject(CategorieService);
@@ -77,7 +80,7 @@ export class BoutiqueAddComponent implements OnInit {
   // Compression d'une image
   private async compressImage(file: File): Promise<File> {
     const options = {
-      maxSizeMB: 1,           // max 1MB par image
+      maxSizeMB: 300,           // max 500MB par image
       maxWidthOrHeight: 1024, // redimensionner si trop grand
       useWebWorker: true,
     };
@@ -85,46 +88,84 @@ export class BoutiqueAddComponent implements OnInit {
   }
 
   async addBoutique(): Promise<void> {
-    const formData = new FormData();
+    this.isUploading = true;
 
-    // Appender les champs simples
-    formData.append('name', this.boutique.name);
-    formData.append('description', this.boutique.description);
-    formData.append('categoryId', this.boutique.categoryId);
-    formData.append('ownerId', this.boutique.ownerId);
-    formData.append('isValidated', String(this.boutique.isValidated));
+    try {
+      if (environment.production) {
+        // PROD : upload vers Cloudinary, envoyer les URLs au backend ──
+        const payload = {
+          name: this.boutique.name,
+          description: this.boutique.description,
+          categoryId: this.boutique.categoryId,
+          ownerId: this.boutique.ownerId,
+          isValidated: this.boutique.isValidated,
+          legal: this.boutique.legal
+        };
 
-    // Appender les objets (JSON stringify nécessaire pour express-fileupload avec parseNested: true)
-    formData.append('legal', JSON.stringify(this.boutique.legal));
+        this.boutiqueService.createBoutique(payload).subscribe({
+          next: async (res: any) => {
+            const boutiqueId = res.data._id;
+            if (this.selectedFiles && this.selectedFiles.length > 0) {
+              const imageUrls: string[] = [];
+              for (const file of this.selectedFiles) {
+                const compressed = await this.compressImage(file);
+                const url = await uploadToCloudinary(compressed, `stores/${boutiqueId}`);
+                imageUrls.push(url);
+              }
+              // Mettre à jour la boutique avec les URLs
+              await this.boutiqueService.updateBoutique(boutiqueId, { imageUrls }).toPromise();
+            }
+            this.router.navigate(['/boutiques']);
+          },
+          error: (err) => {
+            console.error('Erreur création boutique:', err);
+            alert('Erreur : ' + (err.error?.message || err.message));
+          }
+        });
 
-    // Compresser les images avant envoi
-    if (this.selectedFiles && this.selectedFiles.length > 0) {
-      this.isCompressing = true;
-      try {
-        for (const file of this.selectedFiles) {
-          const compressed = await this.compressImage(file);
-          formData.append('images', compressed, file.name);
+      } else {
+        // DEV : comportement actuel, envoi multipart au backend ──
+        const formData = new FormData();
+        formData.append('name', this.boutique.name);
+        formData.append('description', this.boutique.description);
+        formData.append('categoryId', this.boutique.categoryId);
+        formData.append('ownerId', this.boutique.ownerId);
+        formData.append('isValidated', String(this.boutique.isValidated));
+        formData.append('legal', JSON.stringify(this.boutique.legal));
+
+        // Compresser les images avant envoi
+        if (this.selectedFiles && this.selectedFiles.length > 0) {
+          this.isCompressing = true;
+          try {
+            for (const file of this.selectedFiles) {
+              const compressed = await this.compressImage(file);
+              formData.append('images', compressed, file.name);
+            }
+          } catch (err) {
+            console.error('Erreur compression image:', err);
+            alert('Erreur lors de la compression des images');
+            this.isCompressing = false;
+            return;
+          }
+          this.isCompressing = false;
         }
-      } catch (err) {
-        console.error('Erreur compression image:', err);
-        alert('Erreur lors de la compression des images');
-        this.isCompressing = false;
-        return;
+
+        this.boutiqueService.createBoutique(formData).subscribe({
+          next: () => this.router.navigate(['/boutiques']),
+          error: (err) => {
+            console.error('Erreur création boutique:', err);
+            alert('Erreur : ' + (err.error?.message || err.message));
+          }
+        });
       }
-      this.isCompressing = false;
+
+    } catch (err) {
+      console.error('Erreur upload:', err);
+      alert('Erreur lors de l\'upload des images');
+    } finally {
+      this.isUploading = false;
     }
-
-    this.boutiqueService.createBoutique(formData).subscribe({
-      next: () => {
-        this.router.navigate(['/boutiques']);
-      },
-      error: (err) => {
-        console.error('Erreur lors de l\'ajout', err);
-        alert('Une erreur est survenue lors de l\'ajout de la boutique : ' + (err.error?.message || err.message));
-      }
-    });
   }
-
 
   onImageSelected(event: any): void {
     if (event.target.files && event.target.files.length > 0) {
