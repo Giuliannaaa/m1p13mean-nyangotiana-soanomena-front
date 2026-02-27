@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BoutiqueService } from '../../services/boutique/boutique.service';
+import imageCompression from 'browser-image-compression';
 
 @Component({
   selector: 'app-produit-add',
@@ -32,6 +33,8 @@ export class ProduitAddComponent implements OnInit {
     stock: 0
   };
 
+  isCompressing = false;
+
   private boutiqueService = inject(BoutiqueService);
   private produitService = inject(ProduitService);
 
@@ -56,13 +59,23 @@ export class ProduitAddComponent implements OnInit {
     });
   }
 
+  // Compression d'une image
+  private async compressImage(file: File): Promise<File> {
+    const options = {
+      maxSizeMB: 1,           // max 1MB par image
+      maxWidthOrHeight: 1024, // redimensionner si trop grand
+      useWebWorker: true,
+    };
+    return await imageCompression(file, options);
+  }
+
   selectedFile!: File;
 
   onImageSelected(event: any): void {
     this.selectedFile = event.target.files[0];
   }
 
-  addProduit(): void {
+  async addProduit(): Promise<void> {
     // Vérifier que les données requises sont présentes
     if (!this.newProduit.store_id) {
       alert('Veuillez sélectionner une boutique');
@@ -95,8 +108,23 @@ export class ProduitAddComponent implements OnInit {
       JSON.stringify(this.newProduit.livraison)
     );
 
+    // if (this.selectedFile) {
+    //   formData.append('image_Url', this.selectedFile);
+    // }
+
+    // Compresser les images avant envoi
     if (this.selectedFile) {
-      formData.append('image_Url', this.selectedFile);
+      this.isCompressing = true;
+      try {
+        const compressed = await this.compressImage(this.selectedFile);
+        formData.append('image_Url', compressed, this.selectedFile.name);
+      } catch (err) {
+        console.error('Erreur compression image:', err);
+        alert('Erreur lors de la compression des images');
+        this.isCompressing = false;
+        return;
+      }
+      this.isCompressing = false;
     }
 
     console.log('Envoi du produit...');

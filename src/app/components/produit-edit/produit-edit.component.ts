@@ -5,6 +5,7 @@ import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { BoutiqueService } from '../../services/boutique/boutique.service';
+import imageCompression from 'browser-image-compression';
 
 @Component({
   selector: 'app-produit-edit',
@@ -32,6 +33,8 @@ export class ProduitEditComponent {
 
   produitId!: string;
   selectedFile!: File;
+
+  isCompressing = false;
 
   constructor(private produitService: ProduitService,
     private router: Router, // si tu veux récupérer id pour édition
@@ -114,6 +117,16 @@ export class ProduitEditComponent {
       .subscribe(data => this.produit = data);
   }
 
+  // Compression d'une image
+  private async compressImage(file: File): Promise<File> {
+    const options = {
+      maxSizeMB: 1,           // max 1MB par image
+      maxWidthOrHeight: 1024, // redimensionner si trop grand
+      useWebWorker: true,
+    };
+    return await imageCompression(file, options);
+  }
+
   toggleFraisLivraison(): void {
     if (!this.produit.livraison.disponibilite) {
       this.produit.livraison.frais = 0; // si livraison non dispo, frais = 0
@@ -132,7 +145,7 @@ export class ProduitEditComponent {
   }
 
 
-  updateProduit(): void {
+  async updateProduit(): Promise<void> {
     const formData = new FormData();
 
     formData.append('nom_prod', this.produit.nom_prod);
@@ -144,8 +157,21 @@ export class ProduitEditComponent {
     formData.append('store_id', this.produit.store_id);
     formData.append('stock', this.produit.stock);
 
+    // if (this.selectedFile) {
+    //   formData.append('image_Url', this.selectedFile);
+    // }
     if (this.selectedFile) {
-      formData.append('image_Url', this.selectedFile);
+      this.isCompressing = true;
+      try {
+        const compressed = await this.compressImage(this.selectedFile);
+        formData.append('image_Url', compressed, this.selectedFile.name);
+      } catch (err) {
+        console.error('Erreur compression image:', err);
+        alert('Erreur lors de la compression des images');
+        this.isCompressing = false;
+        return;
+      }
+      this.isCompressing = false;
     }
 
     this.produitService.updateProduit(this.produitId, formData)
