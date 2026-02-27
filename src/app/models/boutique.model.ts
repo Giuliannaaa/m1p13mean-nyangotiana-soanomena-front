@@ -23,7 +23,7 @@ export interface Boutique {
             position: number;
         }
     ];
-    isNew?: boolean;
+    isStoreNew?: boolean;
     isPopular?: boolean;
     isFeatured?: boolean;
     rating?: number;
