@@ -9,12 +9,12 @@ import { Produit } from '../../models/produit.model';
 import { Router } from "@angular/router";
 import { PanierService } from '../../services/panier/panier.service';
 import { ActivatedRoute } from '@angular/router';
-
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ImageUrlPipe],
   templateUrl: './produit-list.component.html',
   styleUrls: ['./produit-list.component.css'],
 })

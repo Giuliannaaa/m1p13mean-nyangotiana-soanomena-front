@@ -214,8 +214,8 @@
 
             <div class="modal-body">
                 <div class="list-item" *ngFor="let product of outOfStockProducts">
-                    <img [src]="'http://localhost:5000/' + product.image_Url.replace('\\\\', '/')"
-                        [alt]="product.nom_prod" class="item-thumb" onerror="this.src='img/placeholder.png'">
+                    <img [src]="product.image_Url | imageUrl" [alt]="product.nom_prod" class="item-thumb"
+                        onerror="this.src='img/placeholder.png'">
                     <div class="item-info">
                         <span class="item-name">{{ product.nom_prod }}</span>
                         <span class="item-meta">Prix unitaire : {{ product.prix_unitaire['$numberDecimal'] | number }}
@@ -247,8 +247,8 @@
 
             <div class="modal-body">
                 <div class="list-item" *ngFor="let promo of promotions">
-                    <img [src]="'http://localhost:5000/' + promo.prod_id.image_Url.replace('\\\\', '/')"
-                        [alt]="promo.prod_id.nom_prod" class="item-thumb" onerror="this.src='img/placeholder.png'">
+                    <img [src]="promo.prod_id.image_Url | imageUrl" [alt]="promo.prod_id.nom_prod" class="item-thumb"
+                        onerror="this.src='img/placeholder.png'">
                     <div class="item-info">
                         <span class="item-name">{{ promo.prod_id.nom_prod }}</span>
                         <span class="item-meta">

@@ -14,11 +14,12 @@ import { Categorie } from '../../models/categorie.model';
 import { NoteBoutiqueComponent } from '../note-boutique/note-boutique.component';
 import { SignalerProduitComponent } from '../signalement-produit/signalement-produit.component';
 import { ChangeDetectorRef } from '@angular/core';
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 @Component({
     selector: 'app-boutique-detail',
     standalone: true,
-    imports: [CommonModule, RouterModule, NoteBoutiqueComponent, SignalerProduitComponent],
+    imports: [CommonModule, RouterModule, NoteBoutiqueComponent, SignalerProduitComponent, ImageUrlPipe],
     templateUrl: './boutique-detail.component.html',
     styleUrls: ['./boutique-detail.component.css']
 })
