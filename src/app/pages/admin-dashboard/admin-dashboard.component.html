@@ -287,7 +287,7 @@
             <div class="modal-body">
                 <div class="promo-list">
                     <div class="promo-card" *ngFor="let promo of dashboardData?.activePromotionsData">
-                        <img [src]="'http://localhost:5000/' + promo.prod_id.image_Url" [alt]="promo.prod_id.nom_prod"
+                        <img [src]="promo.prod_id.image_Url | imageUrl" [alt]="promo.prod_id.nom_prod"
                             class="item-thumb" onerror="this.src='img/placeholder.png'">
                         <div class="item-info">
                             <span class="item-name">{{ promo.prod_id.nom_prod }}</span>

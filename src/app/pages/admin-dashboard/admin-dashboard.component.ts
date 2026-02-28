@@ -7,11 +7,12 @@ import { FormsModule } from '@angular/forms';
 
 import { NgChartsModule } from 'ng2-charts';
 import { BoutiqueDashboardService } from '../../services/boutiqueDashboard/boutique-dashboard.service';
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, NgChartsModule, FormsModule],
+  imports: [CommonModule, NgChartsModule, FormsModule, ImageUrlPipe],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })

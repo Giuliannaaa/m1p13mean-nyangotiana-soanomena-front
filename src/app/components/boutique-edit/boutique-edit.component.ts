@@ -9,11 +9,12 @@ import { UserService } from '../../services/user/user.service';
 import { environment } from '../../../environments/environment';
 import imageCompression from 'browser-image-compression';
 import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 @Component({
     selector: 'app-boutique-edit',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule],
+    imports: [CommonModule, FormsModule, RouterModule, ImageUrlPipe],
     templateUrl: './boutique-edit.component.html',
     styleUrl: './boutique-edit.component.css'
 })
@@ -201,9 +202,4 @@ export class BoutiqueEditComponent implements OnInit {
         }
     }
 
-    getImageUrl(url: string): string {
-        if (!url) return 'assets/img/default-store.jpg';
-        if (url.startsWith('http')) return url;
-        return `${environment.apiUrl}/${url.replace(/\\/g, '/')}`;
-    }
 }

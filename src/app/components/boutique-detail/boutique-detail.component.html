@@ -39,7 +39,7 @@
     <div class="hero-banner">
       <!-- Carousel d'images en background -->
       @for (img of boutique?.images; track $index) {
-      <img [src]="'http://localhost:5000/' + img.url" [alt]="boutique?.name" class="hero-img carousel-image"
+      <img [src]="img.url | imageUrl" [alt]="boutique?.name" class="hero-img carousel-image"
         [class.active]="$index === currentImageIndex">
       }
       <div class="hero-overlay"></div>
@@ -59,7 +59,7 @@
       <div class="boutique-hero-info">
         <div class="boutique-logo-hero">
           @if(boutique?.images?.[0]?.url) {
-          <img [src]="'http://localhost:5000/' + boutique?.images?.[0]?.url" [alt]="boutique?.name">
+          <img [src]="boutique?.images?.[0]?.url | imageUrl" [alt]="boutique?.name">
           } @else {
           <img src="/img/png/elementor-placeholder-image.png" [alt]="boutique?.name">
           }
@@ -116,7 +116,7 @@
           <div class="gallery-scroll-mobile">
             @for (img of boutique?.images; track $index) {
             @if ($index > 0) {
-            <img [src]="'http://localhost:5000/' + img.url" [alt]="'Photo ' + $index" loading="lazy">
+            <img [src]="img.url | imageUrl" [alt]="'Photo ' + $index" loading="lazy">
             }
             }
           </div>
@@ -132,7 +132,7 @@
           <div class="product-card-modern" [style.animation-delay]="(i * 80) + 'ms'">
             <div class="product-image-modern">
               @if(produit.image_Url) {
-              <img [src]="'http://localhost:5000/' + produit.image_Url" [alt]="produit.nom_prod">
+              <img [src]="produit.image_Url | imageUrl" [alt]="produit.nom_prod">
               } @else {
               <img src="/img/png/elementor-placeholder-image.png" [alt]="produit.nom_prod">
               }

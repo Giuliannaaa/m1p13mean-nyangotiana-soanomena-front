@@ -90,7 +90,8 @@
             alt="product"></div>
         <h3>Aucun produit trouvé</h3>
         <p>
-          {{ isFiltering || searchText ? 'Essayez de modifier vos critères de recherche' : 'Aucun produit disponible pour le moment' }}
+          {{ isFiltering || searchText ? 'Essayez de modifier vos critères de recherche' : 'Aucun produit disponible
+          pour le moment' }}
         </p>
       </div>
     </div>
@@ -117,7 +118,7 @@
           <div class="produit-card-content">
             <div class="produit-image-box">
               @if(produit.image_Url) {
-              <img [src]="'http://localhost:5000/' + produit.image_Url" [alt]="produit.nom_prod" class="produit-image">
+              <img [src]="produit.image_Url | imageUrl" [alt]="produit.nom_prod" class="produit-image">
               } @else {
               <div class="produit-placeholder">
                 <img
@@ -266,7 +267,7 @@
     <div class="modal-body" *ngIf="selectedProduct">
       <div class="product-info-brief">
         <img
-          [src]="selectedProduct.image_Url ? ('http://localhost:5000/' + selectedProduct.image_Url) : 'img/png/elementor-placeholder-image.png'"
+          [src]="selectedProduct.image_Url ? (selectedProduct.image_Url | imageUrl) : 'img/png/elementor-placeholder-image.png'"
           alt="Product" class="modal-product-thumb">
         <div class="product-text">
           <h3>{{ selectedProduct.nom_prod }}</h3>

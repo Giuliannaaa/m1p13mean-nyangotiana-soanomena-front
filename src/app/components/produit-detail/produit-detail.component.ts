@@ -7,11 +7,12 @@ import { AuthService } from '../../services/auth/auth.service';
 import { SignalerProduitComponent } from '../../components/signalement-produit/signalement-produit.component';
 import { PanierService } from '../../services/panier/panier.service';
 import { environment } from '../../../environments/environment';
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 @Component({
   selector: 'app-produit-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SignalerProduitComponent],
+  imports: [CommonModule, RouterModule, FormsModule, SignalerProduitComponent, ImageUrlPipe],
   templateUrl: './produit-detail.component.html',
   styleUrl: './produit-detail.component.css'
 })
@@ -65,12 +66,7 @@ export class ProduitDetailComponent implements OnInit {
     return this.produit?.stock_etat ? '#28a745' : '#dc3545';
   }
 
-  getImageUrl(imagePath: string): string {
-    if (imagePath.startsWith('uploads/') || imagePath.startsWith('/uploads/') || imagePath.startsWith('uploads\\')) {
-      return `${environment.apiUrl}/${imagePath}`;
-    }
-    return `${environment.apiUrl}/uploads/${imagePath}`;
-  }
+
 
   toggleReportModal(): void {
     this.showReportModal = !this.showReportModal;
