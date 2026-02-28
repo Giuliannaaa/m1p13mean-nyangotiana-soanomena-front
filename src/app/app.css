@@ -2,6 +2,8 @@
     min-height: 100vh;
     display: flex;
     color: #333;
+    min-width: 100%;
+    overflow-x: hidden;
 }
 
 .main-wrapper {
@@ -14,7 +16,12 @@
 
 .main-wrapper.has-sidebar {
     margin-left: 250px;
-    /* Width of the sidebar */
+}
+
+@media (max-width: 768px) {
+    .main-wrapper.has-sidebar {
+        margin-left: 0;
+    }
 }
 
 main {

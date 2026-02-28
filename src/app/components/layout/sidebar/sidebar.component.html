@@ -1,66 +1,76 @@
-<aside class="sidebar">
+<!-- Mobile Toggle Button & Overlay -->
+<button class="mobile-toggle" (click)="toggleSidebar()" [class.hidden]="isSidebarOpen">
+  <span class="hamburger-line"></span>
+  <span class="hamburger-line"></span>
+  <span class="hamburger-line"></span>
+</button>
+
+<div class="sidebar-overlay" [class.is-active]="isSidebarOpen" (click)="closeSidebar()"></div>
+
+<aside class="sidebar" [class.is-open]="isSidebarOpen">
   <div class="sidebar-header">
     <h2>Admin Panel</h2>
+    <button class="mobile-close" (click)="toggleSidebar()">✕</button>
   </div>
   <nav class="sidebar-nav">
     <ul>
       <li>
-        <a routerLink="/admin/dashboard" routerLinkActive="active">
+        <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-dashboard"></i> Dashboard
         </a>
       </li>
       <li>
-        <a routerLink="/produits" routerLinkActive="active">
+        <a routerLink="/produits" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-products"></i> Produits
         </a>
       </li>
       <li>
-        <a routerLink="/categories" routerLinkActive="active">
+        <a routerLink="/categories" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-categories"></i> Catégories
         </a>
       </li>
       <li>
-        <a routerLink="/boutiques" routerLinkActive="active">
+        <a routerLink="/boutiques" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-boutiques"></i> Boutiques
         </a>
       </li>
       <li>
-        <a routerLink="/admin/promotions" routerLinkActive="active">
+        <a routerLink="/admin/promotions" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-promotions"></i> Promotions
         </a>
       </li>
       <li>
-        <a routerLink="/achats" routerLinkActive="active">
+        <a routerLink="/achats" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-achats"></i> Achats
         </a>
       </li>
       <li>
-        <a routerLink="/admin/utilisateurs" routerLinkActive="active">
+        <a routerLink="/admin/utilisateurs" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-users"></i> Utilisateurs
         </a>
       </li>
       <li>
-        <a routerLink="/messagerie" routerLinkActive="active">
+        <a routerLink="/messagerie" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-messages"></i> Messagerie
           @if (unreadMessages > 0) {
-            <span class="badge">{{ unreadMessages }}</span>
+          <span class="badge">{{ unreadMessages }}</span>
           }
         </a>
       </li>
       <li>
-        <a routerLink="/admin/signalements" routerLinkActive="active">
+        <a routerLink="/admin/signalements" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-users"></i> Signalements
           @if (unreadSignalements > 0) {
-            <span class="badge">{{ unreadSignalements }}</span>
+          <span class="badge">{{ unreadSignalements }}</span>
           }
         </a>
       </li>
       <li>
-        <a routerLink="/profile" routerLinkActive="active">
+        <a routerLink="/profile" routerLinkActive="active" (click)="closeSidebar()">
           <i class="icon-users"></i> Profile
         </a>
       </li>
-      
+
       <!-- Add more admin specific links here -->
     </ul>
   </nav>
