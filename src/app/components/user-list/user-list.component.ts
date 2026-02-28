@@ -5,11 +5,13 @@ import { User } from '../../models/user.model';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
+import { SafePipe } from '../../pipes/safe.pipe';
 
 @Component({
     selector: 'app-user-list',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, ImageUrlPipe, SafePipe],
     templateUrl: './user-list.component.html',
     styleUrl: './user-list.component.css'
 })
@@ -23,6 +25,10 @@ export class UserListComponent implements OnInit {
     isLoading: boolean = true;
     errorMessage: string = '';
     boutiqueUsers: any[] = [];
+
+    previewVisible = false;
+    previewUrl = '';
+    previewIsPdf = false;
 
     ngOnInit(): void {
         this.loadUsers();
@@ -84,24 +90,42 @@ export class UserListComponent implements OnInit {
     }
 
     getDocumentUrl(filePath: string): string {
+        if (!filePath) return '';
+        if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+            return filePath;
+        }
         return `${environment.apiUrl}/${filePath.replace('./', '')}`;
     }
 
     isPdf(filePath: string): boolean {
-        return filePath.toLowerCase().endsWith('.pdf');
+        return filePath.toLowerCase().endsWith('.pdf') || filePath.includes('.pdf');
     }
 
-    // Aperçu modal
-    previewUrl: string = '';
-    previewVisible: boolean = false;
 
     openPreview(url: string): void {
         this.previewUrl = url;
+        this.previewIsPdf = false;
+        this.previewVisible = true;
+    }
+
+    openPdfPreview(url: string): void {
+        this.previewUrl = url;
+        this.previewIsPdf = true;
         this.previewVisible = true;
     }
 
     closePreview(): void {
-        this.previewUrl = '';
         this.previewVisible = false;
+        this.previewUrl = '';
+        this.previewIsPdf = false;
     }
+
+    getUserFiles(document: any): string[] {
+        if (!document) return [];
+        const file = document.file;
+        if (Array.isArray(file)) return file;
+        if (typeof file === 'string' && file) return [file];
+        return [];
+    }
+
 }

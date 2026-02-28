@@ -87,7 +87,7 @@
             </div>
           </div>
           <div class="current-image-preview" *ngIf="produit.image_Url">
-            <img [src]="('http://localhost:5000/' + produit.image_Url)" alt="Image du produit" />
+            <img [src]="(produit.image_Url | imageUrl)" alt="Image du produit" />
             <span class="preview-label">Aperçu actuel</span>
           </div>
         </div>

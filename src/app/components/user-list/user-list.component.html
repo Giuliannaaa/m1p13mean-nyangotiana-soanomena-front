@@ -8,8 +8,7 @@
   <!-- FILTRES -->
   <div class="filter-bar">
     <div class="search-box">
-      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()"
-        placeholder="Rechercher par nom, email..." />
+      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Rechercher par nom, email..." />
     </div>
     <div class="filter-group">
       <label>Rôle</label>
@@ -25,79 +24,76 @@
   <!-- TABLE -->
   <div class="user-list-card">
     @if (isLoading) {
-      <div class="loading-state">Chargement des utilisateurs...</div>
+    <div class="loading-state">Chargement des utilisateurs...</div>
     }
 
     @if (!isLoading) {
-      <table class="modern-table">
-        <thead>
-          <tr>
-            <th>Utilisateur</th>
-            <th>Rôle</th>
-            <th>Statut</th>
-            <th>Date d'inscription</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of filteredUsers; track user._id) {
-            <tr>
-              <td>
-                <div class="user-name-cell">
-                  <span class="user-full-name">{{ user.firstname }} {{ user.lastname }}</span>
-                  <span class="user-email-sub">{{ user.email }}</span>
-                </div>
-              </td>
-              <td>
-                <span class="role-badge" [ngClass]="'role-' + user.role?.toLowerCase()">
-                  {{ user.role }}
-                </span>
-              </td>
-              <td>
-                <div class="status-indicator">
-                  <span class="status-dot" [class.active]="user.isActive" [class.inactive]="!user.isActive"></span>
-                  {{ user.isActive ? 'Actif' : 'Inactif' }}
-                </div>
-              </td>
-              <td>{{ user.createdAt | date:'dd MMM yyyy' }}</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-icon-action"
-                    [class.deactivate]="user.isActive"
-                    [class.activate]="!user.isActive"
-                    (click)="updateUserState(user._id!)"
-                    [title]="user.isActive ? 'Désactiver' : 'Activer'">
-                    <img *ngIf="user.isActive" src="/img/svg/icon-off.svg" alt="Désactiver">
-                    <img *ngIf="!user.isActive" src="/img/svg/icon-on.svg" alt="Activer">
-                  </button>
-                </div>
-              </td>
-            </tr>
-          }
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Utilisateur</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th>Date d'inscription</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of filteredUsers; track user._id) {
+        <tr>
+          <td>
+            <div class="user-name-cell">
+              <span class="user-full-name">{{ user.firstname }} {{ user.lastname }}</span>
+              <span class="user-email-sub">{{ user.email }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="role-badge" [ngClass]="'role-' + user.role?.toLowerCase()">
+              {{ user.role }}
+            </span>
+          </td>
+          <td>
+            <div class="status-indicator">
+              <span class="status-dot" [class.active]="user.isActive" [class.inactive]="!user.isActive"></span>
+              {{ user.isActive ? 'Actif' : 'Inactif' }}
+            </div>
+          </td>
+          <td>{{ user.createdAt | date:'dd MMM yyyy' }}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-icon-action" [class.deactivate]="user.isActive" [class.activate]="!user.isActive"
+                (click)="updateUserState(user._id!)" [title]="user.isActive ? 'Désactiver' : 'Activer'">
+                <img *ngIf="user.isActive" src="/img/svg/icon-off.svg" alt="Désactiver">
+                <img *ngIf="!user.isActive" src="/img/svg/icon-on.svg" alt="Activer">
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
 
-          @if (filteredUsers.length === 0) {
-            <tr>
-              <td colspan="5" class="empty-state">
-                Aucun utilisateur ne correspond à votre recherche.
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+        @if (filteredUsers.length === 0) {
+        <tr>
+          <td colspan="5" class="empty-state">
+            Aucun utilisateur ne correspond à votre recherche.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
     }
   </div>
   <!-- DOCUMENTS BOUTIQUES -->
-<div class="documents-section">
-  <div class="list-header">
-    <h2>Documents des Boutiques</h2>
-  </div>
+  <div class="documents-section">
+    <div class="list-header">
+      <h2>Documents des Boutiques</h2>
+    </div>
 
-  @if (boutiqueUsers.length === 0) {
+    @if (boutiqueUsers.length === 0) {
     <div class="empty-state-docs">Aucun document uploadé pour le moment.</div>
-  }
+    }
 
-  <div class="documents-grid">
-    @for (user of boutiqueUsers; track user._id) {
+    <div class="documents-grid">
+      @for (user of boutiqueUsers; track user._id) {
       <div class="document-card">
         <!-- Header -->
         <div class="document-card-header">
@@ -122,38 +118,42 @@
           </div>
         </div>
 
-        <!-- Fichier -->
-        @if (user.document?.file) {
+        <!-- Fichiers -->
+        @if (getUserFiles(user.document).length > 0) {
+        <div class="documents-preview-list" style="display: flex; gap: 10px; flex-wrap: wrap;">
+          @for (file of getUserFiles(user.document); track file) {
           <div class="document-preview">
-            @if (isPdf(user.document.file)) {
-              <a [href]="getDocumentUrl(user.document.file)" 
-                 target="_blank" 
-                 class="btn-view-doc">
+            @if (isPdf(file)) {
+            <div class="pdf-wrapper">
+              <a [href]="getDocumentUrl(file)" target="_blank" class="btn-view-doc">
                 Voir le PDF
               </a>
+              <button class="btn-preview-pdf" (click)="openPdfPreview(getDocumentUrl(file))">
+                Aperçu
+              </button>
+            </div>
             } @else {
-              <img [src]="getDocumentUrl(user.document.file)" 
-              [alt]="'Document de ' + user.firstname"
-              class="doc-image"
-              (click)="openPreview(getDocumentUrl(user.document.file))"
-              style="cursor: pointer;" />
-            }
-            <!-- MODAL APERÇU -->
-            @if (previewVisible) {
-              <div class="preview-overlay" (click)="closePreview()">
-                <div class="preview-container" (click)="$event.stopPropagation()">
-                  <button class="preview-close" (click)="closePreview()">✕</button>
-                  <img [src]="previewUrl" class="preview-image" alt="Aperçu document" />
-                </div>
-              </div>
+            <img [src]="getDocumentUrl(file)" alt="Document" class="doc-image"
+              (click)="openPreview(getDocumentUrl(file))" style="cursor: pointer;" />
             }
           </div>
+          }
+        </div>
         } @else {
-          <p class="no-document">Aucun fichier uploadé</p>
+        <p class="no-document">Aucun fichier uploadé</p>
         }
+
+        @if (previewVisible && previewIsPdf) {
+        <div class="preview-overlay" (click)="closePreview()">
+          <div class="preview-container pdf-preview-container" (click)="$event.stopPropagation()">
+            <button class="preview-close" (click)="closePreview()">✕</button>
+            <iframe [src]="previewUrl | safe" class="pdf-iframe" frameborder="0"></iframe>
+          </div>
+        </div>
+        }
+
       </div>
-    }
+      }
+    </div>
   </div>
 </div>
-</div>
-

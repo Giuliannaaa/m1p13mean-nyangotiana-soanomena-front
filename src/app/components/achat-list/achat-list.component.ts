@@ -5,21 +5,21 @@ import { AchatService } from '../../services/achat/achat.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
-import { ImageUrlPipe } from '../../pipes/image-url.pipe';
+import { SafePipe } from '../../pipes/safe.pipe';
 
 @Component({
   selector: 'app-achat-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ImageUrlPipe],
+  imports: [CommonModule, RouterModule, FormsModule, SafePipe],
   templateUrl: './achat-list.component.html',
   styleUrls: ['./achat-list.component.css']
 })
 export class AchatListComponent implements OnInit {
 
   achats: any[] = [];
-  filteredAchats: any[] = []; // ✅ Ajouter les achats filtrés
+  filteredAchats: any[] = []; // Ajouter les achats filtrés
 
-  // ✅ Variables pour le filtre
+  // Variables pour le filtre
   boutiques: any[] = [];
   boutique_selectionnee: string = '';
   isFiltering: boolean = false;
