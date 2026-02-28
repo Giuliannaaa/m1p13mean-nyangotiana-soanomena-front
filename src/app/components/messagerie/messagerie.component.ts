@@ -78,7 +78,7 @@ export class MessagereieComponent implements OnInit, OnDestroy {
     this.messageService.getAllBoutiques().subscribe({
       next: (response: any) => {
         this.availableBoutiques = response.data || [];
-        console.log('Boutiques disponibles:', this.availableBoutiques);
+        // console.log('Boutiques disponibles:', this.availableBoutiques);
       },
       error: (err) => {
         console.error('Erreur chargement boutiques:', err);
@@ -91,7 +91,7 @@ export class MessagereieComponent implements OnInit, OnDestroy {
     this.messageService.getAdmins().subscribe({
       next: (response: any) => {
         this.availableAdmins = response.data || [];
-        console.log('Admins disponibles:', this.availableAdmins);
+        // console.log('Admins disponibles:', this.availableAdmins);
       },
       error: (err) => {
         console.error('Erreur chargement admins:', err);
@@ -180,7 +180,7 @@ export class MessagereieComponent implements OnInit, OnDestroy {
   loadConversation(otherUserId: string, boutiqueId: string, userData?: any): void {
     this.messageService.getConversation(otherUserId, boutiqueId).subscribe({
       next: (response: any) => {
-        console.log('Messages de la conversation:', response);
+        // console.log('Messages de la conversation:', response);
         this.messages = response.data || [];
 
         // Utiliser d'abord le nom passé en paramètre
@@ -225,14 +225,14 @@ export class MessagereieComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('selectedConversation:', this.selectedConversation);
-    console.log('Données envoyées:', {
-      otherUserId: this.selectedConversation.otherUserId,
-      boutiqueId: this.selectedConversation.boutiqueId,
-      message: this.newMessage,
-      subject: this.subject,
-      messageType: this.messageType
-    });
+    // console.log('selectedConversation:', this.selectedConversation);
+    // console.log('Données envoyées:', {
+    //   otherUserId: this.selectedConversation.otherUserId,
+    //   boutiqueId: this.selectedConversation.boutiqueId,
+    //   message: this.newMessage,
+    //   subject: this.subject,
+    //   messageType: this.messageType
+    // });
 
     this.isSending = true;
     this.messageService.sendMessage(
@@ -243,7 +243,7 @@ export class MessagereieComponent implements OnInit, OnDestroy {
       this.messageType
     ).subscribe({
       next: (response: any) => {
-        console.log('Message envoyé:', response);
+        // console.log('Message envoyé:', response);
         this.messages.push(response.data);
         this.newMessage = '';
         this.subject = '';

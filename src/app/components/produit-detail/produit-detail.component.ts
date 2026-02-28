@@ -34,7 +34,7 @@ export class ProduitDetailComponent implements OnInit {
     // RÉCUPÉRER L'ID ET LE STOCKER
     this.route.params.subscribe(params => {
       this.produitId = params['id']; // Stocker dans la propriété
-      console.log('Produit ID reçu:', this.produitId); // Debug
+      // console.log('Produit ID reçu:', this.produitId); // Debug
 
       if (this.produitId) {
         this.loadProduit(this.produitId);
@@ -45,7 +45,7 @@ export class ProduitDetailComponent implements OnInit {
   loadProduit(id: string): void {
     this.produitService.getProduitById(id).subscribe({
       next: (data: any) => {
-        console.log('Produit reçu:', data);
+        // console.log('Produit reçu:', data);
         // S'ASSURER QUE data.data OU data EST UTILISÉ
         this.produit = data.data || data;
         this.produitId = this.produit._id; // Mettre à jour aussi l'ID

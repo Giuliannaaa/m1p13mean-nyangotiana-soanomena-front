@@ -5,21 +5,20 @@ import { AchatService } from '../../services/achat/achat.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
-import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 @Component({
   selector: 'app-achat-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ImageUrlPipe],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './achat-list.component.html',
   styleUrls: ['./achat-list.component.css']
 })
 export class AchatListComponent implements OnInit {
 
   achats: any[] = [];
-  filteredAchats: any[] = []; // ✅ Ajouter les achats filtrés
+  filteredAchats: any[] = []; // Ajouter les achats filtrés
 
-  // ✅ Variables pour le filtre
+  // Variables pour le filtre
   boutiques: any[] = [];
   boutique_selectionnee: string = '';
   isFiltering: boolean = false;
@@ -113,11 +112,11 @@ export class AchatListComponent implements OnInit {
       this.isFiltering = true;
     }
 
-    console.log('Achats filtrés:', this.filteredAchats.length);
+    // console.log('Achats filtrés:', this.filteredAchats.length);
     this.cdr.markForCheck();
   }
 
-  // ✅ Réinitialiser le filtre
+  // Réinitialiser le filtre
   resetFilter(): void {
     this.boutique_selectionnee = '';
     this.filteredAchats = this.achats;
@@ -180,7 +179,7 @@ export class AchatListComponent implements OnInit {
     if (confirm(`Voulez-vous vraiment ${statusLabels[newStatus] || 'mettre à jour'} cette commande ?`)) {
       this.achatService.updateStatus(id, newStatus).subscribe({
         next: (response) => {
-          console.log('Statut mis à jour:', response);
+          // console.log('Statut mis à jour:', response);
           // Mettre à jour l'achat localement ou recharger
           const index = this.achats.findIndex(a => a._id === id);
           if (index !== -1) {

@@ -126,10 +126,10 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadBoutiqueByOwner(ownerId: string): void {
-    console.log('ownerId envoyé:', ownerId);
+    // console.log('ownerId envoyé:', ownerId);
     this.boutiqueService.getBoutiqueByOwner(ownerId).subscribe({
       next: (data) => {
-        console.log('Boutique trouvée:', data);
+        // console.log('Boutique trouvée:', data);
         this.boutique = data.data || data;
         this.cdr.markForCheck();
       },

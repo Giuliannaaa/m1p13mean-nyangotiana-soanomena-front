@@ -8,13 +8,16 @@
   position: fixed;
   left: 0;
   top: 0;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  z-index: 999;
 }
 
 .sidebar-header {
   padding: 20px;
   text-align: center;
   border-bottom: 1px solid #34495e;
+  position: relative;
 }
 
 .sidebar-header h2 {
@@ -26,6 +29,7 @@
 .sidebar-nav {
   flex: 1;
   padding: 20px 0;
+  overflow-y: auto;
 }
 
 .sidebar-nav ul {
@@ -47,7 +51,8 @@
   border-left: 4px solid transparent;
 }
 
-.sidebar-nav a:hover, .sidebar-nav a.active {
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
   background-color: #34495e;
   color: white;
   border-left-color: #3498db;
@@ -81,4 +86,85 @@
 
 .btn-logout-sidebar:hover {
   background-color: #c0392b;
+}
+
+/* RESPONSIVE LAYOUT */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  background: #2c3e50;
+  border: none;
+  border-radius: 4px;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.mobile-close {
+  display: none;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 768px) {
+  .mobile-toggle {
+    display: flex;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+  }
+
+  .mobile-toggle.hidden {
+    display: none;
+  }
+
+  .mobile-close {
+    display: block;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay.is-active {
+    display: block;
+  }
 }

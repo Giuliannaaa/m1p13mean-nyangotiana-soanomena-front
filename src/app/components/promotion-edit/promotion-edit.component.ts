@@ -71,7 +71,7 @@ export class PromotionEditComponent implements OnInit {
         fin: data.fin?.substring(0, 10),
       };
 
-      console.log('Promotion après conversion:', this.promotion);
+      // console.log('Promotion après conversion:', this.promotion);
     });
   }
 
