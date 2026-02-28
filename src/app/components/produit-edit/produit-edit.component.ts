@@ -8,10 +8,11 @@ import { BoutiqueService } from '../../services/boutique/boutique.service';
 import imageCompression from 'browser-image-compression';
 import { environment } from '../../../environments/environment';
 import { uploadToCloudinary } from '../../services/cloudinary/uploadToCloudinary';
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 @Component({
   selector: 'app-produit-edit',
-  imports: [CommonModule, FormsModule, RouterModule], // OBLIGATOIRE
+  imports: [CommonModule, FormsModule, RouterModule, ImageUrlPipe], // OBLIGATOIRE
   standalone: true,
   templateUrl: './produit-edit.component.html',
   styleUrl: './produit-edit.component.css',
