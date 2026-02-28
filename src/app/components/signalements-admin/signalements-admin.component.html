@@ -10,160 +10,162 @@
 
   <!-- LOADING -->
   @if (isLoading) {
-    <div class="loading-state">Chargement des signalements...</div>
+  <div class="loading-state">Chargement des signalements...</div>
   }
 
   <!-- FILTRES -->
   @if (!isLoading && signalements.length > 0) {
-    <div class="filters-section">
-      <h3>Filtres</h3>
-      <div class="filters-grid">
-        <div class="filter-group">
-          <label>Statut</label>
-          <select [(ngModel)]="filtreStatut" (change)="filterSignalements()" class="filter-select">
-            <option value="">Tous les statuts</option>
-            <option value="signale">Signalé</option>
-            <option value="en_cours">En cours</option>
-            <option value="resolu">Résolu</option>
-            <option value="rejete">Rejeté</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label>Raison</label>
-          <select [(ngModel)]="filtreRaison" (change)="filterSignalements()" class="filter-select">
-            <option value="">Toutes les raisons</option>
-            <option value="produit_defectueux">Produit défectueux</option>
-            <option value="description_inexacte">Description inexacte</option>
-            <option value="prix_incorrect">Prix incorrect</option>
-            <option value="contenu_offensant">Contenu offensant</option>
-            <option value="produit_non_conforme">Produit non conforme</option>
-            <option value="arnaque">Arnaque</option>
-            <option value="autre">Autre</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label>Recherche</label>
-          <input type="text" [(ngModel)]="searchText" (keyup)="filterSignalements()"
-            placeholder="Produit, acheteur, boutique..." class="filter-input" />
-        </div>
-
-        <button (click)="resetFilters()" class="btn-reset">Réinitialiser</button>
+  <div class="filters-section">
+    <h3>Filtres</h3>
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>Statut</label>
+        <select [(ngModel)]="filtreStatut" (change)="filterSignalements()" class="filter-select">
+          <option value="">Tous les statuts</option>
+          <option value="signale">Signalé</option>
+          <option value="en_cours">En cours</option>
+          <option value="resolu">Résolu</option>
+          <option value="rejete">Rejeté</option>
+        </select>
       </div>
+
+      <div class="filter-group">
+        <label>Raison</label>
+        <select [(ngModel)]="filtreRaison" (change)="filterSignalements()" class="filter-select">
+          <option value="">Toutes les raisons</option>
+          <option value="produit_defectueux">Produit défectueux</option>
+          <option value="description_inexacte">Description inexacte</option>
+          <option value="prix_incorrect">Prix incorrect</option>
+          <option value="contenu_offensant">Contenu offensant</option>
+          <option value="produit_non_conforme">Produit non conforme</option>
+          <option value="arnaque">Arnaque</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Recherche</label>
+        <input type="text" [(ngModel)]="searchText" (keyup)="filterSignalements()"
+          placeholder="Produit, acheteur, boutique..." class="filter-input" />
+      </div>
+
+      <button (click)="resetFilters()" class="btn-reset">Réinitialiser</button>
     </div>
+  </div>
   }
 
   <!-- TABLE -->
   @if (!isLoading && filteredSignalements.length > 0) {
-    <div class="table-section">
-      <table class="elegant-table">
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Acheteur</th>
-            <th>Boutique</th>
-            <th>Raison</th>
-            <th>Statut</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (signalement of filteredSignalements; track signalement._id) {
-            <tr>
-              <td class="td-product">
-                <strong>{{ signalement.produit_id?.nom_prod || 'N/A' }}</strong>
-              </td>
-              <td>{{ signalement.acheteur_id?.firstname }} {{ signalement.acheteur_id?.lastname }}</td>
-              <td>{{ signalement.boutique_id?.name || 'N/A' }}</td>
-              <td>{{ getRaisonLabel(signalement.raison) }}</td>
-              <td>
-                <span class="status-badge" [style.background-color]="getStatutBadgeColor(signalement.statut)">
-                  {{ getStatutLabel(signalement.statut) }}
-                </span>
-              </td>
-              <td>{{ signalement.createdAt | date: 'dd/MM/yyyy' }}</td>
-              <td class="td-actions">
-                <button (click)="openModal(signalement)" class="btn-voir">Détail</button>
-                <button (click)="deleteSignalement(signalement._id)" class="btn-supprimer">Supprimer</button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <div class="table-section">
+    <table class="elegant-table">
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Acheteur</th>
+          <th>Boutique</th>
+          <th>Raison</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (signalement of filteredSignalements; track signalement._id) {
+        <tr>
+          <td data-label="Produit" class="td-product">
+            <strong>{{ signalement.produit_id?.nom_prod || 'N/A' }}</strong>
+          </td>
+          <td data-label="Acheteur">
+            {{ signalement.acheteur_id?.firstname }} {{ signalement.acheteur_id?.lastname }}
+          </td>
+          <td data-label="Boutique">{{ signalement.boutique_id?.name || 'N/A' }}</td>
+          <td data-label="Raison">{{ getRaisonLabel(signalement.raison) }}</td>
+          <td data-label="Statut">
+            <span class="status-badge" [style.background-color]="getStatutBadgeColor(signalement.statut)">
+              {{ getStatutLabel(signalement.statut) }}
+            </span>
+          </td>
+          <td data-label="Date">{{ signalement.createdAt | date: 'dd/MM/yyyy' }}</td>
+          <td data-label="Actions" class="td-actions">
+            <button (click)="openModal(signalement)" class="btn-voir">Détail</button>
+            <button (click)="deleteSignalement(signalement._id)" class="btn-supprimer">Supprimer</button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
   }
 
   <!-- EMPTY -->
   @if (!isLoading && signalements.length === 0) {
-    <div class="empty-state">Aucun signalement pour le moment</div>
+  <div class="empty-state">Aucun signalement pour le moment</div>
   }
 
   <!-- MODAL -->
   @if (showModal && selectedSignalement) {
-    <div class="modal-overlay" (click)="closeModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
 
-        <div class="modal-header">
-          <h2>Détail du signalement</h2>
-          <button class="modal-close" (click)="closeModal()">✕</button>
-        </div>
+      <div class="modal-header">
+        <h2>Détail du signalement</h2>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
 
-        <div class="modal-body">
-          <div class="modal-section">
-            <h4>Produit</h4>
-            <div class="info-grid">
-              <p><strong>Nom :</strong> {{ selectedSignalement.produit_id?.nom_prod }}</p>
-              <p><strong>Boutique :</strong> {{ selectedSignalement.boutique_id?.name }}</p>
-            </div>
-          </div>
-
-          <div class="modal-section">
-            <h4>Acheteur</h4>
-            <div class="info-grid">
-              <p><strong>Nom :</strong> {{ selectedSignalement.acheteur_id?.firstname }} {{ selectedSignalement.acheteur_id?.lastname }}</p>
-              <p><strong>Email :</strong> {{ selectedSignalement.acheteur_id?.email }}</p>
-            </div>
-          </div>
-
-          <div class="modal-section">
-            <h4>Signalement</h4>
-            <div class="info-grid">
-              <p><strong>Raison :</strong> {{ getRaisonLabel(selectedSignalement.raison) }}</p>
-              <p><strong>Signalé le :</strong> {{ selectedSignalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
-            </div>
-            <div class="description-box">{{ selectedSignalement.description }}</div>
-          </div>
-
-          <div class="modal-section">
-            <h4>Traitement</h4>
-            <div class="form-group">
-              <label>Nouveau statut</label>
-              <select [(ngModel)]="newStatut" class="form-select">
-                <option value="signale">Signalé</option>
-                <option value="en_cours">En cours</option>
-                <option value="resolu">Résolu</option>
-                <option value="rejete">Rejeté</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Réponse / Commentaire (optionnel)</label>
-              <textarea [(ngModel)]="reponse"
-                placeholder="Votre réponse à l'acheteur..."
-                class="form-textarea"></textarea>
-            </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <h4>Produit</h4>
+          <div class="info-grid">
+            <p><strong>Nom :</strong> {{ selectedSignalement.produit_id?.nom_prod }}</p>
+            <p><strong>Boutique :</strong> {{ selectedSignalement.boutique_id?.name }}</p>
           </div>
         </div>
 
-        <div class="modal-footer">
-          <button (click)="closeModal()" class="btn-cancel">Annuler</button>
-          <button (click)="updateStatus()" [disabled]="isSaving" class="btn-save">
-            {{ isSaving ? 'Enregistrement...' : 'Enregistrer' }}
-          </button>
+        <div class="modal-section">
+          <h4>Acheteur</h4>
+          <div class="info-grid">
+            <p><strong>Nom :</strong> {{ selectedSignalement.acheteur_id?.firstname }} {{
+              selectedSignalement.acheteur_id?.lastname }}</p>
+            <p><strong>Email :</strong> {{ selectedSignalement.acheteur_id?.email }}</p>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h4>Signalement</h4>
+          <div class="info-grid">
+            <p><strong>Raison :</strong> {{ getRaisonLabel(selectedSignalement.raison) }}</p>
+            <p><strong>Signalé le :</strong> {{ selectedSignalement.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+          <div class="description-box">{{ selectedSignalement.description }}</div>
+        </div>
+
+        <div class="modal-section">
+          <h4>Traitement</h4>
+          <div class="form-group">
+            <label>Nouveau statut</label>
+            <select [(ngModel)]="newStatut" class="form-select">
+              <option value="signale">Signalé</option>
+              <option value="en_cours">En cours</option>
+              <option value="resolu">Résolu</option>
+              <option value="rejete">Rejeté</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Réponse / Commentaire (optionnel)</label>
+            <textarea [(ngModel)]="reponse" placeholder="Votre réponse à l'acheteur..."
+              class="form-textarea"></textarea>
+          </div>
         </div>
       </div>
+
+      <div class="modal-footer">
+        <button (click)="closeModal()" class="btn-cancel">Annuler</button>
+        <button (click)="updateStatus()" [disabled]="isSaving" class="btn-save">
+          {{ isSaving ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
     </div>
+  </div>
   }
 
 </div>

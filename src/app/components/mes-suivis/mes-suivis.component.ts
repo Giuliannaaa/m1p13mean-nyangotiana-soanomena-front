@@ -44,7 +44,7 @@ export class MesSuivisComponent implements OnInit {
     this.isLoading = true;
     this.suiviService.getMesSuivis().subscribe({
       next: (response: any) => {
-        console.log('Mes suivis reçus:', response);
+        // console.log('Mes suivis reçus:', response);
 
         // Extraire les IDs des boutiques
         const boutiqueIds = response.data?.map((suivi: any) => suivi.boutique_id._id) || [];

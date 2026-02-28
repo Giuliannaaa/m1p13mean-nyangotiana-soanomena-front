@@ -82,7 +82,7 @@ export class UserListComponent implements OnInit {
     loadUserDocuments(): void {
         this.userService.getUserDocuments().subscribe({
             next: (response) => {
-                console.log('Documents reçus:', response);
+                // console.log('Documents reçus:', response);
                 this.boutiqueUsers = response.data;
             },
             error: (err) => console.error('Erreur documents:', err)
@@ -91,9 +91,15 @@ export class UserListComponent implements OnInit {
 
     getDocumentUrl(filePath: string): string {
         if (!filePath) return '';
-        if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+
+        if (filePath.includes('res.cloudinary.com') || filePath.startsWith('http://') || filePath.startsWith('https://')) {
+            const cloudinaryIndex = filePath.indexOf('https', 1);
+            if (cloudinaryIndex !== -1) {
+                return filePath.substring(cloudinaryIndex);
+            }
             return filePath;
         }
+
         return `${environment.apiUrl}/${filePath.replace('./', '')}`;
     }
 

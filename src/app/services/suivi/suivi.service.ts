@@ -43,7 +43,7 @@ export class SuiviService {
                 return suivi.boutique_id._id;
               }
               // Sinon, prendre directement la valeur
-              console.log('🔑 boutique_id est une string:', suivi.boutique_id);
+              // console.log(' boutique_id est une string:', suivi.boutique_id);
               return suivi.boutique_id;
             });
           }
@@ -72,7 +72,7 @@ export class SuiviService {
 
   // Suivre une boutique ET METTRE À JOUR LE SUBJECT
   suivreBoutique(boutiqueId: string): Observable<Suivi> {
-    console.log('Appel API: Suivre boutique', boutiqueId);
+    // console.log('Appel API: Suivre boutique', boutiqueId);
 
     return this.http.post<Suivi>(
       `${this.apiUrl}/suivre`,
@@ -80,15 +80,15 @@ export class SuiviService {
       { headers: this.getHeaders() }
     ).pipe(
       tap((response) => {
-        console.log('Réponse API Suivre:', response);
+        // console.log('Réponse API Suivre:', response);
 
         // AJOUTER À LA LISTE DES SUIVIS
         const currentIds = this.boutiquesSuivies$.value;
-        console.log('AVANT l\'ajout:', currentIds);
+        // console.log('AVANT l\'ajout:', currentIds);
 
         if (!currentIds.includes(boutiqueId)) {
           const newIds = [...currentIds, boutiqueId];
-          console.log('APRÈS l\'ajout:', newIds);
+          // console.log('APRÈS l\'ajout:', newIds);
           this.boutiquesSuivies$.next(newIds);
         } else {
           console.log('Boutique déjà dans la liste');
@@ -99,21 +99,21 @@ export class SuiviService {
 
   // Arrêter de suivre une boutique ET METTRE À JOUR LE SUBJECT
   arreterSuivreBoutique(boutiqueId: string): Observable<any> {
-    console.log('Appel API: Arrêter de suivre boutique', boutiqueId);
+    // console.log('Appel API: Arrêter de suivre boutique', boutiqueId);
 
     return this.http.delete(
       `${this.apiUrl}/arreter-suivi/${boutiqueId}`,
       { headers: this.getHeaders() }
     ).pipe(
       tap((response) => {
-        console.log('Réponse API Arrêter:', response);
+        // console.log('Réponse API Arrêter:', response);
 
         // ENLEVER DE LA LISTE DES SUIVIS
         const currentIds = this.boutiquesSuivies$.value;
-        console.log('AVANT la suppression:', currentIds);
+        // console.log('AVANT la suppression:', currentIds);
 
         const newIds = currentIds.filter(id => id !== boutiqueId);
-        console.log('APRÈS la suppression:', newIds);
+        // console.log('APRÈS la suppression:', newIds);
         this.boutiquesSuivies$.next(newIds);
       })
     );

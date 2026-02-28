@@ -39,7 +39,7 @@ export class BuyerDashboardComponent implements OnInit {
   private boutiqueService = inject(BoutiqueService);
   private categorieService = inject(CategorieService);
   private produitService = inject(ProduitService);
-  private avisService = inject(AvisService); 
+  private avisService = inject(AvisService);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
@@ -116,17 +116,17 @@ export class BuyerDashboardComponent implements OnInit {
     this.avisService.getTousLesAvis().subscribe({
       next: (response: any) => {
         // console.log('Réponse avis brute:', response);
-        
+
         let reviews: any[] = [];
-        
+
         if (Array.isArray(response)) {
           reviews = response;
         } else if (response.data && Array.isArray(response.data)) {
           reviews = response.data;
         }
-        
+
         this.boutiqueReviews = reviews.slice(0, 9);
-        
+
         // console.log('Avis chargés:', this.boutiqueReviews.length);
         // console.log('Avis détails:', this.boutiqueReviews.map(r => ({
         //   acheteur: r.acheteur_id?.firstname || 'Anonyme',
@@ -134,13 +134,13 @@ export class BuyerDashboardComponent implements OnInit {
         //   rating: r.rating || r.note,
         //   comment: r.comment?.substring(0, 30) || r.commentaire?.substring(0, 30) || '...'
         // })));
-        
+
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Erreur avis:', err);
         console.log('Tentative avec endpoint alternatif...');
-        
+
         // ESSAYER L'ENDPOINT ALTERNATIF SI LE PREMIER ÉCHOUE
         this.avisService.getTousLesAvisPublic().subscribe({
           next: (response: any) => {
@@ -204,15 +204,15 @@ export class BuyerDashboardComponent implements OnInit {
 
   // ALLER À LA PAGE BOUTIQUES AVEC LA RECHERCHE
   goToBoutiquesPage(): void {
-    this.router.navigate(['/boutiques'], { 
-      queryParams: { search: this.searchQuery } 
+    this.router.navigate(['/boutiques'], {
+      queryParams: { search: this.searchQuery }
     });
   }
 
   // ALLER À LA PAGE PRODUITS AVEC LA RECHERCHE
   goToProductsPage(): void {
-    this.router.navigate(['/produits'], { 
-      queryParams: { search: this.searchQuery } 
+    this.router.navigate(['/produits'], {
+      queryParams: { search: this.searchQuery }
     });
   }
 
@@ -220,9 +220,6 @@ export class BuyerDashboardComponent implements OnInit {
   openCategoryModal(category: any): void {
     this.selectedCategory = category;
     this.showCategoryModal = true;
-
-    console.log('🔍 Catégorie sélectionnée:', category._id, category.nom_cat);
-    console.log('📊 Toutes les boutiques disponibles:', this.newBoutiques.length);
 
     // FILTRER LES BOUTIQUES LOCALEMENT PAR CATÉGORIE
     this.boutiquesByCategory = this.newBoutiques.filter(b => {
@@ -264,10 +261,10 @@ export class BuyerDashboardComponent implements OnInit {
   // FORMATER LA DATE
   formatDate(date: string): string {
     const d = new Date(date);
-    return d.toLocaleDateString('fr-FR', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return d.toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 
@@ -279,25 +276,25 @@ export class BuyerDashboardComponent implements OnInit {
     return '#28a745';
   }
 
-getBoutiqueFromPromo(promo: any): void {
-  // Si on a la boutique directement
-  if (promo.boutique_id && typeof promo.boutique_id === 'object') {
-    this.viewBoutique(promo.boutique_id._id);
-    return;
+  getBoutiqueFromPromo(promo: any): void {
+    // Si on a la boutique directement
+    if (promo.boutique_id && typeof promo.boutique_id === 'object') {
+      this.viewBoutique(promo.boutique_id._id);
+      return;
+    }
+
+    // Si on a juste l'ID
+    if (promo.boutique_id && typeof promo.boutique_id === 'string') {
+      this.viewBoutique(promo.boutique_id);
+      return;
+    }
+
+    // Si c'est dans le produit
+    if (promo.prod_id && promo.prod_id.store_id) {
+      this.viewBoutique(promo.prod_id.store_id);
+      return;
+    }
+
+    console.warn('Impossible de trouver la boutique pour cette promotion', promo);
   }
-  
-  // Si on a juste l'ID
-  if (promo.boutique_id && typeof promo.boutique_id === 'string') {
-    this.viewBoutique(promo.boutique_id);
-    return;
-  }
-  
-  // Si c'est dans le produit
-  if (promo.prod_id && promo.prod_id.store_id) {
-    this.viewBoutique(promo.prod_id.store_id);
-    return;
-  }
-  
-  console.warn('Impossible de trouver la boutique pour cette promotion', promo);
-}
 }

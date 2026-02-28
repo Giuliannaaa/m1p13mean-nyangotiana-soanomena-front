@@ -21,31 +21,43 @@ export class SidebarComponent implements OnInit, OnDestroy {
     unreadMessages: number = 0;
     unreadSignalements: number = 0;
 
+    isSidebarOpen: boolean = false;
+
+    toggleSidebar(): void {
+        this.isSidebarOpen = !this.isSidebarOpen;
+    }
+
+    closeSidebar(): void {
+        if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+            this.isSidebarOpen = false;
+        }
+    }
+
     ngOnInit(): void {
-    // Charger les notifications au démarrage
-    this.notificationService.loadAllNotifications(); // ← ajoute cette ligne
+        // Charger les notifications au démarrage
+        this.notificationService.loadAllNotifications(); // ← ajoute cette ligne
 
-    this.notificationService.unreadMessages$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(count => this.unreadMessages = count);
+        this.notificationService.unreadMessages$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(count => this.unreadMessages = count);
 
-    this.notificationService.unreadSignalements$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(count => this.unreadSignalements = count);
+        this.notificationService.unreadSignalements$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(count => this.unreadSignalements = count);
 
-    // Actualiser toutes les 30 secondes
-    const refreshInterval = setInterval(() => {
-        this.notificationService.loadAllNotifications();
-    }, 30000);
+        // Actualiser toutes les 30 secondes
+        const refreshInterval = setInterval(() => {
+            this.notificationService.loadAllNotifications();
+        }, 30000);
 
-    this.destroy$.subscribe(() => clearInterval(refreshInterval));
-}
+        this.destroy$.subscribe(() => clearInterval(refreshInterval));
+    }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
     }
-    
+
 
     logout() {
         this.authService.logout();

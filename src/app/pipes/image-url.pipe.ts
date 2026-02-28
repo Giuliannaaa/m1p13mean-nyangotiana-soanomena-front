@@ -15,6 +15,11 @@ export class ImageUrlPipe implements PipeTransform {
     const cleanPath = value.replace(/\\/g, '/');
 
     if (cleanPath.startsWith('http://') || cleanPath.startsWith('https://') || cleanPath.startsWith('data:image')) {
+      // Parfois en prod, l'URL Cloudinary est mal concaténée ex: https://api.../https://res.cloudinary...
+      const cloudinaryIndex = cleanPath.indexOf('http', 1);
+      if (cloudinaryIndex !== -1) {
+        return cleanPath.substring(cloudinaryIndex);
+      }
       return cleanPath;
     }
 

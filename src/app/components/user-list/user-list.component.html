@@ -41,25 +41,25 @@
       <tbody>
         @for (user of filteredUsers; track user._id) {
         <tr>
-          <td>
+          <td data-label="Utilisateur">
             <div class="user-name-cell">
               <span class="user-full-name">{{ user.firstname }} {{ user.lastname }}</span>
               <span class="user-email-sub">{{ user.email }}</span>
             </div>
           </td>
-          <td>
+          <td data-label="Rôle">
             <span class="role-badge" [ngClass]="'role-' + user.role?.toLowerCase()">
               {{ user.role }}
             </span>
           </td>
-          <td>
+          <td data-label="Statut">
             <div class="status-indicator">
               <span class="status-dot" [class.active]="user.isActive" [class.inactive]="!user.isActive"></span>
               {{ user.isActive ? 'Actif' : 'Inactif' }}
             </div>
           </td>
-          <td>{{ user.createdAt | date:'dd MMM yyyy' }}</td>
-          <td>
+          <td data-label="Inscription">{{ user.createdAt | date:'dd MMM yyyy' }}</td>
+          <td data-label="Actions">
             <div class="action-buttons">
               <button class="btn-icon-action" [class.deactivate]="user.isActive" [class.activate]="!user.isActive"
                 (click)="updateUserState(user._id!)" [title]="user.isActive ? 'Désactiver' : 'Activer'">
@@ -109,11 +109,11 @@
         <!-- Infos document -->
         <div class="document-info">
           <div class="info-item">
-            <span class="label">Type</span>
+            <span class="label">Type : </span>
             <span class="value">{{ user.document?.type || 'Non renseigné' }}</span>
           </div>
           <div class="info-item">
-            <span class="label">Numéro</span>
+            <span class="label">Numéro : </span>
             <span class="value">{{ user.document?.number || 'Non renseigné' }}</span>
           </div>
         </div>
