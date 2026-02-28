@@ -92,31 +92,34 @@ export class BoutiqueAddComponent implements OnInit {
 
     try {
       if (environment.production) {
-        // PROD : upload vers Cloudinary, envoyer les URLs au backend ──
-        const payload = {
+        // ── PROD : upload Cloudinary D'ABORD, puis créer en une seule requête ──
+        const imageUrls: string[] = [];
+
+        if (this.selectedFiles && this.selectedFiles.length > 0) {
+          for (const file of this.selectedFiles) {
+            this.isCompressing = true;
+            const compressed = await this.compressImage(file);
+            this.isCompressing = false;
+            const url = await uploadToCloudinary(compressed, 'stores');
+            imageUrls.push(url);
+          }
+        }
+
+        const payload: any = {
           name: this.boutique.name,
           description: this.boutique.description,
           categoryId: this.boutique.categoryId,
           ownerId: this.boutique.ownerId,
           isValidated: this.boutique.isValidated,
-          legal: this.boutique.legal
+          legal: this.boutique.legal,
         };
 
+        if (imageUrls.length > 0) {
+          payload.imageUrls = imageUrls;
+        }
+
         this.boutiqueService.createBoutique(payload).subscribe({
-          next: async (res: any) => {
-            const boutiqueId = res.data._id;
-            if (this.selectedFiles && this.selectedFiles.length > 0) {
-              const imageUrls: string[] = [];
-              for (const file of this.selectedFiles) {
-                const compressed = await this.compressImage(file);
-                const url = await uploadToCloudinary(compressed, `stores/${boutiqueId}`);
-                imageUrls.push(url);
-              }
-              // Mettre à jour la boutique avec les URLs
-              await this.boutiqueService.updateBoutique(boutiqueId, { imageUrls }).toPromise();
-            }
-            this.router.navigate(['/boutiques']);
-          },
+          next: () => this.router.navigate(['/boutiques']),
           error: (err) => {
             console.error('Erreur création boutique:', err);
             alert('Erreur : ' + (err.error?.message || err.message));

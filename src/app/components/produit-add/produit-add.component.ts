@@ -87,7 +87,15 @@ export class ProduitAddComponent implements OnInit {
 
     try {
       if (environment.production) {
-        // ── PROD : créer sans image → récupérer l'_id → uploader sur Cloudinary → mettre à jour ──
+        // ── PROD : upload Cloudinary D'ABORD, puis créer en une seule requête ──
+        let imageUrl = '';
+        if (this.selectedFile) {
+          this.isCompressing = true;
+          const compressed = await this.compressImage(this.selectedFile);
+          this.isCompressing = false;
+          imageUrl = await uploadToCloudinary(compressed, 'products');
+        }
+
         const payload: any = {
           nom_prod: this.newProduit.nom_prod,
           descriptions: this.newProduit.descriptions,
@@ -99,24 +107,12 @@ export class ProduitAddComponent implements OnInit {
           livraison: this.newProduit.livraison,
         };
 
+        if (imageUrl) {
+          payload.image_Url = imageUrl;
+        }
+
         this.produitService.addProduit(payload).subscribe({
-          next: async (response: any) => {
-            const productId = response.data._id;
-
-            if (this.selectedFile) {
-              try {
-                const compressed = await this.compressImage(this.selectedFile);
-                const url = await uploadToCloudinary(compressed, `product/${productId}`);
-
-                // Mettre à jour le produit avec l'URL
-                await this.produitService.updateProduit(productId, { image_Url: url }).toPromise();
-
-              } catch (err) {
-                console.error('Erreur upload image:', err);
-                alert('Produit créé mais erreur lors de l\'upload de l\'image');
-              }
-            }
-
+          next: () => {
             alert('Produit ajouté avec succès');
             this.router.navigate(['/produits']);
           },
@@ -139,7 +135,9 @@ export class ProduitAddComponent implements OnInit {
         formData.append('livraison', JSON.stringify(this.newProduit.livraison));
 
         if (this.selectedFile) {
+          this.isCompressing = true;
           const compressed = await this.compressImage(this.selectedFile);
+          this.isCompressing = false;
           formData.append('image_Url', compressed, this.selectedFile.name);
         }
 

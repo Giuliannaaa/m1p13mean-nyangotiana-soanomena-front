@@ -21,7 +21,7 @@
       <div class="image-section">
         <div class="image-container">
           @if (produit.image_Url) {
-          <img [src]="getImageUrl(produit.image_Url)" [alt]="produit.nom_prod" class="product-image" />
+          <img [src]="produit.image_Url | imageUrl" [alt]="produit.nom_prod" class="product-image" />
           } @else {
           <div class="image-placeholder">
             <img src="/img/png/elementor-placeholder-image.png" alt="No image">

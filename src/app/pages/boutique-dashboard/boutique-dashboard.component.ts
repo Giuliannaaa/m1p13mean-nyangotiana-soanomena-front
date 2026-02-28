@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { BoutiqueDashboardService } from '../../services/boutiqueDashboard/boutique-dashboard.service';
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 interface DonutSlice {
   label: string;
@@ -17,7 +18,7 @@ interface DonutSlice {
 @Component({
   selector: 'app-boutique-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ImageUrlPipe],
   templateUrl: './boutique-dashboard.component.html',
   styleUrl: './boutique-dashboard.component.css'
 })

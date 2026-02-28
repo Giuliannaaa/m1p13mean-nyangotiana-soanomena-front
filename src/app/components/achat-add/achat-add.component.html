@@ -13,7 +13,7 @@
 
       <div class="glass-card product-hero">
         <div class="product-image-container">
-          <img [src]="'http://localhost:5000/' + produit.image_Url || '/img/placeholder-produit.png'" [alt]="nom_prod"
+          <img [src]="(produit.image_Url | imageUrl) || '/img/placeholder-produit.png'" [alt]="nom_prod"
             class="product-image">
           <div *ngIf="promotionActive" class="promo-tag">
             <span *ngIf="promotionActive.type_prom === 'POURCENTAGE'">-{{ promotionActive.montant }}%</span>

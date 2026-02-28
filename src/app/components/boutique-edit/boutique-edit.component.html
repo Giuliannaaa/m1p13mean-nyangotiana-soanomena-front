@@ -58,7 +58,7 @@
                 <div class="image-previews-grid mb-3">
                     @for (img of boutique.images; track img._id) {
                     <div class="preview-item existing">
-                        <img [src]="getImageUrl(img.url)" alt="Image boutique" class="img-preview">
+                        <img [src]="img.url | imageUrl" alt="Image boutique" class="img-preview">
                         <button type="button" class="btn-remove" (click)="deleteExistingImage(img._id)">×</button>
                     </div>
                     } @empty {
