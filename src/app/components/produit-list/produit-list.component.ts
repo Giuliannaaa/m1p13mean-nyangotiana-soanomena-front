@@ -170,7 +170,7 @@ export class ProduitListComponent implements OnInit {
   // Charger les produits spéciaux
   loadSpecialProduits(): void {
     this.isLoadingSpecial = true;
-    console.log('Filtre spécial:', this.filtre_special);
+    // console.log('Filtre spécial:', this.filtre_special);
 
     let request$;
 
@@ -194,7 +194,7 @@ export class ProduitListComponent implements OnInit {
 
     request$.subscribe({
       next: (response) => {
-        console.log('Produits spéciaux reçus:', response);
+        // console.log('Produits spéciaux reçus:', response);
 
         this.produits = response.data || response;
 
@@ -251,7 +251,7 @@ export class ProduitListComponent implements OnInit {
       this.searchText !== '';
     this.currentPage = 1;
 
-    console.log('Produits filtrés:', this.filteredProduits.length);
+    // console.log('Produits filtrés:', this.filteredProduits.length);
     this.cdr.markForCheck();
 
 

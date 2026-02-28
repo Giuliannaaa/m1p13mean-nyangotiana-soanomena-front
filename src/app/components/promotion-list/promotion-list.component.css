@@ -171,19 +171,17 @@
   justify-content: center;
   border-radius: 2px;
   border: 1px solid #e0e0e0;
-  background: white;
+  background: #2c3e50;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btn-icon-action:hover {
-  border-color: #222;
-  background: #f5f5f5;
+  background: #343434;
 }
 
 .btn-icon-action.delete:hover {
-  border-color: #ef4444;
-  background: #fef2f2;
+  background: #ef4444;
 }
 
 .btn-icon-action img {
@@ -201,7 +199,16 @@
 
 /* RESPONSIVE */
 @media (max-width: 1024px) {
-  .promotion-list-container { padding: 24px 16px; }
-  .modern-table { display: block; overflow-x: auto; }
-  .list-header h1 { font-size: 26px; }
+  .promotion-list-container {
+    padding: 24px 16px;
+  }
+
+  .modern-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .list-header h1 {
+    font-size: 26px;
+  }
 }

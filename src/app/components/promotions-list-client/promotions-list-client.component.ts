@@ -30,7 +30,7 @@ export class PromotionsListClientComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userRole = this.authService.getRole();
@@ -42,29 +42,29 @@ export class PromotionsListClientComponent implements OnInit {
     this.promotionService.getPromotions().subscribe({
       next: (response: any) => {
         // console.log('Promotions reçues:', response);
-        
+
         // Gérer les deux formats de réponse
         const promosData = Array.isArray(response) ? response : (response.data || []);
-        
+
         this.promotions = promosData.map((promo: any) => ({
           ...promo,
           // Convertir les Decimal128 si nécessaire
-          montant: promo.montant?.$numberDecimal 
-            ? parseFloat(promo.montant.$numberDecimal) 
+          montant: promo.montant?.$numberDecimal
+            ? parseFloat(promo.montant.$numberDecimal)
             : promo.montant
         }));
 
         //Filtre
         this.promotions = promosData.map((promo: any) => ({
           ...promo,
-          montant: promo.montant?.$numberDecimal 
-            ? parseFloat(promo.montant.$numberDecimal) 
+          montant: promo.montant?.$numberDecimal
+            ? parseFloat(promo.montant.$numberDecimal)
             : promo.montant
         }))
-        .filter((promo: any) => {
-          if (!promo.date_fin) return true;
-          return new Date(promo.date_fin) >= new Date();
-        });
+          .filter((promo: any) => {
+            if (!promo.date_fin) return true;
+            return new Date(promo.date_fin) >= new Date();
+          });
 
         // Initialiser le filtre avec toutes les promotions
         this.filteredPromotions = this.promotions;
@@ -84,7 +84,7 @@ export class PromotionsListClientComponent implements OnInit {
   filterPromotions(): void {
     this.filteredPromotions = this.promotions.filter(promo => {
       const matchType = !this.filtre_type || promo.type_prom === this.filtre_type;
-      
+
       let matchStatut = true;
       if (this.filtre_statut) {
         if (this.filtre_statut === 'active') {
@@ -118,30 +118,30 @@ export class PromotionsListClientComponent implements OnInit {
    */
   getBoutiqueFromPromo(promo: any): void {
     console.log('Promotion complète:', promo);
-    
+
     let boutique_id = null;
 
     // Chercher la boutique par différents chemins
     if (promo.prod_id?.store_id?._id) {
       boutique_id = promo.prod_id.store_id._id;
-      console.log('✓ Trouvée via prod_id.store_id._id:', boutique_id);
+      // console.log('✓ Trouvée via prod_id.store_id._id:', boutique_id);
     } else if (promo.prod_id?.store_id) {
       // Cas où c'est juste un string ID
       boutique_id = promo.prod_id.store_id;
-      console.log('✓ Trouvée via prod_id.store_id (string):', boutique_id);
+      // console.log('✓ Trouvée via prod_id.store_id (string):', boutique_id);
     } else if (promo.store_id?._id) {
       boutique_id = promo.store_id._id;
-      console.log('✓ Trouvée via store_id._id:', boutique_id);
+      // console.log('✓ Trouvée via store_id._id:', boutique_id);
     } else if (promo.store_id) {
       // Cas où c'est juste un string ID
       boutique_id = promo.store_id;
-      console.log('✓ Trouvée via store_id (string):', boutique_id);
+      // console.log('✓ Trouvée via store_id (string):', boutique_id);
     } else if (promo.boutique_id?._id) {
       boutique_id = promo.boutique_id._id;
-      console.log('✓ Trouvée via boutique_id._id:', boutique_id);
+      // console.log('✓ Trouvée via boutique_id._id:', boutique_id);
     } else if (promo.boutique_id) {
       boutique_id = promo.boutique_id;
-      console.log('Trouvée via boutique_id (string):', boutique_id);
+      // console.log('Trouvée via boutique_id (string):', boutique_id);
     }
 
     if (boutique_id) {

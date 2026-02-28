@@ -112,11 +112,11 @@ export class AchatListComponent implements OnInit {
       this.isFiltering = true;
     }
 
-    console.log('Achats filtrés:', this.filteredAchats.length);
+    // console.log('Achats filtrés:', this.filteredAchats.length);
     this.cdr.markForCheck();
   }
 
-  // ✅ Réinitialiser le filtre
+  // Réinitialiser le filtre
   resetFilter(): void {
     this.boutique_selectionnee = '';
     this.filteredAchats = this.achats;
@@ -179,7 +179,7 @@ export class AchatListComponent implements OnInit {
     if (confirm(`Voulez-vous vraiment ${statusLabels[newStatus] || 'mettre à jour'} cette commande ?`)) {
       this.achatService.updateStatus(id, newStatus).subscribe({
         next: (response) => {
-          console.log('Statut mis à jour:', response);
+          // console.log('Statut mis à jour:', response);
           // Mettre à jour l'achat localement ou recharger
           const index = this.achats.findIndex(a => a._id === id);
           if (index !== -1) {

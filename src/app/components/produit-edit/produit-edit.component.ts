@@ -12,7 +12,7 @@ import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 @Component({
   selector: 'app-produit-edit',
-  imports: [CommonModule, FormsModule, RouterModule, ImageUrlPipe], // OBLIGATOIRE
+  imports: [CommonModule, FormsModule, RouterModule, ImageUrlPipe],
   standalone: true,
   templateUrl: './produit-edit.component.html',
   styleUrl: './produit-edit.component.css',
@@ -35,10 +35,12 @@ export class ProduitEditComponent {
 
 
   produitId!: string;
-  selectedFile!: File;
+  selectedFile!: File | null;
 
   isCompressing = false;
   isUploading = false;
+
+  previews: string[] = [];
 
   constructor(private produitService: ProduitService,
     private router: Router, // si tu veux récupérer id pour édition
@@ -55,6 +57,9 @@ export class ProduitEditComponent {
       // Adaptation selon la structure de la réponse (response.data ou response direct)
       const data = response.data || response;
       this.produit = data;
+
+      // Gestion de l'image (backend peut renvoyer image_url ou image_Url)
+      this.produit.image_Url = this.produit.image_Url || this.produit.image_url;
 
       // Gestion de store_id peuplé (objet) ou non (string)
       if (this.produit.store_id && typeof this.produit.store_id === 'object') {
@@ -78,25 +83,6 @@ export class ProduitEditComponent {
 
     this.loadBoutiques();
   }
-
-  /** VERSION COMPLETE
-   * 
-   * ngOnInit(): void {
-    const produitId = this.route.snapshot.params['id'];
-    const userId = 'USER_TEMP_ID'; // provisoire
-  
-    //  Charger les boutiques du commerçant
-    this.boutiqueService.getMesBoutiques(userId).subscribe(boutiques => {
-      this.boutiques = boutiques;
-    });
-  
-    // Charger le produit à modifier
-    this.produitService.getProduitById(produitId).subscribe((data: any) => {
-      this.produit = data;
-    });
-  }
-  
-   */
 
   loadBoutiques() {
     this.boutiqueService.getAllBoutiques().subscribe({
@@ -143,6 +129,7 @@ export class ProduitEditComponent {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.produit.image_preview = e.target.result;
+        this.previews.push(e.target.result);
       };
       reader.readAsDataURL(this.selectedFile);
     }
@@ -217,6 +204,11 @@ export class ProduitEditComponent {
     } finally {
       this.isUploading = false;
     }
+  }
+
+  removeNewImage(index: number): void {
+    this.selectedFile = null;
+    this.previews.splice(index, 1);
   }
 
 }

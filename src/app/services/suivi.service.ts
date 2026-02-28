@@ -52,7 +52,7 @@ export class SuiviService {
             });
           }
 
-          console.log('IDs des boutiques suivies:', ids);
+          // console.log('IDs des boutiques suivies:', ids);
           // METTRE À JOUR LE SUBJECT
           this.boutiquesSuivies$.next(ids);
         },
@@ -75,8 +75,8 @@ export class SuiviService {
 
   // SUIVRE UNE BOUTIQUE ET METTRE À JOUR LE SUBJECT
   suivreBoutique(boutiqueId: string): Observable<Suivi> {
-    console.log('Appel API POST:', `${this.apiUrl}/suivre`);
-    console.log('Boutique ID:', boutiqueId);
+    // console.log('Appel API POST:', `${this.apiUrl}/suivre`);
+    // console.log('Boutique ID:', boutiqueId);
 
     return new Observable(observer => {
       this.http.post<Suivi>(
@@ -85,7 +85,7 @@ export class SuiviService {
         { headers: this.getHeaders() }
       ).subscribe({
         next: (response) => {
-          console.log('Suivi réussi:', response);
+          // console.log('Suivi réussi:', response);
 
           // AJOUTER À LA LISTE DES SUIVIS
           const currentIds = this.boutiquesSuivies$.value;
@@ -112,7 +112,7 @@ export class SuiviService {
         { headers: this.getHeaders() }
       ).subscribe({
         next: (response) => {
-          console.log('Arrêt du suivi réussi:', response);
+          // console.log('Arrêt du suivi réussi:', response);
 
           // ENLEVER DE LA LISTE DES SUIVIS
           const currentIds = this.boutiquesSuivies$.value;

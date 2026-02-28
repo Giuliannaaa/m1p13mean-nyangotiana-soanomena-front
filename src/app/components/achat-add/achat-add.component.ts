@@ -114,7 +114,7 @@ export class AchatAddComponent implements OnInit {
   loadPromotionActive(): void {
     this.promotionService.getPromotionActiveByProduit(this.prod_id).subscribe({
       next: (promo: any) => {
-        console.log('Promotion reçue:', promo);
+        // console.log('Promotion reçue:', promo);
 
         if (promo && promo.data) {
           promo = promo.data;
@@ -128,7 +128,7 @@ export class AchatAddComponent implements OnInit {
               : parseFloat(promo.montant)
           };
           this.calculateTotal();
-          console.log('Promotion active appliquée:', this.promotionActive);
+          // console.log('Promotion active appliquée:', this.promotionActive);
         }
       },
       error: (err: any) => {

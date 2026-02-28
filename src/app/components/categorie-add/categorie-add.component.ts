@@ -30,7 +30,7 @@ export class CategorieAddComponent implements OnInit {
   }
 
   addCategorie(): void {
-    console.log(this.newCategorie);
+    // console.log(this.newCategorie);
 
     if (!this.newCategorie.nom_cat) {
       alert('Le nom de la catégorie est obligatoire');
