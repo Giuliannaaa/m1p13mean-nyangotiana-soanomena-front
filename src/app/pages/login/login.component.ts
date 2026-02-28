@@ -24,6 +24,13 @@ export class LoginComponent {
     errorMessage: string = '';
     isLoading: boolean = false;
 
+    ngOnInit() {
+        this.loginForm.patchValue({
+            email: 'admin@admin.com',
+            password: 'admin123'
+        });
+    }
+
     onSubmit() {
         if (this.loginForm.valid) {
             this.isLoading = true;
