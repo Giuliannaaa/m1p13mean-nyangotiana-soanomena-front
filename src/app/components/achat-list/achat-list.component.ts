@@ -5,12 +5,11 @@ import { AchatService } from '../../services/achat/achat.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
-import { SafePipe } from '../../pipes/safe.pipe';
 
 @Component({
   selector: 'app-achat-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SafePipe],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './achat-list.component.html',
   styleUrls: ['./achat-list.component.css']
 })

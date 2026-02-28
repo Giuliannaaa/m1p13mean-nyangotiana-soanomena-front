@@ -152,6 +152,15 @@
         </div>
         }
 
+        @if (previewVisible && !previewIsPdf) {
+        <div class="preview-overlay" (click)="closePreview()">
+          <div class="preview-container" (click)="$event.stopPropagation()">
+            <button class="preview-close" (click)="closePreview()">✕</button>
+            <img [src]="previewUrl | imageUrl" class="preview-image" alt="Aperçu document" />
+          </div>
+        </div>
+        }
+
       </div>
       }
     </div>
