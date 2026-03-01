@@ -120,8 +120,8 @@ export class SignalementsAdminComponent implements OnInit {
       this.reponse
     ).subscribe({
       next: (response: any) => {
-        console.log('Statut mis à jour:', response);
-        alert('Signalement mis à jour avec succès');
+        // console.log('Statut mis à jour:', response);
+        // alert('Signalement mis à jour avec succès');
 
         // Mettre à jour la liste
         const index = this.signalements.findIndex(s => s._id === this.selectedSignalement._id);

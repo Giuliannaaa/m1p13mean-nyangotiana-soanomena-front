@@ -222,7 +222,7 @@ export class AdminDashboardComponent implements OnInit {
     this.adminDashboardService.getAdminDashboardData().subscribe({
       next: (response) => {
         if (response.success) {
-          console.log('Dashboard data:', response.data);
+          // console.log('Dashboard data:', response.data);
           this.dashboardData = response.data;
         } else {
           this.error = 'Échec du chargement des données';
