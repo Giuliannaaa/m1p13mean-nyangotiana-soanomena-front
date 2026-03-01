@@ -145,7 +145,7 @@ export class PromotionsListClientComponent implements OnInit {
     }
 
     if (boutique_id) {
-      console.log('Navigation vers boutique:', boutique_id);
+      // console.log('Navigation vers boutique:', boutique_id);
       this.router.navigate(['/boutique', boutique_id]);
     } else {
       console.error('Boutique introuvable. Structure promo:', {
