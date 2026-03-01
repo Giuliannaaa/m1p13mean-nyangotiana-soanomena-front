@@ -139,12 +139,12 @@ export class BuyerDashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur avis:', err);
-        console.log('Tentative avec endpoint alternatif...');
+        // console.log('Tentative avec endpoint alternatif...');
 
         // ESSAYER L'ENDPOINT ALTERNATIF SI LE PREMIER ÉCHOUE
         this.avisService.getTousLesAvisPublic().subscribe({
           next: (response: any) => {
-            console.log('Avis chargés (endpoint public):', response.length);
+            // console.log('Avis chargés (endpoint public):', response.length);
             this.boutiqueReviews = (Array.isArray(response) ? response : response.data || []).slice(0, 9);
             this.cdr.markForCheck();
           },
@@ -167,7 +167,7 @@ export class BuyerDashboardComponent implements OnInit {
     }
 
     const query = this.searchQuery.toLowerCase();
-    console.log('Recherche pour:', query);
+    // console.log('Recherche pour:', query);
 
     // Chercher dans les NOUVELLES BOUTIQUES
     const boutiquesMatches = this.newBoutiques.filter(b => {
@@ -176,7 +176,7 @@ export class BuyerDashboardComponent implements OnInit {
       return nom.includes(query) || desc.includes(query);
     });
 
-    console.log('Boutiques trouvées:', boutiquesMatches.length);
+    // console.log('Boutiques trouvées:', boutiquesMatches.length);
 
     // CHERCHER DANS TOUS LES PRODUITS (pas seulement les best sellers)
     const produitsMatches = this.allProducts.filter(p => {
@@ -185,7 +185,7 @@ export class BuyerDashboardComponent implements OnInit {
       return nom.includes(query) || desc.includes(query);
     });
 
-    console.log('Produits trouvés dans TOUS les produits:', produitsMatches.length);
+    // console.log('Produits trouvés dans TOUS les produits:', produitsMatches.length);
 
     this.searchResults = {
       boutiques: boutiquesMatches.slice(0, 5),
@@ -193,7 +193,7 @@ export class BuyerDashboardComponent implements OnInit {
     };
 
     this.showSearchResults = true;
-    console.log('Total résultats - Boutiques:', this.searchResults.boutiques.length, 'Produits:', this.searchResults.produits.length);
+    // console.log('Total résultats - Boutiques:', this.searchResults.boutiques.length, 'Produits:', this.searchResults.produits.length);
   }
 
   // EFFACER LA RECHERCHE
@@ -224,11 +224,11 @@ export class BuyerDashboardComponent implements OnInit {
     // FILTRER LES BOUTIQUES LOCALEMENT PAR CATÉGORIE
     this.boutiquesByCategory = this.newBoutiques.filter(b => {
       const match = b.categoryId === category._id;
-      console.log(`Boutique "${b.name}": categoryId="${b.categoryId}" === "${category._id}" ? ${match}`);
+      // console.log(`Boutique "${b.name}": categoryId="${b.categoryId}" === "${category._id}" ? ${match}`);
       return match;
     });
 
-    console.log(`Boutiques filtrées pour "${category.nom_cat}":`, this.boutiquesByCategory.length);
+    // console.log(`Boutiques filtrées pour "${category.nom_cat}":`, this.boutiquesByCategory.length);
     this.boutiquesByCategory.forEach(b => {
       console.log(`  - ${b.name}`);
     });

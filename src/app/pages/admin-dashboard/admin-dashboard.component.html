@@ -18,11 +18,13 @@
     <!-- Error State -->
     <div *ngIf="error && !loading" class="error-container">
         <div class="error-card">
-            <span class="error-icon">⚠️</span>
+            <span class="error-icon">
+                <img src="/img/svg/icon-alert-3.svg" />
+            </span>
             <h3>Erreur</h3>
             <p>{{ error }}</p>
             <button class="retry-btn" (click)="loadDashboardData()">
-                <span class="btn-icon">🔄</span>
+                <span class="btn-icon">↻</span>
                 Réessayer
             </button>
         </div>

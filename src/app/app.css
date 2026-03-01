@@ -4,6 +4,7 @@
     color: #333;
     min-width: 100%;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .main-wrapper {
