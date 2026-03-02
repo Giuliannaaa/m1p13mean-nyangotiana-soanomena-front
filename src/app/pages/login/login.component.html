@@ -204,6 +204,32 @@
     <div class="auth-header">
       <h1>Connexion</h1>
       <p>Bienvenue ! Connectez-vous à votre compte</p>
+      <label for="toggle-popup" class="open-btn">Voir des comptes</label>
+    </div>
+
+    <input type="checkbox" id="toggle-popup">
+
+    <label class="overlay" for="toggle-popup">
+      <span class="close-overlay"></span>
+    </label>
+
+    <div class="popup">
+      <label class="close-btn" for="toggle-popup" title="Fermer">✕</label>
+
+      <p class="popup-title">Accès aux comptes</p>
+
+      <div class="popup-grid">
+        <div class="card store-user">
+          <span class="card-role">Boutique</span>
+          <p class="email-user"><strong>Email :</strong> john.doe@yopmail.com</p>
+          <p class="mdp-user"><strong>Mot de passe :</strong> <span class="hidden-password">admin123</span></p>
+        </div>
+        <div class="card buyer-user">
+          <span class="card-role">Acheteur</span>
+          <p class="email-user"><strong>Email :</strong> jean@gmail.com</p>
+          <p class="mdp-user"><strong>Mot de passe :</strong> <span class="hidden-password">admin123</span></p>
+        </div>
+      </div>
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
